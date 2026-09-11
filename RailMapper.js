@@ -91,8 +91,11 @@ fetch('data/stations.csv')
         					parseFloat(destination.Latitude),
         					parseFloat(destination.Longitude)
     					], {
-        					radius: 20,
+        					radius: 12,
         					weight: 2
+							color: 'red',
+    						fillColor: 'red',
+    						fillOpacity: 0.7
     					})
     					.bindPopup(`<strong>${destination.Name}</strong><br>CRS: ${destination.CRS}`)
     					.addTo(map);
