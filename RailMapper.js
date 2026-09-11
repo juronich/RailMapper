@@ -85,6 +85,18 @@ fetch('data/stations.csv')
 					);
 
 					console.log('Destination stations:', destinationStations);
+					destinationStations.forEach(destination => {
+    					if (!destination) return;
+    					L.circleMarker([
+        					parseFloat(destination.Latitude),
+        					parseFloat(destination.Longitude)
+    					], {
+        					radius: 8,
+        					weight: 2
+    					})
+    					.bindPopup(`<strong>${destination.Name}</strong><br>CRS: ${destination.CRS}`)
+    					.addTo(map);
+					});
         	});
         	originResults.appendChild(result);
     	});
