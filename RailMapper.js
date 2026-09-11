@@ -98,9 +98,9 @@ fetch('data/stations.csv')
         					//radius: 2 + Math.log10(destination.journeys + 1) * 3,
 							radius: 0 + Math.pow(destination.journeys, 0.25) * 1.5,
         					weight: 2,
-							color: 'red',
+							color: 'black',
     						fillColor: 'red',
-    						fillOpacity: 0.7
+    						fillOpacity: 0.45
     					})
     					.bindPopup(`<strong>${destination.station.Name}</strong><br>Journeys: ${destination.journeys}`)
     					.addTo(map);
