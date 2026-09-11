@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UK Rail Journeys</title>
-    <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="leaflet/leaflet.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="map"></div>
+
+    <div id="controls">
+        <label for="origin">Origin:</label>
+        <select id="origin">
+            <option value="">Select a station</option>
+        </select>
+    </div>
 
     <script src="leaflet/leaflet.js"></script>
     <script src="RailMapper.js"></script>
