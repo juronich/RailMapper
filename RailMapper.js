@@ -21,6 +21,7 @@ fetch('data/stations.csv')
             const lon = parseFloat(station.Longitude);
 
             if (!isNaN(lat) && !isNaN(lon)) {
+                stations.push(station);
                 L.circleMarker([lat, lon], {
                     radius: 4,
                     weight: 1
