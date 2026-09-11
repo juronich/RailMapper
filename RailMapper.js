@@ -95,7 +95,7 @@ fetch('data/stations.csv')
         					parseFloat(destination.station.Latitude),
         					parseFloat(destination.station.Longitude)
     					], {
-        					radius: 4 + Math.log10(destination.journeys + 1) * 3,
+        					radius: 2 + Math.log10(destination.journeys + 1) * 3,
         					weight: 2,
 							color: 'red',
     						fillColor: 'red',
