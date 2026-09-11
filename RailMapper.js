@@ -22,7 +22,7 @@ fetch('data/stations.csv')
         if (!isNaN(lat) && !isNaN(lon)) {
             stations.push(station);
             L.circleMarker([lat, lon], {
-                radius: 1.5,
+                radius: 1,
                 weight: 1
             })
             .bindPopup(`<strong>${station.Name}</strong><br>CRS: ${station.CRS}`)
@@ -96,7 +96,7 @@ fetch('data/stations.csv')
         					parseFloat(destination.station.Longitude)
     					], {
         					//radius: 2 + Math.log10(destination.journeys + 1) * 3,
-							radius: 2 + Math.pow(destination.journeys, 0.35) * 1.5,
+							radius: 0 + Math.pow(destination.journeys, 0.25) * 1.5,
         					weight: 2,
 							color: 'red',
     						fillColor: 'red',
