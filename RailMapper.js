@@ -59,13 +59,20 @@ fetch('data/stations.csv')
         		result.className = 'origin-result';
         		result.textContent = `${station.Name} (${station.CRS})`;
         		result.addEventListener('click', () => {
-            		originInput.value = `${station.Name} (${station.CRS})`;
+					originInput.value = `${station.Name} (${station.CRS})`;
             		originInput.dataset.crs = station.CRS;
             		originResults.innerHTML = '';
             		map.setView([
                 		parseFloat(station.Latitude),
                 		parseFloat(station.Longitude)
             		], 10);
+					const selectedCRS = station.CRS;
+					const relevantJourneys = journeys.filter(journey =>
+    					journey.OriginCRS === selectedCRS ||
+    					journey.DestinationCRS === selectedCRS
+					);
+					console.log('Selected station:', selectedCRS);
+					console.log('Relevant journeys:', relevantJourneys);
         	});
         	originResults.appendChild(result);
     	});
