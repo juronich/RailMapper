@@ -40,7 +40,7 @@ fetch('data/stations.csv')
             	headers.forEach((header, i) => journey[header.trim()] = row[i]?.trim());
             	journeys.push(journey);
         	});
-        	console.log('Journey data:', journeys);
+        	//console.log('Journey data:', journeys);
     	})
    	 	.catch(error => console.error('Error loading journey data:', error));
 		
@@ -73,6 +73,13 @@ fetch('data/stations.csv')
 					);
 					console.log('Selected station:', selectedCRS);
 					console.log('Relevant journeys:', relevantJourneys);
+					const otherStations = relevantJourneys.map(journey =>
+    					journey.OriginCRS === selectedCRS
+        				? journey.DestinationCRS
+        				: journey.OriginCRS
+					);
+
+					console.log('Other stations:', otherStations);
         	});
         	originResults.appendChild(result);
     	});
