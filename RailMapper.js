@@ -91,7 +91,7 @@ fetch('data/stations.csv')
         					parseFloat(destination.Latitude),
         					parseFloat(destination.Longitude)
     					], {
-        					radius: 8,
+        					radius: 20,
         					weight: 2
     					})
     					.bindPopup(`<strong>${destination.Name}</strong><br>CRS: ${destination.CRS}`)
