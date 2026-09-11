@@ -73,23 +73,27 @@ fetch('data/stations.csv')
 					);
 					console.log('Selected station:', selectedCRS);
 					console.log('Relevant journeys:', relevantJourneys);
-					const otherStations = relevantJourneys.map(journey =>
-    					journey.OriginCRS === selectedCRS
+					const otherStations = relevantJourneys.map(journey => ({
+    					crs: journey.OriginCRS === selectedCRS
         				? journey.DestinationCRS
-        				: journey.OriginCRS
-					);
-
+        				: journey.OriginCRS,
+    					journeys: parseInt(journey.Journeys, 10)
+					}));
 					console.log('Other stations:', otherStations);
-					const destinationStations = otherStations.map(crs =>
-    					stations.find(station => station.CRS === crs)
-					);
 
+					const destinationStations = otherStations.map(destination =>
+    					({
+        					station: stations.find(station => station.CRS === destination.crs),
+        					journeys: destination.journeys
+    					})
+					);
 					console.log('Destination stations:', destinationStations);
 					destinationStations.forEach(destination => {
-    					if (!destination) return;
+    					if (!destination.station) return;
+
     					L.circleMarker([
-        					parseFloat(destination.Latitude),
-        					parseFloat(destination.Longitude)
+        					parseFloat(destination.station.Latitude),
+        					parseFloat(destination.station.Longitude)
     					], {
         					radius: 12,
         					weight: 2,
@@ -97,7 +101,7 @@ fetch('data/stations.csv')
     						fillColor: 'red',
     						fillOpacity: 0.7
     					})
-    					.bindPopup(`<strong>${destination.Name}</strong><br>CRS: ${destination.CRS}`)
+    					.bindPopup(`<strong>${destination.station.Name}</strong><br>Journeys: ${destination.journeys}`)
     					.addTo(map);
 					});
         	});
