@@ -65,4 +65,5 @@ originInput.addEventListener('input', () => {
         originResults.appendChild(result);
     });
 });
+    })
     .catch(error => console.error('Error loading station data:', error));
