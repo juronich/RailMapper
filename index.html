@@ -9,14 +9,13 @@
 </head>
 <body>
 
-    <div id="map"></div>
+<div id="map"></div>
 
-    <div id="controls">
-        <label for="origin">Origin:</label>
-        <select id="origin">
-            <option value="">Select a station</option>
-        </select>
-    </div>
+<div id="controls">
+    <label for="origin">Origin:</label>
+    <input type="text" id="origin" placeholder="Search for a station..." autocomplete="off">
+    <div id="origin-results"></div>
+</div>
 
     <script src="leaflet/leaflet.js"></script>
     <script src="RailMapper.js"></script>
