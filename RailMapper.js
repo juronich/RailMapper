@@ -80,6 +80,11 @@ fetch('data/stations.csv')
 					);
 
 					console.log('Other stations:', otherStations);
+					const destinationStations = otherStations.map(crs =>
+    					stations.find(station => station.CRS === crs)
+					);
+
+					console.log('Destination stations:', destinationStations);
         	});
         	originResults.appendChild(result);
     	});
