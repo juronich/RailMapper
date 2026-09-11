@@ -4,7 +4,8 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-const originSelect = document.getElementById('origin');
+const originInput = document.getElementById('origin');
+const originResults = document.getElementById('origin-results');
 
 fetch('data/stations.csv')
     .then(response => response.text())
@@ -30,25 +31,38 @@ fetch('data/stations.csv')
                 .addTo(map);
             }
         });
-         stations.sort((a, b) => a.Name.localeCompare(b.Name));
+        stations.sort((a, b) => a.Name.localeCompare(b.Name));
 
-        stations.forEach(station => {
-            const option = document.createElement('option');
-            option.value = station.CRS;
-            option.textContent = `${station.Name} (${station.CRS})`;
-            originSelect.appendChild(option);
+originInput.addEventListener('input', () => {
+    const search = originInput.value.toLowerCase().trim();
+    originResults.innerHTML = '';
+
+    if (!search) return;
+
+    const matches = stations
+        .filter(station =>
+            station.Name.toLowerCase().includes(search) ||
+            station.CRS.toLowerCase().includes(search)
+        )
+        .slice(0, 10);
+
+    matches.forEach(station => {
+        const result = document.createElement('div');
+        result.className = 'origin-result';
+        result.textContent = `${station.Name} (${station.CRS})`;
+
+        result.addEventListener('click', () => {
+            originInput.value = `${station.Name} (${station.CRS})`;
+            originInput.dataset.crs = station.CRS;
+            originResults.innerHTML = '';
+
+            map.setView([
+                parseFloat(station.Latitude),
+                parseFloat(station.Longitude)
+            ], 10);
         });
 
-        originSelect.addEventListener('change', () => {
-            const selectedCRS = originSelect.value;
-            const station = stations.find(s => s.CRS === selectedCRS);
-
-            if (station) {
-                map.setView([
-                    parseFloat(station.Latitude),
-                    parseFloat(station.Longitude)
-                ], 10);
-            }
-        });
-    })
+        originResults.appendChild(result);
+    });
+});
     .catch(error => console.error('Error loading station data:', error));
