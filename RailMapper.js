@@ -92,7 +92,7 @@ fetch('data/stations.csv')
         					parseFloat(destination.Longitude)
     					], {
         					radius: 12,
-        					weight: 2
+        					weight: 2,
 							color: 'red',
     						fillColor: 'red',
     						fillOpacity: 0.7
