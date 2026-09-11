@@ -22,7 +22,7 @@ fetch('data/stations.csv')
                     radius: 4,
                     weight: 1
                 })
-                .bindPopup(`<strong>${station['Station Name']}</strong><br>CRS: ${station.CRS}`)
+                .bindPopup(`<strong>${station.Name}</strong><br>CRS: ${station.CRS}`)
                 .addTo(map);
             }
         });
