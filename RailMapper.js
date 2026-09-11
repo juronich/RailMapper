@@ -6,29 +6,44 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const originInput = document.getElementById('origin');
 const originResults = document.getElementById('origin-results');
+let journeys = [];
 
 fetch('data/stations.csv')
-	.then(response => response.text())
-    .then(csv => {
-    	const rows = csv.trim().split('\n').map(row => row.split(','));
-        const headers = rows.shift();
-        const stations = [];
-        rows.forEach(row => {
-        	const station = {};
-            headers.forEach((header, i) => station[header.trim()] = row[i]?.trim());
-            const lat = parseFloat(station.Latitude);
-            const lon = parseFloat(station.Longitude);
-            if (!isNaN(lat) && !isNaN(lon)) {
-            	stations.push(station);
-                L.circleMarker([lat, lon], {
-                    radius: 4,
-                    weight: 1
-                })
-                .bindPopup(`<strong>${station.Name}</strong><br>CRS: ${station.CRS}`)
-                .addTo(map);
-            }
-        });
-        stations.sort((a, b) => a.Name.localeCompare(b.Name));
+.then(response => response.text())
+.then(csv => {
+    const rows = csv.trim().split('\n').map(row => row.split(','));
+    const headers = rows.shift();
+    const stations = [];
+    rows.forEach(row => {
+        const station = {};
+        headers.forEach((header, i) => station[header.trim()] = row[i]?.trim());
+        const lat = parseFloat(station.Latitude);
+        const lon = parseFloat(station.Longitude);
+        if (!isNaN(lat) && !isNaN(lon)) {
+            stations.push(station);
+            L.circleMarker([lat, lon], {
+                radius: 4,
+                weight: 1
+            })
+            .bindPopup(`<strong>${station.Name}</strong><br>CRS: ${station.CRS}`)
+            .addTo(map);
+        }
+    });
+    stations.sort((a, b) => a.Name.localeCompare(b.Name));
+		fetch('data/journeys.csv')
+    	.then(response => response.text())
+    	.then(csv => {
+        	const rows = csv.trim().split('\n').map(row => row.split(','));
+        	const headers = rows.shift();
+        	rows.forEach(row => {
+            	const journey = {};
+            	headers.forEach((header, i) => journey[header.trim()] = row[i]?.trim());
+            	journeys.push(journey);
+        	});
+        	console.log('Journey data:', journeys);
+    	})
+   	 	.catch(error => console.error('Error loading journey data:', error));
+		
 		originInput.addEventListener('input', () => {
     		const search = originInput.value.toLowerCase().trim();
     		originResults.innerHTML = '';
