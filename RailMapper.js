@@ -22,7 +22,7 @@ fetch('data/stations.csv')
         if (!isNaN(lat) && !isNaN(lon)) {
             stations.push(station);
             L.circleMarker([lat, lon], {
-                radius: 4,
+                radius: 1.5,
                 weight: 1
             })
             .bindPopup(`<strong>${station.Name}</strong><br>CRS: ${station.CRS}`)
