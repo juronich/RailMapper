@@ -6,7 +6,43 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const destinationLayer = L.layerGroup().addTo(map);
 
-fetch('data/railways.geojson')
+Promise.all([
+	fetch('data/railways.geojson').then(response => response.json()),
+    fetch('data/other_railways.geojson').then(response => response.json())
+])
+    .then(([railwayData, other_railwayData]) => {
+		
+        const combinedRailwayData = {
+            type: 'FeatureCollection',
+            features: [
+                ...railwayData.features,
+                ...other_railwayData.features
+            ]
+        };
+		console.log('Railway features:',combinedRailwayData.features.length);
+		let railwayPoints = 0;
+		combinedRailwayData.features.forEach(feature => {
+            if (feature.geometry?.type === 'LineString') {
+                railwayPoints += feature.geometry.coordinates.length;
+            }
+        });
+		console.log('Railway features:', combinedRailwayData.features.length);
+        console.log('Railway coordinate points:', railwayPoints);
+        const railwayLayer = L.geoJSON(combinedRailwayData, {
+            style: {
+                color: '#777',
+                weight: 2,
+                opacity: 0.7
+            }
+        }).addTo(map);
+
+        console.log('Combined railway features:', combinedRailwayData.features.length);
+    })
+    .catch(error => console.error('Error loading railway data:', error));
+
+
+
+/*fetch('data/railways.geojson')
     .then(response => response.json())
     .then(data => {
 		
@@ -52,6 +88,7 @@ fetch('data/other_railways.geojson')
         }).addTo(map);
     })
     .catch(error => console.error('Error loading other_railway data:', error));
+	*/
 const originInput = document.getElementById('origin');
 const originResults = document.getElementById('origin-results');
 let journeys = [];
@@ -128,7 +165,7 @@ fetch('data/stations.csv')
         				: journey.OriginCRS,
     					journeys: parseInt(journey.Journeys, 10)
 					}));
-					console.log('Other stations:', otherStations);
+					//console.log('Other stations:', otherStations);
 
 					const destinationStations = otherStations.map(destination =>
     					({
@@ -136,7 +173,7 @@ fetch('data/stations.csv')
         					journeys: destination.journeys
     					})
 					);
-					console.log('Destination stations:', destinationStations);
+					//console.log('Destination stations:', destinationStations);
 					destinationStations.forEach(destination => {
     					if (!destination.station) return;
 
@@ -151,7 +188,7 @@ fetch('data/stations.csv')
     						fillColor: 'red',
     						fillOpacity: 0.45
     					})
-    					.bindPopup(`<strong>${destination.station.Name}</strong> (${station.CRS})<br>Journeys: ${destination.journeys.toLocaleString()}`)
+    					.bindPopup(`<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>Journeys: ${destination.journeys.toLocaleString()}`)
     					.addTo(destinationLayer);
 					});
         	});
