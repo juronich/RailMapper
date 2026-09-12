@@ -26,7 +26,6 @@ Promise.all([
                 railwayPoints += feature.geometry.coordinates.length;
             }
         });
-		console.log('Railway features:', combinedRailwayData.features.length);
         console.log('Railway coordinate points:', railwayPoints);
         const railwayLayer = L.geoJSON(combinedRailwayData, {
             style: {
@@ -35,8 +34,6 @@ Promise.all([
                 opacity: 0.7
             }
         }).addTo(map);
-
-        console.log('Combined railway features:', combinedRailwayData.features.length);
     })
     .catch(error => console.error('Error loading railway data:', error));
 
