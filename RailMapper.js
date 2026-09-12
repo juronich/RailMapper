@@ -57,6 +57,22 @@ fetch('data/railway-network.json')
         });
 
         console.log('Railway graph nodes:', railwayGraph.size);
+		let railwayEdges = 0;
+		let isolatedNodes = 0;
+		let maxConnections = 0;
+		railwayGraph.forEach(connections => {
+    		railwayEdges += connections.length;
+    		if (connections.length === 0) {
+        		isolatedNodes++;
+    		}
+    		maxConnections = Math.max(maxConnections, connections.length);
+		});
+		console.log('Railway graph edges:', railwayEdges);
+		console.log('Isolated railway nodes:', isolatedNodes);
+		console.log('Maximum connections at one node:', maxConnections);
+
+
+		
 
         const railwayLayer = L.geoJSON({
             type: 'FeatureCollection',
