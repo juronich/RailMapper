@@ -4,6 +4,19 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+fetch('data/railways.geojson')
+    .then(response => response.json())
+    .then(data => {
+        L.geoJSON(data, {
+            style: {
+                color: '#777',
+                weight: 2,
+                opacity: 0.7
+            }
+        }).addTo(map);
+    })
+    .catch(error => console.error('Error loading railway data:', error));
+
 const originInput = document.getElementById('origin');
 const originResults = document.getElementById('origin-results');
 let journeys = [];
