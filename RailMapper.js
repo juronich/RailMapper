@@ -21,9 +21,11 @@ const destinationLayer = L.layerGroup().addTo(map);
             nearestNode = index;
         }
     });
-*/
+
     return nearestNode;
+	
 }
+*/
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
     fetch('data/railway-ways.json').then(response => response.json()),
