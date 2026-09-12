@@ -118,7 +118,7 @@ fetch('data/stations.csv')
     						fillColor: 'red',
     						fillOpacity: 0.45
     					})
-    					.bindPopup(`<strong>${destination.station.Name}</strong><br>Journeys: ${destination.journeys}`)
+    					.bindPopup(`<strong>${destination.station.Name}</strong><br>Journeys: ${destination.journeys.toLocaleString()}`)
     					.addTo(destinationLayer);
 					});
         	});
