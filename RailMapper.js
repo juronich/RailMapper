@@ -6,6 +6,26 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const destinationLayer = L.layerGroup().addTo(map);
 
+function findNearestRailwayNode(latitude, longitude, nodes) {
+    let nearestNode = null;
+    let nearestDistance = Infinity;
+
+    nodes.forEach((node, index) => {
+        const nodeLatitude = node[0];
+        const nodeLongitude = node[1];
+
+        const distance = Math.pow(nodeLatitude - latitude, 2) + Math.pow(nodeLongitude - longitude, 2);
+
+        if (distance < nearestDistance) {
+            nearestDistance = distance;
+            nearestNode = index;
+        }
+    });
+
+    return nearestNode;
+}
+
+
 fetch('data/railway-network.json')
     .then(response => response.json())
     .then(data => {
@@ -84,8 +104,12 @@ fetch('data/railway-network.json')
                 opacity: 0.7
             }
         }).addTo(map);
-
         console.log('Railway features:', railwayFeatures.length);
+		const brightonNode = findNearestRailwayNode(50.8288602, -0.1407393, data.nodes);
+		console.log('Nearest railway node to Brighton:', brightonNode);
+		console.log('Brighton railway node coordinates:', data.nodes[brightonNode]);
+		console.log('Brighton railway node connections:', railwayGraph.get(brightonNode));
+		
     })
     .catch(error => console.error('Error loading railway network:', error));
 
