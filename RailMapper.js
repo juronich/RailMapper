@@ -51,7 +51,7 @@ fetch('data/stations.csv')
                 radius: 1,
                 weight: 1
             })
-            .bindPopup(`<strong>${station.Name}</strong><br>CRS: ${station.CRS}`)
+            .bindPopup(`<strong>${station.Name}</strong> (${station.CRS})`)
             .addTo(map);
         }
     });
@@ -129,7 +129,7 @@ fetch('data/stations.csv')
     						fillColor: 'red',
     						fillOpacity: 0.45
     					})
-    					.bindPopup(`<strong>${destination.station.Name}</strong><br>Journeys: ${destination.journeys.toLocaleString()}`)
+    					.bindPopup(`<strong>${destination.station.Name}</strong> (${station.CRS})<br>Journeys: ${destination.journeys.toLocaleString()}`)
     					.addTo(destinationLayer);
 					});
         	});
