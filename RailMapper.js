@@ -4,10 +4,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+const destinationLayer = L.layerGroup().addTo(map);
+
 fetch('data/railways.geojson')
     .then(response => response.json())
     .then(data => {
-        L.geoJSON(data, {
+        const railwayLayer = L.geoJSON(data, {
             style: {
                 color: '#777',
                 weight: 1,
@@ -72,6 +74,7 @@ fetch('data/stations.csv')
         		result.className = 'origin-result';
         		result.textContent = `${station.Name} (${station.CRS})`;
         		result.addEventListener('click', () => {
+					destinationLayer.clearLayers();
 					originInput.value = `${station.Name} (${station.CRS})`;
             		originInput.dataset.crs = station.CRS;
             		originResults.innerHTML = '';
@@ -116,7 +119,7 @@ fetch('data/stations.csv')
     						fillOpacity: 0.45
     					})
     					.bindPopup(`<strong>${destination.station.Name}</strong><br>Journeys: ${destination.journeys}`)
-    					.addTo(map);
+    					.addTo(destinationLayer);
 					});
         	});
         	originResults.appendChild(result);
