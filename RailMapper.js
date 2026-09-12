@@ -29,7 +29,29 @@ fetch('data/railways.geojson')
         }).addTo(map);
     })
     .catch(error => console.error('Error loading railway data:', error));
-
+fetch('data/other_railways.geojson')
+    .then(response => response.json())
+    .then(data => {
+		
+		console.log('Other Railway features:', data.features.length);
+		let other_railwayPoints = 0;
+		data.features.forEach(feature => {
+    		if (feature.geometry?.type === 'LineString') {
+        		railwayPoints += feature.geometry.coordinates.length;
+    		}
+		});
+		console.log('Other Railway features:', data.features.length);
+		console.log('Other Railway coordinate points:', other_railwayPoints);
+		
+        const other_railwayLayer = L.geoJSON(data, {
+            style: {
+                color: '#666',
+                weight: 1,
+                opacity: 0.7
+            }
+        }).addTo(map);
+    })
+    .catch(error => console.error('Error loading other_railway data:', error));
 const originInput = document.getElementById('origin');
 const originResults = document.getElementById('origin-results');
 let journeys = [];
