@@ -10,7 +10,7 @@ fetch('data/railways.geojson')
         L.geoJSON(data, {
             style: {
                 color: '#777',
-                weight: 2,
+                weight: 1,
                 opacity: 0.7
             }
         }).addTo(map);
