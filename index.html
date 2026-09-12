@@ -10,11 +10,32 @@
 <body>
 
 <div id="map"></div>
-
+<!--
 <div id="controls">
     <label for="origin">Origin:</label>
     <input type="text" id="origin" placeholder="Search for a station..." autocomplete="off">
     <div id="origin-results"></div>
+</div>
+-->
+<div id="controls">
+    <div class="control-group">
+        <label for="origin">Origin:</label>
+        <input type="text" id="origin" placeholder="Search for a station..." autocomplete="off">
+        <div id="origin-results"></div>
+    </div>
+
+    <div class="control-group">
+        <label for="year-select">Year:</label>
+        <select id="year-select">
+            <option value="2024-25">2024/25</option>
+            <option value="2023-24">2023/24</option>
+            <option value="2022-23">2022/23</option>
+            <option value="2021-22">2021/22</option>
+            <option value="2020-21">2020/21</option>
+            <option value="2019-20">2019/20</option>
+            <option value="2018-19">2018/19</option>
+        </select>
+    </div>
 </div>
 
     <script src="leaflet/leaflet.js"></script>
