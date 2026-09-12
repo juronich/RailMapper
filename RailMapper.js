@@ -9,6 +9,7 @@ const destinationLayer = L.layerGroup().addTo(map);
 fetch('data/railways.geojson')
     .then(response => response.json())
     .then(data => {
+		console.log('Railway features:', data.features.length);
         const railwayLayer = L.geoJSON(data, {
             style: {
                 color: '#777',
