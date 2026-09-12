@@ -44,12 +44,12 @@ Promise.all([
     const railwayGraph = new Map();
     const railwayFeatures = [];
 
-    nodes.forEach(node => {
-        railwayNodes.set(String(node.id), {
-            latitude: parseFloat(node.lat),
-            longitude: parseFloat(node.lon)
-        });
-    });
+	nodes.forEach(node => {
+    	railwayNodes.set(String(node[0]), {
+        	latitude: node[1],
+        	longitude: node[2]
+    	});
+	});
 
     ways.forEach(way => {
         const nodeIds = way.nodes || way.node_ids || way[0];
