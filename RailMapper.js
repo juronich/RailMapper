@@ -6,7 +6,74 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const destinationLayer = L.layerGroup().addTo(map);
 
-Promise.all([
+fetch('data/railway-network.json')
+    .then(response => response.json())
+    .then(data => {
+        console.log('Railway nodes:', data.nodes.length);
+        console.log('Railway ways:', data.ways.length);
+
+        const railwayGraph = new Map();
+        const railwayFeatures = [];
+
+        data.ways.forEach(way => {
+            const nodeIndexes = way[0];
+
+            if (nodeIndexes.length < 2) return;
+
+            const coordinates = nodeIndexes.map(nodeIndex => {
+                const node = data.nodes[nodeIndex];
+                return [node[1], node[0]];
+            });
+
+            railwayFeatures.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: coordinates
+                },
+                properties: {
+                    railway: way[1],
+                    operator: way[2],
+                    layer: way[3],
+                    service: way[4]
+                }
+            });
+
+            for (let i = 0; i < nodeIndexes.length - 1; i++) {
+                const startNode = nodeIndexes[i];
+                const endNode = nodeIndexes[i + 1];
+
+                if (!railwayGraph.has(startNode)) {
+                    railwayGraph.set(startNode, []);
+                }
+
+                if (!railwayGraph.has(endNode)) {
+                    railwayGraph.set(endNode, []);
+                }
+
+                railwayGraph.get(startNode).push(endNode);
+                railwayGraph.get(endNode).push(startNode);
+            }
+        });
+
+        console.log('Railway graph nodes:', railwayGraph.size);
+
+        const railwayLayer = L.geoJSON({
+            type: 'FeatureCollection',
+            features: railwayFeatures
+        }, {
+            style: {
+                color: '#777',
+                weight: 1,
+                opacity: 0.7
+            }
+        }).addTo(map);
+
+        console.log('Railway features:', railwayFeatures.length);
+    })
+    .catch(error => console.error('Error loading railway network:', error));
+
+/*Promise.all([
 	fetch('data/railways.geojson').then(response => response.json()),
     fetch('data/other_railways.geojson').then(response => response.json())
 ])
@@ -60,7 +127,7 @@ Promise.all([
         }).addTo(map);
     })
     .catch(error => console.error('Error loading railway data:', error));
-
+*/
 
 
 /*fetch('data/railways.geojson')
