@@ -27,6 +27,30 @@ Promise.all([
             }
         });
         console.log('Railway coordinate points:', railwayPoints);
+
+		const railwayGraph = new Map();
+		combinedRailwayData.features.forEach(feature => {
+    		if (feature.geometry?.type !== 'LineString') return;
+    		const coordinates = feature.geometry.coordinates;
+    		for (let i = 0; i < coordinates.length - 1; i++) {
+        		const start = coordinates[i];
+        		const end = coordinates[i + 1];
+        		const startKey = `${start[0].toFixed(5)},${start[1].toFixed(5)}`;
+        		const endKey = `${end[0].toFixed(5)},${end[1].toFixed(5)}`;
+        		if (!railwayGraph.has(startKey)) railwayGraph.set(startKey, []);
+        		if (!railwayGraph.has(endKey)) railwayGraph.set(endKey, []);
+        		railwayGraph.get(startKey).push({
+            		node: endKey,
+            		coordinates: end
+        		});
+        		railwayGraph.get(endKey).push({
+            		node: startKey,
+            		coordinates: start
+        		});
+    		}
+		});
+		console.log('Railway graph nodes:', railwayGraph.size);
+
         const railwayLayer = L.geoJSON(combinedRailwayData, {
             style: {
                 color: '#777',
