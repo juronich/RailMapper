@@ -1,7 +1,7 @@
 html, body { margin: 0; padding: 0; height: 100%; }
 #map { width: 100%; height: 100%; }
 
-#controls {
+/*#controls {
     position: absolute;
     top: 10px;
     left: 50px;
@@ -27,6 +27,69 @@ html, body { margin: 0; padding: 0; height: 100%; }
     border: 1px solid #ccc;
     max-height: 300px;
     overflow-y: auto;
+}
+
+.origin-result {
+    padding: 6px;
+    cursor: pointer;
+}
+
+.origin-result:hover {
+    background: #eee;
+}*/
+
+#controls {
+    position: absolute;
+    top: 10px;
+    left: 50px;
+    z-index: 1000;
+    background: white;
+    padding: 12px;
+    border-radius: 4px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Context for absolute positioning of search results */
+}
+
+.control-group label {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+#origin {
+    width: 220px;
+    padding: 6px;
+    box-sizing: border-box;
+}
+
+#year-select {
+    padding: 6px;
+    box-sizing: border-box;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #767676;
+    border-radius: 2px;
+}
+
+#origin-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ccc;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1001; /* Ensure autocomplete sits above other inputs */
 }
 
 .origin-result {
