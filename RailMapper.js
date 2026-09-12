@@ -6,7 +6,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const destinationLayer = L.layerGroup().addTo(map);
 
-function findNearestRailwayNode(latitude, longitude, nodes) {
+/*function findNearestRailwayNode(latitude, longitude, nodes) {
     let nearestNode = null;
     let nearestDistance = Infinity;
 
@@ -21,12 +21,123 @@ function findNearestRailwayNode(latitude, longitude, nodes) {
             nearestNode = index;
         }
     });
-
+*/
     return nearestNode;
 }
+Promise.all([
+    fetch('data/railway-nodes.json').then(response => response.json()),
+    fetch('data/railway-ways.json').then(response => response.json()),
+    fetch('data/railway-stops.json').then(response => response.json())
+])
+.then(([nodesData, waysData, stopsData]) => {
+    const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
+    const ways = Array.isArray(waysData) ? waysData : waysData.ways;
+    const stops = stopsData.elements || stopsData;
 
+    console.log('Railway nodes:', nodes.length);
+    console.log('Railway ways:', ways.length);
+    console.log('Railway stops:', stops.length);
 
-fetch('data/railway-network.json')
+    const railwayNodes = new Map();
+    const railwayGraph = new Map();
+    const railwayFeatures = [];
+
+    nodes.forEach(node => {
+        railwayNodes.set(String(node.id), {
+            latitude: parseFloat(node.lat),
+            longitude: parseFloat(node.lon)
+        });
+    });
+
+    ways.forEach(way => {
+        const nodeIds = way.nodes || way.node_ids || way[0];
+
+        if (!nodeIds || nodeIds.length < 2) return;
+
+        const coordinates = nodeIds
+            .map(nodeId => railwayNodes.get(String(nodeId)))
+            .filter(node => node);
+
+        if (coordinates.length >= 2) {
+            railwayFeatures.push({
+                type: 'Feature',
+                geometry: {
+                    type: 'LineString',
+                    coordinates: coordinates.map(node => [
+                        node.longitude,
+                        node.latitude
+                    ])
+                },
+                properties: way.tags || {}
+            });
+        }
+
+        for (let i = 0; i < nodeIds.length - 1; i++) {
+            const startNode = String(nodeIds[i]);
+            const endNode = String(nodeIds[i + 1]);
+
+            if (!railwayGraph.has(startNode)) {
+                railwayGraph.set(startNode, []);
+            }
+
+            if (!railwayGraph.has(endNode)) {
+                railwayGraph.set(endNode, []);
+            }
+
+            railwayGraph.get(startNode).push(endNode);
+            railwayGraph.get(endNode).push(startNode);
+        }
+    });
+
+    console.log('Railway graph nodes:', railwayGraph.size);
+
+    const railwayLayer = L.geoJSON({
+        type: 'FeatureCollection',
+        features: railwayFeatures
+    }, {
+        style: {
+            color: '#777',
+            weight: 1,
+            opacity: 0.7
+        }
+    }).addTo(map);
+
+    const stopsByName = new Map();
+
+    stops.forEach(stop => {
+        if (!stop.tags || !stop.tags.name) return;
+
+        const name = stop.tags.name.trim().toLowerCase();
+
+        if (!stopsByName.has(name)) {
+            stopsByName.set(name, []);
+        }
+
+        stopsByName.get(name).push({
+            id: String(stop.id),
+            latitude: parseFloat(stop.lat),
+            longitude: parseFloat(stop.lon),
+            tags: stop.tags
+        });
+    });
+
+    console.log('Named railway stops:', stopsByName.size);
+
+    const brightonStops = stopsByName.get('brighton') || [];
+
+    console.log('Brighton OSM stops:', brightonStops);
+
+    brightonStops.forEach(stop => {
+        const node = railwayNodes.get(stop.id);
+
+        console.log('Brighton stop:', stop);
+        console.log('Found in railway nodes:', node);
+        console.log('Connected to graph:', railwayGraph.has(stop.id));
+    });
+})
+.catch(error => console.error('Error loading railway network data:', error));
+
+/*fetch('data/railway-network.json')
     .then(response => response.json())
     .then(data => {
         console.log('Railway nodes:', data.nodes.length);
@@ -112,7 +223,7 @@ fetch('data/railway-network.json')
 		
     })
     .catch(error => console.error('Error loading railway network:', error));
-
+*/
 /*Promise.all([
 	fetch('data/railways.geojson').then(response => response.json()),
     fetch('data/other_railways.geojson').then(response => response.json())
