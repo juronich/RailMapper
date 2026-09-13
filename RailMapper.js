@@ -50,8 +50,44 @@ Promise.all([
         	longitude: node[2]
     	});
 	});
-
-    ways.forEach(way => {
+	ways.forEach(way => {
+    	const nodeIds = way[0];
+    	if (!nodeIds || nodeIds.length < 2) return;
+    	const coordinates = nodeIds
+        	.map(nodeId => railwayNodes.get(String(nodeId)))
+        	.filter(node => node);
+	    if (coordinates.length >= 2) {
+        	railwayFeatures.push({
+            	type: 'Feature',
+            	geometry: {
+                	type: 'LineString',
+                	coordinates: coordinates.map(node => [
+                    	node.longitude,
+                    	node.latitude
+                	])
+            	},
+            	properties: {
+                	railway: way[1],
+                	operator: way[2],
+                	layer: way[3],
+                	service: way[4]
+            	}
+        	});
+    	}
+    	for (let i = 0; i < nodeIds.length - 1; i++) {
+        	const startNode = String(nodeIds[i]);
+        	const endNode = String(nodeIds[i + 1]);
+        	if (!railwayGraph.has(startNode)) {
+            	railwayGraph.set(startNode, []);
+        	}
+        	if (!railwayGraph.has(endNode)) {
+            	railwayGraph.set(endNode, []);
+        	}
+        	railwayGraph.get(startNode).push(endNode);
+        	railwayGraph.get(endNode).push(startNode);
+    	}
+	});	
+   /* ways.forEach(way => {
         const nodeIds = way.nodes || way.node_ids || way[0];
 
         if (!nodeIds || nodeIds.length < 2) return;
@@ -90,7 +126,7 @@ Promise.all([
             railwayGraph.get(endNode).push(startNode);
         }
     });
-
+*/
     console.log('Railway graph nodes:', railwayGraph.size);
 
     const railwayLayer = L.geoJSON({
