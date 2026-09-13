@@ -160,46 +160,43 @@ Promise.all([
     });
 
     console.log('Named railway stops:', stopsByName.size);
-
     const brightonStops = stopsByName.get('brighton') || [];
-
     console.log('Brighton OSM stops:', brightonStops);
+	const testGraphNode = railwayNodes.get('638636');
 
-
-
+	console.log('Test graph node 638636:', testGraphNode);
 	brightonStops.forEach(stop => {
-    const node = railwayNodes.get(stop.id);
-
-    console.log('Brighton stop:', stop);
-    console.log('Found in railway nodes:', node);
-    console.log('Connected to graph:', railwayGraph.has(stop.id));
-
-    if (node) {
-        let nearestGraphNode = null;
-        let nearestDistance = Infinity;
-
-        railwayGraph.forEach((connections, graphNodeId) => {
-            const graphNode = railwayNodes.get(graphNodeId);
-
-            if (!graphNode) return;
-
-            const distance = Math.hypot(
-                node.latitude - graphNode.latitude,
-                node.longitude - graphNode.longitude
-            );
-
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearestGraphNode = graphNodeId;
-            }
-        });
-
-        console.log('Nearest graph node:', nearestGraphNode);
-        console.log('Approximate coordinate distance:', nearestDistance);
-    }
-});
-
-	
+    	const node = railwayNodes.get(stop.id);
+    	console.log('Brighton stop:', stop);
+    	console.log('Found in railway nodes:', node);
+    	console.log('Connected to graph:', railwayGraph.has(stop.id));
+    	if (node) {
+        	let nearestGraphNode = null;
+        	let nearestDistance = Infinity;
+        	railwayGraph.forEach((connections, graphNodeId) => {
+            	const graphNode = railwayNodes.get(graphNodeId);
+				if (graphNodeId === '638636') {
+    				console.log('Comparing Brighton stop with node 638636:', {
+        				stopLatitude: node.latitude,
+        				stopLongitude: node.longitude,
+        				graphLatitude: graphNode.latitude,
+        				graphLongitude: graphNode.longitude
+    				});
+				}
+            	if (!graphNode) return;
+            	const distance = Math.hypot(
+                	node.latitude - graphNode.latitude,
+                	node.longitude - graphNode.longitude
+            	);
+            	if (distance < nearestDistance) {
+                	nearestDistance = distance;
+                	nearestGraphNode = graphNodeId;
+            	}
+        	});
+	        console.log('Nearest graph node:', nearestGraphNode);
+    	    console.log('Approximate coordinate distance:', nearestDistance);
+    	}
+	});
 })
 .catch(error => console.error('Error loading railway network data:', error));
 
