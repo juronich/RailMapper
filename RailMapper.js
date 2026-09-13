@@ -129,13 +129,41 @@ Promise.all([
 
     console.log('Brighton OSM stops:', brightonStops);
 
-    brightonStops.forEach(stop => {
-        const node = railwayNodes.get(stop.id);
 
-        console.log('Brighton stop:', stop);
-        console.log('Found in railway nodes:', node);
-        console.log('Connected to graph:', railwayGraph.has(stop.id));
-    });
+
+	brightonStops.forEach(stop => {
+    const node = railwayNodes.get(stop.id);
+
+    console.log('Brighton stop:', stop);
+    console.log('Found in railway nodes:', node);
+    console.log('Connected to graph:', railwayGraph.has(stop.id));
+
+    if (node) {
+        let nearestGraphNode = null;
+        let nearestDistance = Infinity;
+
+        railwayGraph.forEach((connections, graphNodeId) => {
+            const graphNode = railwayNodes.get(graphNodeId);
+
+            if (!graphNode) return;
+
+            const distance = Math.hypot(
+                node.latitude - graphNode.latitude,
+                node.longitude - graphNode.longitude
+            );
+
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearestGraphNode = graphNodeId;
+            }
+        });
+
+        console.log('Nearest graph node:', nearestGraphNode);
+        console.log('Approximate coordinate distance:', nearestDistance);
+    }
+});
+
+	
 })
 .catch(error => console.error('Error loading railway network data:', error));
 
