@@ -29,15 +29,18 @@ const destinationLayer = L.layerGroup().addTo(map);
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
     fetch('data/railway-ways.json').then(response => response.json()),
+    fetch('data/railway-ways-data.json').then(response => response.json()),
     fetch('data/railway-stops.json').then(response => response.json())
 ])
-.then(([nodesData, waysData, stopsData]) => {
-    const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
-    const ways = Array.isArray(waysData) ? waysData : waysData.ways;
-    const stops = stopsData.elements || stopsData;
+.then(([nodesData, waysData, waysMetaData, stopsData]) => {
+	const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
+	const ways = Array.isArray(waysData) ? waysData : waysData.ways;
+	const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
+	const stops = stopsData.elements || stopsData;
 
     console.log('Railway nodes:', nodes.length);
     console.log('Railway ways:', ways.length);
+	console.log('Railway ways-data:', waysMeta.length);
     console.log('Railway stops:', stops.length);
 
     const railwayNodes = new Map();
@@ -51,11 +54,10 @@ Promise.all([
     	});
 	});
 	ways.forEach(way => {
-    	const nodeIndexes = way[0];
-    	if (!nodeIndexes || nodeIndexes.length < 2) return;
-    	const nodeIds = nodeIndexes
-        	.map(index => nodes[index]?.[0])
-        	.filter(nodeId => nodeId !== undefined);
+    	const wayId = way[0];
+   	 	const nodeIds = way[1];
+    	if (!nodeIds || nodeIds.length < 2) return;
+		
     	const coordinates = nodeIds
         	.map(nodeId => railwayNodes.get(String(nodeId)))
         	.filter(node => node);
