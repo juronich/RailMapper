@@ -92,83 +92,8 @@ Promise.all([
         	railwayGraph.get(endNode).push(startNode);
     	}
 	});
-	/*ways.forEach(way => {
-    	const nodeIds = way[0];
-    	if (!nodeIds || nodeIds.length < 2) return;
-    	const coordinates = nodeIds
-        	.map(nodeId => railwayNodes.get(String(nodeId)))
-        	.filter(node => node);
-	    if (coordinates.length >= 2) {
-        	railwayFeatures.push({
-            	type: 'Feature',
-            	geometry: {
-                	type: 'LineString',
-                	coordinates: coordinates.map(node => [
-                    	node.longitude,
-                    	node.latitude
-                	])
-            	},
-            	properties: {
-                	railway: way[1],
-                	operator: way[2],
-                	layer: way[3],
-                	service: way[4]
-            	}
-        	});
-    	}
-    	for (let i = 0; i < nodeIds.length - 1; i++) {
-        	const startNode = String(nodeIds[i]);
-        	const endNode = String(nodeIds[i + 1]);
-        	if (!railwayGraph.has(startNode)) {
-            	railwayGraph.set(startNode, []);
-        	}
-        	if (!railwayGraph.has(endNode)) {
-            	railwayGraph.set(endNode, []);
-        	}
-        	railwayGraph.get(startNode).push(endNode);
-        	railwayGraph.get(endNode).push(startNode);
-    	}
-	});	*/
-   /* ways.forEach(way => {
-        const nodeIds = way.nodes || way.node_ids || way[0];
-
-        if (!nodeIds || nodeIds.length < 2) return;
-
-        const coordinates = nodeIds
-            .map(nodeId => railwayNodes.get(String(nodeId)))
-            .filter(node => node);
-
-        if (coordinates.length >= 2) {
-            railwayFeatures.push({
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: coordinates.map(node => [
-                        node.longitude,
-                        node.latitude
-                    ])
-                },
-                properties: way.tags || {}
-            });
-        }
-
-        for (let i = 0; i < nodeIds.length - 1; i++) {
-            const startNode = String(nodeIds[i]);
-            const endNode = String(nodeIds[i + 1]);
-
-            if (!railwayGraph.has(startNode)) {
-                railwayGraph.set(startNode, []);
-            }
-
-            if (!railwayGraph.has(endNode)) {
-                railwayGraph.set(endNode, []);
-            }
-
-            railwayGraph.get(startNode).push(endNode);
-            railwayGraph.get(endNode).push(startNode);
-        }
-    });
-*/
+	
+  
     console.log('Railway graph nodes:', railwayGraph.size);
 
     const railwayLayer = L.geoJSON({
@@ -242,197 +167,11 @@ Promise.all([
 })
 .catch(error => console.error('Error loading railway network data:', error));
 
-/*fetch('data/railway-network.json')
-    .then(response => response.json())
-    .then(data => {
-        console.log('Railway nodes:', data.nodes.length);
-        console.log('Railway ways:', data.ways.length);
-
-        const railwayGraph = new Map();
-        const railwayFeatures = [];
-
-        data.ways.forEach(way => {
-            const nodeIndexes = way[0];
-
-            if (nodeIndexes.length < 2) return;
-
-            const coordinates = nodeIndexes.map(nodeIndex => {
-                const node = data.nodes[nodeIndex];
-                return [node[1], node[0]];
-            });
-
-            railwayFeatures.push({
-                type: 'Feature',
-                geometry: {
-                    type: 'LineString',
-                    coordinates: coordinates
-                },
-                properties: {
-                    railway: way[1],
-                    operator: way[2],
-                    layer: way[3],
-                    service: way[4]
-                }
-            });
-
-            for (let i = 0; i < nodeIndexes.length - 1; i++) {
-                const startNode = nodeIndexes[i];
-                const endNode = nodeIndexes[i + 1];
-
-                if (!railwayGraph.has(startNode)) {
-                    railwayGraph.set(startNode, []);
-                }
-
-                if (!railwayGraph.has(endNode)) {
-                    railwayGraph.set(endNode, []);
-                }
-
-                railwayGraph.get(startNode).push(endNode);
-                railwayGraph.get(endNode).push(startNode);
-            }
-        });
-
-        console.log('Railway graph nodes:', railwayGraph.size);
-		let railwayEdges = 0;
-		let isolatedNodes = 0;
-		let maxConnections = 0;
-		railwayGraph.forEach(connections => {
-    		railwayEdges += connections.length;
-    		if (connections.length === 0) {
-        		isolatedNodes++;
-    		}
-    		maxConnections = Math.max(maxConnections, connections.length);
-		});
-		console.log('Railway graph edges:', railwayEdges);
-		console.log('Isolated railway nodes:', isolatedNodes);
-		console.log('Maximum connections at one node:', maxConnections);
 
 
-		
-
-        const railwayLayer = L.geoJSON({
-            type: 'FeatureCollection',
-            features: railwayFeatures
-        }, {
-            style: {
-                color: '#777',
-                weight: 1,
-                opacity: 0.7
-            }
-        }).addTo(map);
-        console.log('Railway features:', railwayFeatures.length);
-		const brightonNode = findNearestRailwayNode(50.8288602, -0.1407393, data.nodes);
-		console.log('Nearest railway node to Brighton:', brightonNode);
-		console.log('Brighton railway node coordinates:', data.nodes[brightonNode]);
-		console.log('Brighton railway node connections:', railwayGraph.get(brightonNode));
-		
-    })
-    .catch(error => console.error('Error loading railway network:', error));
-*/
-/*Promise.all([
-	fetch('data/railways.geojson').then(response => response.json()),
-    fetch('data/other_railways.geojson').then(response => response.json())
-])
-    .then(([railwayData, other_railwayData]) => {
-		
-        const combinedRailwayData = {
-            type: 'FeatureCollection',
-            features: [
-                ...railwayData.features,
-                ...other_railwayData.features
-            ]
-        };
-		console.log('Railway features:',combinedRailwayData.features.length);
-		let railwayPoints = 0;
-		combinedRailwayData.features.forEach(feature => {
-            if (feature.geometry?.type === 'LineString') {
-                railwayPoints += feature.geometry.coordinates.length;
-            }
-        });
-        console.log('Railway coordinate points:', railwayPoints);
-
-		const railwayGraph = new Map();
-		combinedRailwayData.features.forEach(feature => {
-    		if (feature.geometry?.type !== 'LineString') return;
-    		const coordinates = feature.geometry.coordinates;
-    		for (let i = 0; i < coordinates.length - 1; i++) {
-        		const start = coordinates[i];
-        		const end = coordinates[i + 1];
-        		const startKey = `${start[0].toFixed(5)},${start[1].toFixed(5)}`;
-        		const endKey = `${end[0].toFixed(5)},${end[1].toFixed(5)}`;
-        		if (!railwayGraph.has(startKey)) railwayGraph.set(startKey, []);
-        		if (!railwayGraph.has(endKey)) railwayGraph.set(endKey, []);
-        		railwayGraph.get(startKey).push({
-            		node: endKey,
-            		coordinates: end
-        		});
-        		railwayGraph.get(endKey).push({
-            		node: startKey,
-            		coordinates: start
-        		});
-    		}
-		});
-		console.log('Railway graph nodes:', railwayGraph.size);
-
-        const railwayLayer = L.geoJSON(combinedRailwayData, {
-            style: {
-                color: '#777',
-                weight: 2,
-                opacity: 0.7
-            }
-        }).addTo(map);
-    })
-    .catch(error => console.error('Error loading railway data:', error));
-*/
 
 
-/*fetch('data/railways.geojson')
-    .then(response => response.json())
-    .then(data => {
-		
-		console.log('Railway features:', data.features.length);
-		let railwayPoints = 0;
-		data.features.forEach(feature => {
-    		if (feature.geometry?.type === 'LineString') {
-        		railwayPoints += feature.geometry.coordinates.length;
-    		}
-		});
-		console.log('Railway features:', data.features.length);
-		console.log('Railway coordinate points:', railwayPoints);
-		
-        const railwayLayer = L.geoJSON(data, {
-            style: {
-                color: '#777',
-                weight: 1,
-                opacity: 0.7
-            }
-        }).addTo(map);
-    })
-    .catch(error => console.error('Error loading railway data:', error));
-fetch('data/other_railways.geojson')
-    .then(response => response.json())
-    .then(data => {
-		
-		console.log('Other Railway features:', data.features.length);
-		let other_railwayPoints = 0;
-		data.features.forEach(feature => {
-    		if (feature.geometry?.type === 'LineString') {
-        		railwayPoints += feature.geometry.coordinates.length;
-    		}
-		});
-		console.log('Other Railway features:', data.features.length);
-		console.log('Other Railway coordinate points:', other_railwayPoints);
-		
-        const other_railwayLayer = L.geoJSON(data, {
-            style: {
-                color: '#666',
-                weight: 1,
-                opacity: 0.7
-            }
-        }).addTo(map);
-    })
-    .catch(error => console.error('Error loading other_railway data:', error));
-	*/
+
 const originInput = document.getElementById('origin');
 const originResults = document.getElementById('origin-results');
 let journeys = [];
@@ -451,7 +190,7 @@ fetch('data/stations.csv')
         if (!isNaN(lat) && !isNaN(lon)) {
             stations.push(station);
             L.circleMarker([lat, lon], {
-                radius: 1,
+                radius: 2,
                 weight: 1
             })
             .bindPopup(`<strong>${station.Name}</strong> (${station.CRS})`)
@@ -459,7 +198,7 @@ fetch('data/stations.csv')
         }
     });
     stations.sort((a, b) => a.Name.localeCompare(b.Name));
-		fetch('data/journeys.csv')
+	fetch('data/journeys.csv')
     	.then(response => response.text())
     	.then(csv => {
         	const rows = csv.trim().split('\n').map(row => row.split(','));
