@@ -457,7 +457,7 @@ fetch('data/stations.csv')
     						fillColor: 'red',
     						fillOpacity: 0.45
     					})
-    					.bindPopup(`<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>Journeys: ${destination.journeys.toLocaleString()}`)
+    					.bindPopup(`<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>Journeys from/to: ${originInput.value}<br> ${destination.journeys.toLocaleString()}`)
     					.addTo(destinationLayer);
 					});
         	});
