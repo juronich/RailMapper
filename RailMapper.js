@@ -100,7 +100,6 @@ Promise.all([
     });
     console.log('Named railway stops:', stopsByName.size);
 });
-})
 .catch(error => console.error('Error loading railway network data:', error));
 
 const originInput = document.getElementById('origin');
