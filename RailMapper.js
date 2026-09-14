@@ -151,7 +151,7 @@ fetch('data/stations.csv')
         	journey.OriginCRS === selectedCRS ||
         	journey.DestinationCRS === selectedCRS
     	);
-    	const destinationStations = relevantJourneys.map(journey => ({
+    	const destinationStations = relevantJourneys.map(journey => {
         	crs: journey.OriginCRS === selectedCRS
             	? journey.DestinationCRS
             	: journey.OriginCRS;
@@ -165,7 +165,7 @@ fetch('data/stations.csv')
 						journeys: parseInt(journey[year], 10) || 0 
 					})) 	
     		};
-    	}));
+    	});
     	destinationStations.forEach(destination => {
         	if (!destination.station) return;
         	L.circleMarker([
