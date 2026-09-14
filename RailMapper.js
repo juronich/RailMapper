@@ -139,7 +139,7 @@ fetch('data/stations.csv')
             headers.forEach((header, i) => journey[header.trim()] = row[i]?.trim());
             journeys.push(journey);
         });
-        //console.log('Journey data:', journeys);
+        console.log('Journey data:', journeys);
     })
    	 .catch(error => console.error('Error loading journey data:', error));
 	
