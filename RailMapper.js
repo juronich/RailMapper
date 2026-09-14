@@ -224,7 +224,14 @@ fetch('data/stations.csv')
     					fillColor: 'red',
     					fillOpacity: 0.45
     				})
-    				.bindPopup(`<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>Journeys from/to: ${originInput.value}<br> ${destination.journeys.toLocaleString()}`)
+					.bindPopup(`
+    					<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>
+    					Journeys to/from: ${originInput.value}<br><br>
+    					${destination.yearlyJourneys
+        				.map(year => `${year.year}: ${year.journeys.toLocaleString()}`)
+       					.join('<br>')}
+					`)
+    				//.bindPopup(`<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>Journeys from/to: ${originInput.value}<br> ${destination.journeys.toLocaleString()}`)
     				.addTo(destinationLayer);
 				});
         	});
