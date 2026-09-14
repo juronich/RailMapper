@@ -177,41 +177,23 @@ fetch('data/stations.csv')
 
 				const selectedYear = yearInput.value;
 				console.log('Year: ', yearInput.value);
-				const otherStations = relevantJourneys.map(journey => ({ 
-					crs: journey.OriginCRS === selectedCRS 
-					? journey.DestinationCRS 
-					: journey.OriginCRS, 
-					journeys: parseInt(journey[selectedYear], 10) || 0, 
-					yearlyJourneys: Object.keys(journey) 
-					.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS') 
-					.map(year => ({ 
-						year: year, 
-						journeys: parseInt(journey[year], 10) || 0 
-					})) 
-				})); 
-				
-				const destinationStations = otherStations.map(destination => ({ 
-					station: stations.find(station => station.CRS === destination.crs), 
-					journeys: destination.journeys, 
-					yearlyJourneys: destination.yearlyJourneys 
-				}));
-				console.log('other Years: ',otherStations);
-				console.log('Years: ',destinationStations);
-				/*
-				const otherStations = relevantJourneys.map(journey => ({
-    				crs: journey.OriginCRS === selectedCRS
-        			? journey.DestinationCRS
-        			: journey.OriginCRS,
-    				journeys: parseInt(journey.Journeys, 10)
-				}));
-				const destinationStations = otherStations.map(destination =>
-    				({
-        				station: stations.find(station => station.CRS === destination.crs),
-        				journeys: destination.journeys
-    				})
-				);
-				*/
-				console.log('Other stations:', otherStations);
+
+				const destinationStations = relevantJourneys.map(journey => {
+    				const crs = journey.OriginCRS === selectedCRS
+        				? journey.DestinationCRS
+        				: journey.OriginCRS;
+    				return {
+        				station: stations.find(station => station.CRS === crs),
+        				journeys: parseInt(journey[selectedYear], 10) || 0,
+						yearlyJourneys: Object.keys(journey) 
+							.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS') 
+							.map(year => ({ 
+								year: year, 
+								journeys: parseInt(journey[year], 10) || 0 
+							})) 	
+    				};
+				});
+
 				console.log('Destination stations:', destinationStations);
 				destinationStations.forEach(destination => {
     				if (!destination.station) return;
@@ -233,7 +215,6 @@ fetch('data/stations.csv')
         				.map(year => `${year.year}: ${year.journeys.toLocaleString()}`)
        					.join('<br>')}
 					`)
-    				//.bindPopup(`<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>Journeys from/to: ${originInput.value}<br> ${destination.journeys.toLocaleString()}`)
     				.addTo(destinationLayer);
 				});
         	});
