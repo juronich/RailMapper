@@ -189,12 +189,13 @@ fetch('data/stations.csv')
 						journeys: parseInt(journey[year], 10) || 0 
 					})) 
 				})); 
-				console.log('Years: ',yearlyJourneys);
+				
 				const destinationStations = otherStations.map(destination => ({ 
 					station: stations.find(station => station.CRS === destination.crs), 
 					journeys: destination.journeys, 
 					yearlyJourneys: destination.yearlyJourneys 
 				}));
+				console.log('Years: ',yearlyJourneys);
 				/*
 				const otherStations = relevantJourneys.map(journey => ({
     				crs: journey.OriginCRS === selectedCRS
