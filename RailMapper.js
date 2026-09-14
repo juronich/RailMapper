@@ -179,14 +179,14 @@ fetch('data/stations.csv')
         			: journey.OriginCRS,
     				journeys: parseInt(journey.Journeys, 10)
 				}));
-				//console.log('Other stations:', otherStations);
 				const destinationStations = otherStations.map(destination =>
     				({
         				station: stations.find(station => station.CRS === destination.crs),
         				journeys: destination.journeys
     				})
 				);
-				//console.log('Destination stations:', destinationStations);
+				console.log('Other stations:', otherStations);
+				console.log('Destination stations:', destinationStations);
 				destinationStations.forEach(destination => {
     				if (!destination.station) return;
     				L.circleMarker([
