@@ -143,7 +143,51 @@ fetch('data/stations.csv')
         console.log('Journey data:', journeys);
     })
    	 .catch(error => console.error('Error loading journey data:', error));
-	
+
+	function updateDestinationBubbles(selectedCRS) {
+    	destinationLayer.clearLayers();
+    	const selectedYear = yearInput.value;
+    	const relevantJourneys = journeys.filter(journey =>
+        	journey.OriginCRS === selectedCRS ||
+        	journey.DestinationCRS === selectedCRS
+    	);
+    	const destinationStations = relevantJourneys.map(journey => ({
+        	crs: journey.OriginCRS === selectedCRS
+            	? journey.DestinationCRS
+            	: journey.OriginCRS;
+			return {
+        		station: stations.find(station => station.CRS === crs),
+        		journeys: parseInt(journey[selectedYear], 10) || 0,
+				yearlyJourneys: Object.keys(journey) 
+					.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS') 
+					.map(year => ({ 
+						year: year, 
+						journeys: parseInt(journey[year], 10) || 0 
+					})) 	
+    		};
+    	}));
+    	destinationStations.forEach(destination => {
+        	if (!destination.station) return;
+        	L.circleMarker([
+            	parseFloat(destination.station.Latitude),
+            	parseFloat(destination.station.Longitude)
+        	], {
+            	radius: Math.pow(destination.journeys, 0.25) * 1.5,
+            	weight: 2,
+            	color: 'black',
+            	fillColor: 'red',
+            	fillOpacity: 0.45
+        	})
+        	.bindPopup(`
+            	<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>
+            	Journeys from/to: ${originInput.value}<br><br>
+            	${destination.yearlyJourneys
+                	.map(year => `${year.year}: ${year.journeys.toLocaleString()}`)
+                	.join('<br>')}
+        	`)
+        	.addTo(destinationLayer);
+    	});
+	}
 	originInput.addEventListener('input', () => {
     	const search = originInput.value.toLowerCase().trim();
     	originResults.innerHTML = '';
@@ -168,58 +212,24 @@ fetch('data/stations.csv')
                 	parseFloat(station.Longitude)
             	], 10);
 				const selectedCRS = station.CRS;
-				const relevantJourneys = journeys.filter(journey =>
-    				journey.OriginCRS === selectedCRS ||
-    				journey.DestinationCRS === selectedCRS
-				);
+				updateDestinationBubbles(selectedCRS);
 				console.log('Selected station:', selectedCRS);
 				console.log('Relevant journeys:', relevantJourneys);
 
 				const selectedYear = yearInput.value;
 				console.log('Year: ', yearInput.value);
 
-				const destinationStations = relevantJourneys.map(journey => {
-    				const crs = journey.OriginCRS === selectedCRS
-        				? journey.DestinationCRS
-        				: journey.OriginCRS;
-    				return {
-        				station: stations.find(station => station.CRS === crs),
-        				journeys: parseInt(journey[selectedYear], 10) || 0,
-						yearlyJourneys: Object.keys(journey) 
-							.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS') 
-							.map(year => ({ 
-								year: year, 
-								journeys: parseInt(journey[year], 10) || 0 
-							})) 	
-    				};
-				});
+				
 
 				console.log('Destination stations:', destinationStations);
-				destinationStations.forEach(destination => {
-    				if (!destination.station) return;
-    				L.circleMarker([
-        				parseFloat(destination.station.Latitude),
-        				parseFloat(destination.station.Longitude)
-    				], {
-        				//radius: 2 + Math.log10(destination.journeys + 1) * 3,
-						radius: 0 + Math.pow(destination.journeys, 0.25) * 1.5,
-        				weight: 2,
-						color: 'black',
-    					fillColor: 'red',
-    					fillOpacity: 0.45
-    				})
-					.bindPopup(`
-    					<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>
-    					Journeys to/from: ${originInput.value}<br><br>
-    					${destination.yearlyJourneys
-        				.map(year => `${year.year}: ${year.journeys.toLocaleString()}`)
-       					.join('<br>')}
-					`)
-    				.addTo(destinationLayer);
-				});
         	});
         	originResults.appendChild(result);
     	});
+	});
+	yearInput.addEventListener('change', () => {
+    	const selectedCRS = originInput.dataset.crs;
+    	if (!selectedCRS) return;
+    	updateDestinationBubbles(selectedCRS);
 	});
 })
 .catch(error => console.error('Error loading station data:', error));
