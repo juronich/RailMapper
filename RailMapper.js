@@ -176,6 +176,7 @@ fetch('data/stations.csv')
 				console.log('Relevant journeys:', relevantJourneys);
 
 				const selectedYear = yearInput.value;
+				console.log('Year: ', yearInput.value);
 				const otherStations = relevantJourneys.map(journey => ({ 
 					crs: journey.OriginCRS === selectedCRS 
 					? journey.DestinationCRS 
