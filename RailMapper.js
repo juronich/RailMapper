@@ -103,7 +103,7 @@ Promise.all([
 .catch(error => console.error('Error loading railway network data:', error));
 
 const originInput = document.getElementById('origin');
-const yearInput = document.getElementByID('year');
+const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
 let journeys = [];
 
