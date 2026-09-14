@@ -11,32 +11,7 @@ html, body { margin: 0; padding: 0; height: 100%; }
     border-radius: 4px;
     box-shadow: 0 1px 5px rgba(0,0,0,0.4);
 }
-
-#origin {
-    width: 220px;
-    padding: 6px;
-    box-sizing: border-box;
-}
-
-#origin-results {
-    position: absolute;
-    top: 100%;
-    left: 10px;
-    right: 10px;
-    background: white;
-    border: 1px solid #ccc;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.origin-result {
-    padding: 6px;
-    cursor: pointer;
-}
-
-.origin-result:hover {
-    background: #eee;
-}*/
+*/
 
 #controls {
     position: absolute;
