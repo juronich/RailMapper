@@ -195,7 +195,8 @@ fetch('data/stations.csv')
 					journeys: destination.journeys, 
 					yearlyJourneys: destination.yearlyJourneys 
 				}));
-				console.log('Years: ',yearlyJourneys);
+				console.log('other Years: ',otherStations);
+				console.log('Years: ',destinationStations);
 				/*
 				const otherStations = relevantJourneys.map(journey => ({
     				crs: journey.OriginCRS === selectedCRS
