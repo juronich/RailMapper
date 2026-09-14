@@ -103,6 +103,7 @@ Promise.all([
 .catch(error => console.error('Error loading railway network data:', error));
 
 const originInput = document.getElementById('origin');
+const yearInput = document.getElementByID('year');
 const originResults = document.getElementById('origin-results');
 let journeys = [];
 
@@ -175,6 +176,23 @@ fetch('data/stations.csv')
 				console.log('Relevant journeys:', relevantJourneys);
 
 				const selectedYear = yearInput.value;
+				const otherStations = relevantJourneys.map(journey => ({ 
+					crs: journey.OriginCRS === selectedCRS 
+					? journey.DestinationCRS 
+					: journey.OriginCRS, 
+					journeys: parseInt(journey[selectedYear], 10) || 0, 
+					yearlyJourneys: Object.keys(journey) 
+					.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS') 
+					.map(year => ({ 
+						year: year, 
+						journeys: parseInt(journey[year], 10) || 0 
+					})) 
+				})); 
+				const destinationStations = otherStations.map(destination => ({ 
+					station: stations.find(station => station.CRS === destination.crs), 
+					journeys: destination.journeys, 
+					yearlyJourneys: destination.yearlyJourneys 
+				}));
 				/*
 				const otherStations = relevantJourneys.map(journey => ({
     				crs: journey.OriginCRS === selectedCRS
