@@ -187,9 +187,10 @@ fetch('data/stations.csv')
         headers.forEach((header, i) => station[header.trim()] = row[i]?.trim());
         const lat = parseFloat(station.Latitude);
         const lon = parseFloat(station.Longitude);
-        if (!isNaN(lat) && !isNaN(lon)) {
-            stations.push(station);
-            L.circleMarker([lat, lon], {
+		if (!isNaN(lat) && !isNaN(lon)) {
+    		stations.push(station);
+   			if (stations.length <= 5) console.log('Station loaded:', station);
+    		L.circleMarker([lat, lon], {
                 radius: 2,
                 weight: 1
             })
