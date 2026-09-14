@@ -173,6 +173,9 @@ fetch('data/stations.csv')
 				);
 				console.log('Selected station:', selectedCRS);
 				console.log('Relevant journeys:', relevantJourneys);
+
+				const selectedYear = yearInput.value;
+				/*
 				const otherStations = relevantJourneys.map(journey => ({
     				crs: journey.OriginCRS === selectedCRS
         			? journey.DestinationCRS
@@ -185,6 +188,7 @@ fetch('data/stations.csv')
         				journeys: destination.journeys
     				})
 				);
+				*/
 				console.log('Other stations:', otherStations);
 				console.log('Destination stations:', destinationStations);
 				destinationStations.forEach(destination => {
