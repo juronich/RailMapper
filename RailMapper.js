@@ -169,21 +169,7 @@ fetch('data/stations.csv')
 	
 	function updateDestinationBubbles(selectedCRS) {
     	destinationLayer.clearLayers();
-		const selectedStation = stations.find(station => station.CRS === selectedCRS);
-		if (selectedStation) {
-    		L.circleMarker([
-        		parseFloat(selectedStation.Latitude),
-        		parseFloat(selectedStation.Longitude)
-    		], {
-        		radius: 10,
-        		weight: 4,
-        		color: 'black',
-        		fillColor: 'yellow',
-        		fillOpacity: 0.9
-    		})
-    		.bindPopup(`<strong>${selectedStation.Name}</strong> (${selectedStation.CRS})`)
-    		.addTo(destinationLayer);
-		}
+		
     	const selectedYear = yearInput.value;
     	const relevantJourneys = journeys.filter(journey =>
         	journey.OriginCRS === selectedCRS ||
@@ -245,7 +231,22 @@ fetch('data/stations.csv')
 			*/
         	.addTo(destinationLayer);
     	});
-	}
+		const selectedStation = stations.find(station => station.CRS === selectedCRS);
+		if (selectedStation) {
+    		L.circleMarker([
+        		parseFloat(selectedStation.Latitude),
+        		parseFloat(selectedStation.Longitude)
+    		], {
+        		radius: 10,
+        		weight: 4,
+        		color: 'black',
+        		fillColor: 'yellow',
+        		fillOpacity: 0.9
+    		})
+    		.bindPopup(`<strong>${selectedStation.Name}</strong> (${selectedStation.CRS})`)
+    		.addTo(destinationLayer);
+		}
+	} /* END OF FUNCTION */
 	originInput.addEventListener('input', () => {
     	const search = originInput.value.toLowerCase().trim();
     	originResults.innerHTML = '';
