@@ -158,12 +158,13 @@ fetch('data/stations.csv')
 			return {
         		station: stations.find(station => station.CRS === crs),
         		journeys: parseInt(journey[selectedYear], 10) || 0,
-				yearlyJourneys: Object.keys(journey) 
-					.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS') 
-					.map(year => ({ 
-						year: year, 
-						journeys: parseInt(journey[year], 10) || 0 
-					})) 	
+				yearlyJourneys: Object.keys(journey)
+    				.filter(column => column !== 'OriginCRS' && column !== 'DestinationCRS')
+    				.sort((a, b) => b.localeCompare(a))
+    				.map(year => ({
+        				year: year,
+        				journeys: parseInt(journey[year], 10) || 0
+    				}))
     		};
     	});
     	destinationStations.forEach(destination => {
@@ -178,6 +179,24 @@ fetch('data/stations.csv')
             	fillColor: 'red',
             	fillOpacity: 0.45
         	})
+
+			.bindPopup(`
+    			<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>
+    			Journeys from/to: ${originInput.value}<br><br>
+    			<strong>Average: ${Math.round(
+        			destination.yearlyJourneys.reduce((total, year) => total + year.journeys, 0) /
+        			destination.yearlyJourneys.length
+    			).toLocaleString()}</strong><br><br>
+    			${destination.yearlyJourneys
+        			.map(year => year.year === selectedYear
+            			? `<strong>${year.year}: ${year.journeys.toLocaleString()}</strong>`
+            			: `${year.year}: ${year.journeys.toLocaleString()}`
+        			)
+        			.join('<br>')}
+			`)
+
+
+				
         	.bindPopup(`
             	<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>
             	Journeys from/to: ${originInput.value}<br><br>
