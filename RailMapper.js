@@ -210,7 +210,7 @@ fetch('data/stations.csv')
             	map.setView([
                 	parseFloat(station.Latitude),
                 	parseFloat(station.Longitude)
-            	], 10);
+            	], 9);
 				const selectedCRS = station.CRS;
 				updateDestinationBubbles(selectedCRS);
 				console.log('Selected station:', selectedCRS);
