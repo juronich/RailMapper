@@ -167,7 +167,8 @@ fetch('data/stations.csv')
 		})
 		.catch(error => console.error('Error loading journey data:', error));
 	
-	/*fetch('data/journeys.csv')
+	/*
+	fetch('data/journeys.csv')
     .then(response => response.text())
     .then(csv => {
         const rows = csv.trim().split('\n').map(row => row.split(','));
@@ -179,7 +180,8 @@ fetch('data/stations.csv')
         });
         console.log('Journey data:', journeys);
     })
-   	 .catch(error => console.error('Error loading journey data:', error));*/
+   	 .catch(error => console.error('Error loading journey data:', error));
+	 */
 
 	function updateDestinationBubbles(selectedCRS) {
     	destinationLayer.clearLayers();
@@ -270,7 +272,7 @@ fetch('data/stations.csv')
 				const selectedCRS = station.CRS;
 				updateDestinationBubbles(selectedCRS);
 				console.log('Selected station:', selectedCRS);
-				console.log('Relevant journeys:', relevantJourneys);
+
 
 				const selectedYear = yearInput.value;
 				console.log('Year: ', yearInput.value);
