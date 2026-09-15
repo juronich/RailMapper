@@ -288,14 +288,8 @@ fetch('data/stations.csv')
 				const selectedCRS = station.CRS;
 				updateDestinationBubbles(selectedCRS);
 				console.log('Selected station:', selectedCRS);
-
-
 				const selectedYear = yearInput.value;
 				console.log('Year: ', yearInput.value);
-
-				
-
-				console.log('Destination stations:', destinationStations);
         	});
         	originResults.appendChild(result);
     	});
