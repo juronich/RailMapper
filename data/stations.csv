@@ -1,11 +1,11 @@
-Network,TOC,Name,CRS,Latitude,Longitude
+﻿Network,TOC,Name,CRS,Latitude,Longitude
 National Rail,Great Western Railway,Swindon,SWI,51.5657001,-1.7852844
 National Rail,Govia Thameslink Railway (Great Northern),Royston,RYS,52.0532089,-0.0269749
 National Rail,South Western Railway,Beaulieu Road,BEU,50.8550478,-1.5049707
 National Rail,South Western Railway,Sway,SWY,50.7847131,-1.6099505
 National Rail,South Western Railway,New Milton,NWM,50.7557623,-1.6576697
 National Rail,West Midlands Trains (West Midlands Railway),Canley,CNL,52.3993806,-1.5475333
-National Rail,Transport for Wales Rail,Rhyl,RHL,53.3181979,-3.4887917
+National Rail,Transport for Wales,Rhyl,RHL,53.3181979,-3.4887917
 National Rail,Northern Trains,Sandal and Agbrigg,SNA,53.6628109,-1.480623
 National Rail,East Midlands Railway,Wellingborough,WEL,52.3037832,-0.6762814
 National Rail,Northern Trains,Ulleskelf,ULL,53.853331,-1.2143782
@@ -32,15 +32,15 @@ National Rail,South Western Railway (Island Line),Ryde St John's Road,RYR,50.724
 National Rail,South Western Railway (Island Line),Brading,BDN,50.6783048,-1.1386031
 National Rail,South Western Railway (Island Line),Smallbrook Junction,SAB,50.7114652,-1.1549982
 National Rail,South Western Railway,Dean,DEN,51.0423679,-1.633916
-National Rail,Transport for Wales Rail,Lydney,LYD,51.7142815,-2.5304821
+National Rail,Transport for Wales,Lydney,LYD,51.7142815,-2.5304821
 National Rail,South Western Railway,Botley,BOE,50.9163612,-1.2590525
 National Rail,Great Western Railway,Culham,CUM,51.6538921,-1.2365761
 National Rail,Great Western Railway,Appleford,APF,51.6394882,-1.2424741
 National Rail,Southeastern,St Mary Cray,SMY,51.394738,0.1057186
 National Rail,South Western Railway,Hamble,HME,50.8712423,-1.3289942
-National Rail,Transport for Wales Rail,Llandudno Junction,LLJ,53.2838623,-3.8086287
-National Rail,Transport for Wales Rail,Flint,FLN,53.2496833,-3.1324867
-National Rail,Transport for Wales Rail,Shotton,SHT,53.2136891,-3.0371817
+National Rail,Transport for Wales,Llandudno Junction,LLJ,53.2838623,-3.8086287
+National Rail,Transport for Wales,Flint,FLN,53.2496833,-3.1324867
+National Rail,Transport for Wales,Shotton,SHT,53.2136891,-3.0371817
 National Rail,West Midlands Trains (London Northwestern Railway),Acton Bridge,ACB,53.2663135,-2.6027539
 National Rail,Avanti West Coast,Carlisle,CAR,54.8902575,-2.9330473
 National Rail,ScotRail,Carluke,CLU,55.7311168,-3.8489342
@@ -67,7 +67,7 @@ National Rail,South Western Railway,Wokingham,WKM,51.4119036,-0.8429813
 National Rail,Great Western Railway,Blackwater,BAW,51.3315657,-0.776776
 National Rail,Great Western Railway,Ascott-under-Wychwood,AUW,51.8674576,-1.5639687
 National Rail,South Western Railway,Netley,NTL,50.8750016,-1.3417907
-National Rail,Transport for Wales Rail,Helsby,HSB,53.2752889,-2.7711482
+National Rail,Transport for Wales,Helsby,HSB,53.2752889,-2.7711482
 National Rail,Great Western Railway,Patchway,PWY,51.5258271,-2.5623447
 National Rail,South Western Railway,Hinton Admiral,HNA,50.752603,-1.7136258
 National Rail,Great Western Railway,Yate,YAE,51.5413993,-2.4321734
@@ -76,9 +76,9 @@ National Rail,Chiltern Railways,Bicester North,BCS,51.9032906,-1.149781
 National Rail,Great Western Railway,Gomshall,GOM,51.2192418,-0.4422487
 National Rail,Great Western Railway,Trowbridge,TRO,51.3200055,-2.2143313
 National Rail,Govia Thameslink Railway (Southern),Ashurst,AHS,51.1284231,0.1526024
-Docklands Light Railway,KeolisAmey Docklands Ltd,Cyprus,ZCQ,51.5084776,0.0639692
+Docklands Light Railway,Docklands Light Railway,Cyprus,ZCQ,51.5084776,0.0639692
 National Rail;London Underground;London Trams,South Western Railway,Wimbledon,WIM,51.4220252,-0.2052107
-National Rail,Transport for Wales Rail,Caldicot,CDT,51.5845063,-2.7597685
+National Rail,Transport for Wales,Caldicot,CDT,51.5845063,-2.7597685
 National Rail,East Midlands Railway,Stamford,SMD,52.647832,-0.4800873
 London Underground,London Underground,Mansion House,ZMH,51.5118924,-0.0952228
 National Rail,East Midlands Railway,Narborough,NBR,52.571375,-1.2028089
@@ -90,30 +90,30 @@ National Rail,South Western Railway,Parkstone,PKS,50.7229607,-1.9478482
 National Rail,South Western Railway,Branksome,BSM,50.7270327,-1.9193721
 National Rail,South Western Railway,Poole,POO,50.7193206,-1.98364
 National Rail,South Western Railway,Holton Heath,HOL,50.7115682,-2.0776204
-National Rail,Transport for Wales Rail,Milford Haven,MFH,51.7157699,-5.0414474
-National Rail,Transport for Wales Rail,Johnston,JOH,51.7562757,-4.9967193
-National Rail,Transport for Wales Rail,Haverfordwest,HVF,51.8026795,-4.960232
-National Rail,Transport for Wales Rail,Fishguard Harbour,FGH,52.0106917,-4.986173
+National Rail,Transport for Wales,Milford Haven,MFH,51.7157699,-5.0414474
+National Rail,Transport for Wales,Johnston,JOH,51.7562757,-4.9967193
+National Rail,Transport for Wales,Haverfordwest,HVF,51.8026795,-4.960232
+National Rail,Transport for Wales,Fishguard Harbour,FGH,52.0106917,-4.986173
 National Rail,Northern Trains,Styal,SYA,53.3482461,-2.2402077
-National Rail,Transport for Wales Rail,Chirk,CRK,52.9332472,-3.06615
-National Rail,Transport for Wales Rail,Ruabon,RUA,52.98724,-3.0433414
+National Rail,Transport for Wales,Chirk,CRK,52.9332472,-3.06615
+National Rail,Transport for Wales,Ruabon,RUA,52.98724,-3.0433414
 National Rail,Great Western Railway,Bourne End,BNE,51.5769144,-0.710798
-National Rail,Transport for Wales Rail,Clarbeston Road,CLR,51.851741,-4.8821559
+National Rail,Transport for Wales,Clarbeston Road,CLR,51.851741,-4.8821559
 London Underground;London Overground;National Rail,London Underground,Harrow & Wealdstone,HRW,51.5922178,-0.3348748
 National Rail,West Midlands Trains (London Northwestern Railway),Kings Langley,KGL,51.7063008,-0.4379165
-National Rail,Transport for Wales Rail,Clunderwen,CUW,51.8401054,-4.7310195
-National Rail,Transport for Wales Rail,Whitland,WTL,51.818025,-4.6149893
+National Rail,Transport for Wales,Clunderwen,CUW,51.8401054,-4.7310195
+National Rail,Transport for Wales,Whitland,WTL,51.818025,-4.6149893
 National Rail,East Midlands Railway,Skegness,SKG,53.1431867,0.3345214
 National Rail,East Midlands Railway,Havenhouse,HVN,53.1146157,0.2729912
 National Rail,East Midlands Railway,Wainfleet,WFL,53.105157,0.2345795
 National Rail,East Midlands Railway,Boston,BSN,52.978108,-0.0313195
 National Rail,Govia Thameslink Railway (Southern),Reigate,REI,51.2418815,-0.2038369
-National Rail,Transport for Wales Rail,Kilgetty,KGT,51.7322009,-4.7143858
-National Rail,Transport for Wales Rail,Tenby,TEN,51.6729708,-4.7067395
-National Rail,Transport for Wales Rail,Penally,PNA,51.6589419,-4.7219994
-National Rail,Transport for Wales Rail,Manorbier,MRB,51.6602508,-4.7927577
-National Rail,Transport for Wales Rail,Lamphey,LAM,51.6671229,-4.8728813
-National Rail,Transport for Wales Rail,Pembroke,PMB,51.6730613,-4.9064447
+National Rail,Transport for Wales,Kilgetty,KGT,51.7322009,-4.7143858
+National Rail,Transport for Wales,Tenby,TEN,51.6729708,-4.7067395
+National Rail,Transport for Wales,Penally,PNA,51.6589419,-4.7219994
+National Rail,Transport for Wales,Manorbier,MRB,51.6602508,-4.7927577
+National Rail,Transport for Wales,Lamphey,LAM,51.6671229,-4.8728813
+National Rail,Transport for Wales,Pembroke,PMB,51.6730613,-4.9064447
 National Rail,ScotRail,Wallyford,WAF,55.9404591,-3.0147883
 National Rail,ScotRail,Longniddry,LND,55.9762365,-2.8886468
 National Rail,ScotRail,Drem,DRM,56.0051337,-2.7853021
@@ -125,28 +125,28 @@ National Rail,West Midlands Trains (London Northwestern Railway),Bricket Wood,BW
 National Rail,West Midlands Trains (London Northwestern Railway),Garston,GSN,51.6865229,-0.3818122
 National Rail,West Midlands Trains (London Northwestern Railway),Watford North,WFN,51.6750417,-0.3902879
 National Rail,West Midlands Trains (London Northwestern Railway),How Wood,HWW,51.7173665,-0.3449434
-National Rail,Transport for Wales Rail,Carmarthen,CMN,51.8533058,-4.3057649
+National Rail,Transport for Wales,Carmarthen,CMN,51.8533058,-4.3057649
 National Rail,Northern Trains,Alnmouth,ALM,55.392793,-1.6367716
 National Rail,London North Eastern Railway,Berwick-upon-Tweed,BWK,55.7745555,-2.0105423
 National Rail,Northern Trains,Chathill,CHT,55.5367261,-1.7066521
-National Rail,Transport for Wales Rail,Pembrey and Burry Port,PBY,51.6840593,-4.2489624
-National Rail,Transport for Wales Rail,Kidwelly,KWL,51.7343994,-4.3176545
-National Rail,Transport for Wales Rail,Llanelli,LLE,51.6737797,-4.1610727
-National Rail,Transport for Wales Rail,Ferryside,FYS,51.7682462,-4.3695963
-National Rail,Transport for Wales Rail,Port Talbot Parkway,PTA,51.5924394,-3.7817162
-National Rail,Transport for Wales Rail,Briton Ferry,BNF,51.6381217,-3.8199836
-National Rail,Transport for Wales Rail,Bridgend,BGN,51.5071098,-3.5752586
-National Rail,Transport for Wales Rail,Pyle,PYL,51.52536,-3.6976606
-National Rail,Transport for Wales Rail,Llanharan,LLR,51.5376296,-3.4416549
-National Rail,Transport for Wales Rail,Pontyclun,PYC,51.5238395,-3.3920553
-National Rail,Transport for Wales Rail,Aberystwyth,AYW,52.4138938,-4.0815468
-National Rail,Transport for Wales Rail,Borth,BRH,52.4909831,-4.0496662
-National Rail,Transport for Wales Rail,Dovey Junction,DVY,52.564764,-3.9237919
-National Rail,Transport for Wales Rail,Machynlleth,MCN,52.5951801,-3.8548131
+National Rail,Transport for Wales,Pembrey and Burry Port,PBY,51.6840593,-4.2489624
+National Rail,Transport for Wales,Kidwelly,KWL,51.7343994,-4.3176545
+National Rail,Transport for Wales,Llanelli,LLE,51.6737797,-4.1610727
+National Rail,Transport for Wales,Ferryside,FYS,51.7682462,-4.3695963
+National Rail,Transport for Wales,Port Talbot Parkway,PTA,51.5924394,-3.7817162
+National Rail,Transport for Wales,Briton Ferry,BNF,51.6381217,-3.8199836
+National Rail,Transport for Wales,Bridgend,BGN,51.5071098,-3.5752586
+National Rail,Transport for Wales,Pyle,PYL,51.52536,-3.6976606
+National Rail,Transport for Wales,Llanharan,LLR,51.5376296,-3.4416549
+National Rail,Transport for Wales,Pontyclun,PYC,51.5238395,-3.3920553
+National Rail,Transport for Wales,Aberystwyth,AYW,52.4138938,-4.0815468
+National Rail,Transport for Wales,Borth,BRH,52.4909831,-4.0496662
+National Rail,Transport for Wales,Dovey Junction,DVY,52.564764,-3.9237919
+National Rail,Transport for Wales,Machynlleth,MCN,52.5951801,-3.8548131
 National Rail,Govia Thameslink Railway (Southern),Brighton,BTN,50.8288602,-0.1407393
-National Rail,Transport for Wales Rail,Caersws,CWS,52.5161395,-3.4325953
-National Rail,Transport for Wales Rail,Newtown,NWT,52.5122378,-3.3114829
-National Rail,Transport for Wales Rail,Welshpool,WLP,52.6580323,-3.1394424
+National Rail,Transport for Wales,Caersws,CWS,52.5161395,-3.4325953
+National Rail,Transport for Wales,Newtown,NWT,52.5122378,-3.3114829
+National Rail,Transport for Wales,Welshpool,WLP,52.6580323,-3.1394424
 National Rail,Greater Anglia,Dullingham,DUL,52.2015139,0.3658792
 National Rail,Northern Trains,MetroCentre,MCE,54.9588888,-1.664932
 National Rail,Northern Trains,Armathwaite,AWT,54.809435,-2.7720801
@@ -184,15 +184,15 @@ London Underground;London Overground,London Underground,South Kenton,SOK,51.5700
 London Underground;London Overground,London Underground,North Wembley,NWB,51.5624017,-0.3038698
 National Rail,West Midlands Trains (West Midlands Railway),Lichfield City,LIC,52.6802201,-1.8251247
 National Rail,West Midlands Trains (West Midlands Railway),Rugeley Town,RGT,52.7546597,-1.9369103
-National Rail,Transport for Wales Rail,Minffordd,MFF,52.9260294,-4.0849025
-National Rail,Transport for Wales Rail,Talsarnau,TAL,52.9044005,-4.068266
-National Rail,Transport for Wales Rail,Pensarn,PES,52.8304561,-4.1112718
-National Rail,Transport for Wales Rail,Dyffryn Ardudwy,DYF,52.7884337,-4.1047297
-National Rail,Transport for Wales Rail,Morfa Mawddach,MFA,52.707719,-4.0315882
-National Rail,Transport for Wales Rail,Fairbourne,FRB,52.6959804,-4.0490344
-National Rail,Transport for Wales Rail,Llwyngwril,LLW,52.6667724,-4.0878014
-National Rail,Transport for Wales Rail,Aberdyfi,AVY,52.5443486,-4.0563163
-National Rail,Transport for Wales Rail,Penhelyg,PHG,52.545692,-4.0352031
+National Rail,Transport for Wales,Minffordd,MFF,52.9260294,-4.0849025
+National Rail,Transport for Wales,Talsarnau,TAL,52.9044005,-4.068266
+National Rail,Transport for Wales,Pensarn,PES,52.8304561,-4.1112718
+National Rail,Transport for Wales,Dyffryn Ardudwy,DYF,52.7884337,-4.1047297
+National Rail,Transport for Wales,Morfa Mawddach,MFA,52.707719,-4.0315882
+National Rail,Transport for Wales,Fairbourne,FRB,52.6959804,-4.0490344
+National Rail,Transport for Wales,Llwyngwril,LLW,52.6667724,-4.0878014
+National Rail,Transport for Wales,Aberdyfi,AVY,52.5443486,-4.0563163
+National Rail,Transport for Wales,Penhelyg,PHG,52.545692,-4.0352031
 National Rail,East Midlands Railway,Alsager,ASG,53.0930252,-2.2988432
 National Rail,West Midlands Trains (West Midlands Railway),Barnt Green,BTG,52.3609702,-1.9924997
 National Rail,West Midlands Trains (West Midlands Railway),Droitwich Spa,DTW,52.2683805,-2.1583391
@@ -232,8 +232,8 @@ National Rail,Great Western Railway,Stroud,STD,51.7445273,-2.2192353
 National Rail,Great Western Railway,Stonehouse,SHU,51.7459341,-2.2794209
 National Rail,South Western Railway,Totton,TTN,50.9176659,-1.4830687
 National Rail,Northern Trains,Church Fenton,CHF,53.8270101,-1.2272134
-National Rail,Transport for Wales Rail,Cathays,CYS,51.4888964,-3.1789269
-National Rail,Transport for Wales Rail,Llandaf,LLN,51.5084984,-3.2292469
+National Rail,Transport for Wales,Cathays,CYS,51.4888964,-3.1789269
+National Rail,Transport for Wales,Llandaf,LLN,51.5084984,-3.2292469
 London Underground,London Underground,Tooting Bec,ZTB,51.4356228,-0.1597188
 National Rail,Northern Trains,Burley Park,BUY,53.8120604,-1.577847
 National Rail,Northern Trains,Marske,MSK,54.5873806,-1.0195165
@@ -252,8 +252,8 @@ National Rail,ScotRail,Keith,KEH,57.5513812,-2.9540057
 National Rail,Northern Trains,East Didsbury,EDY,53.4093155,-2.2219984
 National Rail,ScotRail,Edinburgh Park,EDP,55.9275816,-3.3075679
 National Rail,ScotRail,Newcraighall,NEW,55.9329747,-3.0906705
-National Rail,Transport for Wales Rail,Deganwy,DGY,53.2945745,-3.8332541
-National Rail,Transport for Wales Rail,Llandudno,LLD,53.3202833,-3.8278226
+National Rail,Transport for Wales,Deganwy,DGY,53.2945745,-3.8332541
+National Rail,Transport for Wales,Llandudno,LLD,53.3202833,-3.8278226
 London Overground,London Overground,Dalston Junction,DLJ,51.5452841,-0.074968
 National Rail,East Midlands Railway,Hinckley,HNK,52.5351729,-1.3711055
 National Rail,Great Western Railway,Radley,RAD,51.6856231,-1.2402569
@@ -302,7 +302,7 @@ London Overground,London Overground,Walthamstow Queen's Road,WMW,51.5815237,-0.0
 National Rail,Govia Thameslink Railway (Southern),Aldrington,AGT,50.8363558,-0.1817423
 National Rail,Avanti West Coast,Warrington Bank Quay,WBQ,53.3859367,-2.6031782
 National Rail,Northern Trains,Eccles,ECC,53.4855266,-2.3340515
-National Rail,Transport for Wales Rail,Criccieth,CCC,52.9183781,-4.2372963
+National Rail,Transport for Wales,Criccieth,CCC,52.9183781,-4.2372963
 National Rail,West Midlands Trains (West Midlands Railway),Stechford,SCF,52.4851563,-1.8110345
 National Rail,West Midlands Trains (West Midlands Railway),Lea Hall,LEH,52.4805217,-1.786031
 London Underground,London Underground,St. James's Park,ZSS,51.4992816,-0.1345942
@@ -369,10 +369,10 @@ National Rail,ScotRail,Bearsden,BRN,55.9169433,-4.3326044
 National Rail,ScotRail,Cardross,CDR,55.9602378,-4.652967
 National Rail,ScotRail,Craigendoran,CGD,55.9948435,-4.7119204
 National Rail,Northern Trains,Morley,MLY,53.7505897,-1.589163
-National Rail,Transport for Wales Rail,Hope (Flintshire),HPE,53.1168595,-3.0372474
-National Rail,Transport for Wales Rail,Caergwrle,CGW,53.1080757,-3.0332101
-National Rail,Transport for Wales Rail,Cefn-y-Bedd,CYB,53.0988378,-3.0308499
-National Rail,Transport for Wales Rail,Gwersyllt,GWE,53.0727884,-3.0176175
+National Rail,Transport for Wales,Hope (Flintshire),HPE,53.1168595,-3.0372474
+National Rail,Transport for Wales,Caergwrle,CGW,53.1080757,-3.0332101
+National Rail,Transport for Wales,Cefn-y-Bedd,CYB,53.0988378,-3.0308499
+National Rail,Transport for Wales,Gwersyllt,GWE,53.0727884,-3.0176175
 National Rail,ScotRail,Gretna Green,GEA,55.0007365,-3.066695
 National Rail,ScotRail,Annan,ANN,54.9835121,-3.2628103
 National Rail,ScotRail,Dumfries,DMF,55.0727039,-3.6044458
@@ -391,18 +391,18 @@ National Rail,ScotRail,Lochwinnoch,LHW,55.7871745,-4.6157219
 National Rail,Greater Thameslink Railway,St. Helier,SIH,51.389451,-0.1988601
 National Rail,Greater Thameslink Railway,Sutton Common,SUC,51.3754313,-0.1961049
 National Rail,ScotRail,Spean Bridge,SBR,56.8898718,-4.9216232
-National Rail,Transport for Wales Rail,Neston,NES,53.2917467,-3.0629961
+National Rail,Transport for Wales,Neston,NES,53.2917467,-3.0629961
 National Rail,West Midlands Trains (West Midlands Railway),Wylde Green,WYL,52.5456367,-1.8314515
 National Rail,Merseyrail,Aigburth,AIG,53.3645118,-2.9266096
 National Rail,Great Western Railway,Bedminster,BMT,51.4406058,-2.5936286
 National Rail,Great Western Railway,Parson Street,PSN,51.432994,-2.6085368
-National Rail,Transport for Wales Rail,Penmaenmawr,PMW,53.2705474,-3.9235064
-National Rail,Transport for Wales Rail,Llanfairfechan,LLF,53.2569753,-3.983123
-National Rail,Transport for Wales Rail,Llanfairpwll,LPG,53.2208651,-4.2093569
-National Rail,Transport for Wales Rail,Bodorgan,BOR,53.2041893,-4.4162913
-National Rail,Transport for Wales Rail,Ty Croes,TYC,53.2225426,-4.4739623
-National Rail,Transport for Wales Rail,Rhosneigr,RHO,53.2346794,-4.5058449
-National Rail,Transport for Wales Rail,Valley,VAL,53.2815404,-4.5634307
+National Rail,Transport for Wales,Penmaenmawr,PMW,53.2705474,-3.9235064
+National Rail,Transport for Wales,Llanfairfechan,LLF,53.2569753,-3.983123
+National Rail,Transport for Wales,Llanfairpwll,LPG,53.2208651,-4.2093569
+National Rail,Transport for Wales,Bodorgan,BOR,53.2041893,-4.4162913
+National Rail,Transport for Wales,Ty Croes,TYC,53.2225426,-4.4739623
+National Rail,Transport for Wales,Rhosneigr,RHO,53.2346794,-4.5058449
+National Rail,Transport for Wales,Valley,VAL,53.2815404,-4.5634307
 National Rail,East Midlands Railway,Heckington,HEC,52.9772075,-0.2938084
 National Rail,East Midlands Railway,Sleaford,SLR,52.9955161,-0.4101594
 National Rail,East Midlands Railway,Rauceby,RAU,52.9852782,-0.4559695
@@ -438,18 +438,18 @@ National Rail,ScotRail,Thorntonhall,THT,55.7683101,-4.2505925
 National Rail,ScotRail,Giffnock,GFN,55.8039361,-4.2929605
 National Rail,ScotRail,Thornliebank,THB,55.8110927,-4.3117061
 National Rail,South Western Railway,Hilsea,HLS,50.8283898,-1.058643
-National Rail,Transport for Wales Rail,Hawarden Bridge,HWB,53.2181863,-3.0322864
+National Rail,Transport for Wales,Hawarden Bridge,HWB,53.2181863,-3.0322864
 National Rail,ScotRail,Williamwood,WLM,55.7940114,-4.2899228
 National Rail,ScotRail,Cathcart,CCT,55.8177954,-4.2603903
 National Rail,ScotRail,Patterton,PTT,55.7905841,-4.3352786
 National Rail,ScotRail,Neilston,NEI,55.7828151,-4.4272019
 National Rail,ScotRail,Maxwell Park,MAX,55.8376638,-4.288521
 National Rail,ScotRail,Pollokshields West,PLW,55.8376405,-4.2761545
-National Rail,Transport for Wales Rail,Llanwrtyd,LNW,52.1046083,-3.6322246
+National Rail,Transport for Wales,Llanwrtyd,LNW,52.1046083,-3.6322246
 National Rail,ScotRail,Crookston,CKT,55.8422333,-4.3651014
 National Rail,Northern Trains,Ravensthorpe,RVN,53.6755593,-1.6557481
-National Rail,Transport for Wales Rail,Penrhyndeudraeth,PRH,52.9287802,-4.0645064
-National Rail,Transport for Wales Rail,Harlech,HRL,52.861755,-4.1092654
+National Rail,Transport for Wales,Penrhyndeudraeth,PRH,52.9287802,-4.0645064
+National Rail,Transport for Wales,Harlech,HRL,52.861755,-4.1092654
 National Rail,ScotRail,Hawkhead,HKH,55.8421016,-4.3995361
 National Rail,ScotRail,Mount Florida,MFL,55.8268033,-4.2611049
 National Rail,Great Western Railway,Ivybridge,IVY,50.3935074,-3.9051778
@@ -464,7 +464,7 @@ National Rail,Northern Trains,Moss Side,MOS,53.7647531,-2.9429624
 National Rail,Northern Trains,Silverdale,SVR,54.1693432,-2.8037976
 National Rail,Northern Trains,Carnforth,CNF,54.1296244,-2.7714886
 National Rail,Northern Trains,Layton,LAY,53.8353457,-3.0299186
-National Rail,Transport for Wales Rail,Pembroke Dock,PMD,51.6938827,-4.9375963
+National Rail,Transport for Wales,Pembroke Dock,PMD,51.6938827,-4.9375963
 National Rail,Northern Trains,Euxton Balshaw Lane,EBA,53.6598241,-2.6716808
 National Rail,Northern Trains,Bramhall,BML,53.3601721,-2.1623117
 National Rail,Southeastern,Queenborough,QBR,51.4159485,0.7497742
@@ -484,7 +484,7 @@ National Rail,Northern Trains,Middlewood,MDL,53.3600557,-2.0835284
 National Rail,Merseyrail,Southport,SOP,53.6468651,-3.0028279
 National Rail,ScotRail,Mosspark,MPK,55.8406701,-4.3471881
 National Rail,ScotRail,Corkerhill,CKH,55.8374699,-4.3343276
-National Rail,Transport for Wales Rail,Tygwyn,TYG,52.893747,-4.0785957
+National Rail,Transport for Wales,Tygwyn,TYG,52.893747,-4.0785957
 National Rail;Elizabeth line,Elizabeth line,Taplow,TAP,51.5234431,-0.6817302
 National Rail,Southeastern,Higham,HGM,51.426953,0.4660183
 National Rail,Govia Thameslink Railway (Southern),West Worthing,WWO,50.818373,-0.3933519
@@ -564,19 +564,19 @@ National Rail,ScotRail,Shotts,SHS,55.8185654,-3.7990785
 National Rail,ScotRail,Addiewell,ADW,55.8434492,-3.6063049
 National Rail,ScotRail,Fauldhouse,FLD,55.8224448,-3.7192484
 National Rail,ScotRail,Breich,BRC,55.8275461,-3.6672602
-National Rail,Transport for Wales Rail,Dingle Road,DGL,51.4399232,-3.1798165
-National Rail,Transport for Wales Rail,Cogan,CGN,51.4461638,-3.189048
-National Rail,Transport for Wales Rail,Eastbrook,EBK,51.4378361,-3.2062588
-National Rail,Transport for Wales Rail,Dinas Powys,DNS,51.4312712,-3.219067
-National Rail,Transport for Wales Rail,Cardiff Bay,CDB,51.4676414,-3.1667818
+National Rail,Transport for Wales,Dingle Road,DGL,51.4399232,-3.1798165
+National Rail,Transport for Wales,Cogan,CGN,51.4461638,-3.189048
+National Rail,Transport for Wales,Eastbrook,EBK,51.4378361,-3.2062588
+National Rail,Transport for Wales,Dinas Powys,DNS,51.4312712,-3.219067
+National Rail,Transport for Wales,Cardiff Bay,CDB,51.4676414,-3.1667818
 National Rail,Merseyrail,Leasowe,LSW,53.4080707,-3.0999836
 National Rail,Merseyrail,Moreton,MRT,53.407278,-3.1132099
-National Rail,Transport for Wales Rail,Upton,UPT,53.3864448,-3.084131
+National Rail,Transport for Wales,Upton,UPT,53.3864448,-3.084131
 National Rail;London Overground;Elizabeth line,Elizabeth line,Romford,RMF,51.5747271,0.1826107
 National Rail,Govia Thameslink Railway (Southern),Angmering,ANG,50.8165151,-0.4881271
-National Rail,Transport for Wales Rail,Taffs Well,TAF,51.541246,-3.2638822
-National Rail,Transport for Wales Rail,Treforest Estate,TRE,51.5681608,-3.2902376
-National Rail,Transport for Wales Rail,Trefforest,TRF,51.591903,-3.3249641
+National Rail,Transport for Wales,Taffs Well,TAF,51.541246,-3.2638822
+National Rail,Transport for Wales,Treforest Estate,TRE,51.5681608,-3.2902376
+National Rail,Transport for Wales,Trefforest,TRF,51.591903,-3.3249641
 National Rail,Govia Thameslink Railway (Southern),Southwick,SWK,50.8324714,-0.2371421
 National Rail,ScotRail,Fort Matilda,FTM,55.9589194,-4.7952091
 National Rail,West Midlands Trains (West Midlands Railway),Wood End,WDE,52.3442757,-1.844423
@@ -585,7 +585,7 @@ National Rail,West Midlands Trains (West Midlands Railway),Whitlocks End,WTE,52.
 National Rail,West Midlands Trains (West Midlands Railway),Wythall,WYT,52.3801248,-1.8654559
 National Rail,West Midlands Trains (West Midlands Railway),Henley-in-Arden,HNL,52.2914546,-1.7839992
 National Rail,West Midlands Trains (West Midlands Railway),Stratford-upon-Avon Parkway,STY,52.2065538,-1.7304498
-National Rail,Transport for Wales Rail,Radyr,RDR,51.5165903,-3.2490261
+National Rail,Transport for Wales,Radyr,RDR,51.5165903,-3.2490261
 National Rail,Great Western Railway,Newton St Cyres,NTC,50.7787677,-3.5888232
 National Rail,Great Western Railway,Crediton,CDI,50.7833186,-3.6467418
 National Rail,Great Western Railway,Yeoford,YEO,50.776782,-3.7266919
@@ -605,8 +605,8 @@ National Rail,Great Western Railway,St Keyne Wishing Well Halt,SKN,50.4228214,-4
 National Rail,Great Western Railway,Causeland,CAU,50.4056895,-4.4664151
 National Rail,Great Western Railway,Looe,LOO,50.3595613,-4.4563912
 National Rail,Govia Thameslink Railway (Southern),Warblington,WBL,50.8535025,-0.9671209
-National Rail,Transport for Wales Rail,Maesteg,MST,51.609681,-3.6549668
-National Rail,Transport for Wales Rail,Garth (Bridgend),GMG,51.5967074,-3.6428149
+National Rail,Transport for Wales,Maesteg,MST,51.609681,-3.6549668
+National Rail,Transport for Wales,Garth (Bridgend),GMG,51.5967074,-3.6428149
 National Rail,Great Western Railway,Devonport,DPT,50.3785212,-4.1701007
 National Rail,Great Western Railway,Dockyard,DOC,50.3823705,-4.1760319
 London Underground,London Underground,Clapham South,ZCA,51.4528372,-0.1475523
@@ -633,10 +633,10 @@ National Rail,Great Western Railway,Bruton,BRU,51.1116892,-2.4471521
 National Rail,Great Western Railway,Castle Cary,CLC,51.099857,-2.5224232
 National Rail,Great Western Railway,Melksham,MKM,51.3801725,-2.144607
 National Rail,Greater Anglia,Worstead,WRT,52.7773534,1.4040725
-National Rail,Transport for Wales Rail,Llanrwst,LWR,53.1390542,-3.7946636
-National Rail,Transport for Wales Rail,Gogledd Llanrwst / North Llanrwst,NLR,53.144122,-3.8028221
-National Rail,Transport for Wales Rail,Dolgarrog,DLG,53.1859355,-3.8231367
-National Rail,Transport for Wales Rail,Tal-y-Cafn,TLC,53.2285073,-3.8182114
+National Rail,Transport for Wales,Llanrwst,LWR,53.1390542,-3.7946636
+National Rail,Transport for Wales,Gogledd Llanrwst / North Llanrwst,NLR,53.144122,-3.8028221
+National Rail,Transport for Wales,Dolgarrog,DLG,53.1859355,-3.8231367
+National Rail,Transport for Wales,Tal-y-Cafn,TLC,53.2285073,-3.8182114
 National Rail,Great Western Railway,Lympstone Village,LYM,50.6484198,-3.4310966
 National Rail,South Western Railway,Motspur Park,MOT,51.3948747,-0.2396076
 National Rail,West Midlands Trains (West Midlands Railway),Dudley Port,DDP,52.524461,-2.0492538
@@ -671,12 +671,12 @@ National Rail,Northern Trains,Flimby,FLM,54.6899875,-3.5205306
 National Rail,Northern Trains,Dalston,DLS,54.846165,-2.9885758
 National Rail,East Midlands Railway,Newstead,NSD,53.069977,-1.2218222
 National Rail,Greater Anglia,Lakenheath,LAK,52.4474326,0.5344379
-National Rail,Transport for Wales Rail,Abererch,ABH,52.8983924,-4.3749074
-National Rail,Transport for Wales Rail,Penychain,PNC,52.9029185,-4.338436
+National Rail,Transport for Wales,Abererch,ABH,52.8983924,-4.3749074
+National Rail,Transport for Wales,Penychain,PNC,52.9029185,-4.338436
 National Rail,Merseyrail,Maghull,MAG,53.5064699,-2.9310252
-National Rail,Transport for Wales Rail,Llanaber,LLA,52.7413979,-4.0771655
-National Rail,Transport for Wales Rail,Talybont,TLB,52.7729002,-4.0970877
-National Rail,Transport for Wales Rail,Llanbedr,LBR,52.8203604,-4.1096022
+National Rail,Transport for Wales,Llanaber,LLA,52.7413979,-4.0771655
+National Rail,Transport for Wales,Talybont,TLB,52.7729002,-4.0970877
+National Rail,Transport for Wales,Llanbedr,LBR,52.8203604,-4.1096022
 National Rail,Greater Anglia,North Fambridge,NFA,51.6486404,0.6818704
 National Rail,Govia Thameslink Railway (Southern),Goring-by-Sea,GBS,50.8176931,-0.4331815
 National Rail,Northern Trains,Lytham,LTM,53.7393224,-2.9641884
@@ -698,16 +698,16 @@ National Rail,East Midlands Railway,Longton,LGN,52.9900417,-2.1372966
 National Rail,West Midlands Trains (West Midlands Railway),Bearley,BER,52.244974,-1.7497627
 National Rail,West Midlands Trains (West Midlands Railway),Claverdon,CLV,52.2771945,-1.6964003
 National Rail,ScotRail,Dunblane,DBL,56.1858372,-3.9657077
-National Rail,Transport for Wales Rail,Penyffordd,PNF,53.1425997,-3.0548357
-National Rail,Transport for Wales Rail,Cwmbran,CWM,51.6570886,-3.0160112
-National Rail,Transport for Wales Rail,Pontypool and New Inn,PPL,51.6973269,-3.0135499
+National Rail,Transport for Wales,Penyffordd,PNF,53.1425997,-3.0548357
+National Rail,Transport for Wales,Cwmbran,CWM,51.6570886,-3.0160112
+National Rail,Transport for Wales,Pontypool and New Inn,PPL,51.6973269,-3.0135499
 National Rail;London Underground,London Underground,Old Street,OLD,51.5256284,-0.0876094
 National Rail,Govia Thameslink Railway (Great Northern),Downham Market,DOW,52.6041596,0.3656086
 National Rail,TransPennine Express,Scarborough,SCA,54.2791479,-0.4062351
 National Rail,South Western Railway,Wareham,WRM,50.6928778,-2.1153281
 National Rail,West Midlands Trains (London Northwestern Railway),Kempston Hardwick,KMH,52.0919553,-0.5039944
 National Rail,West Midlands Trains (London Northwestern Railway),Millbrook,MLB,52.0542365,-0.5323576
-National Rail,Transport for Wales Rail,Heswall,HSW,53.3296666,-3.0733539
+National Rail,Transport for Wales,Heswall,HSW,53.3296666,-3.0733539
 National Rail,Greater Anglia,Sheringham,SHM,52.9413671,1.2107897
 National Rail,Greater Anglia,West Runton,WRN,52.9355494,1.2457949
 National Rail,Greater Anglia,Cromer,CMR,52.9300536,1.2916476
@@ -718,9 +718,9 @@ National Rail,Great Western Railway,Bugle,BGL,50.4002418,-4.7919145
 National Rail,Great Western Railway,Luxulyan,LUX,50.3903538,-4.7484178
 National Rail,Great Western Railway,St. Columb Road,SCR,50.3987461,-4.941332
 London Underground;London Overground,London Underground,Kenton,KNT,51.5815255,-0.3166378
-National Rail,Transport for Wales Rail,Heath High Level,HHL,51.5168194,-3.181568
-National Rail,Transport for Wales Rail,Aber,ABE,51.5748662,-3.2298096
-National Rail,Transport for Wales Rail,Llanbradach,LNB,51.6041075,-3.2330521
+National Rail,Transport for Wales,Heath High Level,HHL,51.5168194,-3.181568
+National Rail,Transport for Wales,Aber,ABE,51.5748662,-3.2298096
+National Rail,Transport for Wales,Llanbradach,LNB,51.6041075,-3.2330521
 National Rail,Northern Trains,Burnage,BNA,53.4221262,-2.2151579
 National Rail,Great Western Railway,Wargrave,WGV,51.4985546,-0.8766558
 National Rail,Greater Anglia,Whittlesea,WLE,52.5495767,-0.1180869
@@ -729,7 +729,7 @@ National Rail,East Midlands Railway,Tutbury and Hatton,TUT,52.8641203,-1.6821183
 National Rail,Northern Trains,Bishop Auckland,BIA,54.6572212,-1.6779534
 National Rail,Northern Trains,Shildon,SHD,54.6261932,-1.6367101
 National Rail,Northern Trains,Dinsdale,DND,54.5149956,-1.4671224
-National Rail,Transport for Wales Rail,Prestatyn,PRT,53.3361671,-3.4073494
+National Rail,Transport for Wales,Prestatyn,PRT,53.3361671,-3.4073494
 National Rail,Merseyrail,Birkenhead Central,BKC,53.3881969,-3.020883
 National Rail,Merseyrail,Green Lane,GNL,53.3833042,-3.0162757
 National Rail,East Midlands Railway,Ruskington,RKT,53.0413872,-0.3804741
@@ -738,30 +738,30 @@ National Rail,Govia Thameslink Railway (Southern),Bosham,BOH,50.8428556,-0.84716
 National Rail,Govia Thameslink Railway (Southern),Nutbourne,NUT,50.8461502,-0.8839188
 National Rail,South Western Railway,Micheldever,MIC,51.1825114,-1.2603854
 National Rail,South Western Railway,Overton,OVR,51.2541369,-1.2599752
-National Rail,Transport for Wales Rail,Baglan,BAJ,51.6143157,-3.8093646
-National Rail,Transport for Wales Rail,Trehafod,TRH,51.6100966,-3.3807003
-National Rail,Transport for Wales Rail,Porth,POR,51.6124727,-3.4076322
-National Rail,Transport for Wales Rail,Dinas Rhondda,DMG,51.61737,-3.4371025
-National Rail,Transport for Wales Rail,Tonypandy,TNP,51.6198317,-3.4490406
-National Rail,Transport for Wales Rail,Llwynypia,LLY,51.6334166,-3.45331
-National Rail,Transport for Wales Rail,Ystrad Rhondda,YSR,51.6436193,-3.4669433
-National Rail,Transport for Wales Rail,Ton Pentre,TPN,51.6477109,-3.4861451
-National Rail,Transport for Wales Rail,Treorchy,TRY,51.6574373,-3.5060374
-National Rail,Transport for Wales Rail,Treherbert,TRB,51.671619,-3.5350926
+National Rail,Transport for Wales,Baglan,BAJ,51.6143157,-3.8093646
+National Rail,Transport for Wales,Trehafod,TRH,51.6100966,-3.3807003
+National Rail,Transport for Wales,Porth,POR,51.6124727,-3.4076322
+National Rail,Transport for Wales,Dinas Rhondda,DMG,51.61737,-3.4371025
+National Rail,Transport for Wales,Tonypandy,TNP,51.6198317,-3.4490406
+National Rail,Transport for Wales,Llwynypia,LLY,51.6334166,-3.45331
+National Rail,Transport for Wales,Ystrad Rhondda,YSR,51.6436193,-3.4669433
+National Rail,Transport for Wales,Ton Pentre,TPN,51.6477109,-3.4861451
+National Rail,Transport for Wales,Treorchy,TRY,51.6574373,-3.5060374
+National Rail,Transport for Wales,Treherbert,TRB,51.671619,-3.5350926
 National Rail,Greater Anglia,North Walsham,NWA,52.8168645,1.3845702
 London Underground,London Underground,King's Cross St Pancras,ZKX,51.530609,-0.1239491
-National Rail,Transport for Wales Rail,Pentre-bach,PTB,51.7248612,-3.3623391
-National Rail,Transport for Wales Rail,Troed-y-rhiw,TRD,51.7120426,-3.3463983
-National Rail,Transport for Wales Rail,Merthyr Vale,MEV,51.6869084,-3.3371036
-National Rail,Transport for Wales Rail,Quakers Yard,QYD,51.6603637,-3.3229308
-National Rail,Transport for Wales Rail,Abercynon,ACY,51.6430407,-3.3295381
-National Rail,Transport for Wales Rail,Penrhiwceiber,PER,51.6701887,-3.3601431
-National Rail,Transport for Wales Rail,Fernhill,FER,51.6866058,-3.3958887
-National Rail,Transport for Wales Rail,Cwmbach,CMH,51.7014846,-3.4147693
-National Rail,Transport for Wales Rail,Aberdare,ABA,51.7137509,-3.4395026
-National Rail,Transport for Wales Rail,Rogerstone,ROR,51.5954425,-3.0662424
+National Rail,Transport for Wales,Pentre-bach,PTB,51.7248612,-3.3623391
+National Rail,Transport for Wales,Troed-y-rhiw,TRD,51.7120426,-3.3463983
+National Rail,Transport for Wales,Merthyr Vale,MEV,51.6869084,-3.3371036
+National Rail,Transport for Wales,Quakers Yard,QYD,51.6603637,-3.3229308
+National Rail,Transport for Wales,Abercynon,ACY,51.6430407,-3.3295381
+National Rail,Transport for Wales,Penrhiwceiber,PER,51.6701887,-3.3601431
+National Rail,Transport for Wales,Fernhill,FER,51.6866058,-3.3958887
+National Rail,Transport for Wales,Cwmbach,CMH,51.7014846,-3.4147693
+National Rail,Transport for Wales,Aberdare,ABA,51.7137509,-3.4395026
+National Rail,Transport for Wales,Rogerstone,ROR,51.5954425,-3.0662424
 National Rail,East Midlands Railway,Hucknall,HKN,53.0384983,-1.1959496
-National Rail,Transport for Wales Rail,Caerphilly,CPH,51.5715441,-3.2188217
+National Rail,Transport for Wales,Caerphilly,CPH,51.5715441,-3.2188217
 National Rail,East Midlands Railway,Mansfield Woodhouse,MSW,53.1634635,-1.2017516
 National Rail,ScotRail,Kirkwood,KWD,55.8541741,-4.0482987
 National Rail,Northern Trains,Broad Green,BGE,53.4065083,-2.8933889
@@ -776,20 +776,20 @@ National Rail,Northern Trains,South Elmsall,SES,53.5948464,-1.2853506
 National Rail,Greater Anglia,Dovercourt,DVC,51.9388053,1.2805132
 National Rail,ScotRail,Priesthill & Darnley,PTL,55.8120349,-4.3429643
 National Rail,ScotRail,Summerston,SUM,55.8988407,-4.2921881
-National Rail,Transport for Wales Rail,Ebbw Vale Parkway,EBV,51.7565058,-3.1960549
-National Rail,Transport for Wales Rail,Newbridge,NBE,51.6653896,-3.1431855
+National Rail,Transport for Wales,Ebbw Vale Parkway,EBV,51.7565058,-3.1960549
+National Rail,Transport for Wales,Newbridge,NBE,51.6653896,-3.1431855
 National Rail,ScotRail,Whitecraigs,WCR,55.7902824,-4.3103086
 National Rail,Great Western Railway,St Budeaux Victoria Road,SBV,50.402196,-4.1877512
-National Rail,Transport for Wales Rail,Ynyswen,YNW,51.6649511,-3.5214869
-National Rail,Transport for Wales Rail,Ystrad Mynach,YSM,51.6404852,-3.2418377
-National Rail,Transport for Wales Rail,Hengoed,HNG,51.6469972,-3.225557
-National Rail,Transport for Wales Rail,Pengam,PGM,51.6702079,-3.2299736
-National Rail,Transport for Wales Rail,Gilfach Fargoed,GFF,51.6841461,-3.2273933
-National Rail,Transport for Wales Rail,Bargoed,BGD,51.6927479,-3.229824
-National Rail,Transport for Wales Rail,Brithdir,BHD,51.709801,-3.2281286
-National Rail,Transport for Wales Rail,Tir-Phil,TIR,51.7210173,-3.2459528
-National Rail,Transport for Wales Rail,Pontlottyn,PLT,51.7465271,-3.279359
-National Rail,Transport for Wales Rail,Rhymney,RHY,51.7588344,-3.2895209
+National Rail,Transport for Wales,Ynyswen,YNW,51.6649511,-3.5214869
+National Rail,Transport for Wales,Ystrad Mynach,YSM,51.6404852,-3.2418377
+National Rail,Transport for Wales,Hengoed,HNG,51.6469972,-3.225557
+National Rail,Transport for Wales,Pengam,PGM,51.6702079,-3.2299736
+National Rail,Transport for Wales,Gilfach Fargoed,GFF,51.6841461,-3.2273933
+National Rail,Transport for Wales,Bargoed,BGD,51.6927479,-3.229824
+National Rail,Transport for Wales,Brithdir,BHD,51.709801,-3.2281286
+National Rail,Transport for Wales,Tir-Phil,TIR,51.7210173,-3.2459528
+National Rail,Transport for Wales,Pontlottyn,PLT,51.7465271,-3.279359
+National Rail,Transport for Wales,Rhymney,RHY,51.7588344,-3.2895209
 National Rail,Greater Anglia,Chappel and Wakes Colne,CWC,51.9256764,0.7585002
 National Rail,Greater Anglia,Bures,BUE,51.9712035,0.7691626
 National Rail,Greater Anglia,Sudbury,SUY,52.0362647,0.7355732
@@ -800,24 +800,24 @@ National Rail,London North Eastern Railway,Newcastle,NCL,54.9683364,-1.616046
 National Rail,East Midlands Railway,Thorpe Culvert,TPC,53.1230326,0.1995165
 National Rail,Greater Anglia,Salhouse,SAH,52.6755817,1.3913667
 National Rail,Greater Anglia,Hoveton and Wroxham,HXM,52.7155355,1.4080786
-National Rail,Transport for Wales Rail,Abergele and Pensarn,AGL,53.2945866,-3.5826531
-National Rail,Transport for Wales Rail,Conwy,CNW,53.2800919,-3.8307026
-National Rail,Transport for Wales Rail,Buckley,BCK,53.1625354,-3.0551852
+National Rail,Transport for Wales,Abergele and Pensarn,AGL,53.2945866,-3.5826531
+National Rail,Transport for Wales,Conwy,CNW,53.2800919,-3.8307026
+National Rail,Transport for Wales,Buckley,BCK,53.1625354,-3.0551852
 National Rail,Northern Trains,Cottingley,COT,53.7680337,-1.5877727
 National Rail,Northern Trains,Seaton Delaval,SEJ,55.0747281,-1.5383775
-National Rail,Transport for Wales Rail,Glan Conwy,GCW,53.2686216,-3.7975917
+National Rail,Transport for Wales,Glan Conwy,GCW,53.2686216,-3.7975917
 National Rail,ScotRail,Chatelherault,CTE,55.7651179,-4.0044368
 National Rail,ScotRail,Larkhall,LRH,55.7386095,-3.9750115
 National Rail,Greater Anglia,Newmarket,NMK,52.238341,0.4073491
-National Rail,Transport for Wales Rail,Llanishen,LLS,51.5329957,-3.181843
+National Rail,Transport for Wales,Llanishen,LLS,51.5329957,-3.181843
 National Rail,ScotRail,Livingston South,LVG,55.8716042,-3.5014895
-National Rail,Transport for Wales Rail,Barry,BRY,51.3969039,-3.2848689
-National Rail,Transport for Wales Rail,Cadoxton,CAD,51.412181,-3.248765
-National Rail,Transport for Wales Rail,Llantwit Major,LWM,51.4096499,-3.4814284
-National Rail,Transport for Wales Rail,Fairwater,FRW,51.4938863,-3.2338039
-National Rail,Transport for Wales Rail,Ninian Park,NNP,51.4765231,-3.2013873
+National Rail,Transport for Wales,Barry,BRY,51.3969039,-3.2848689
+National Rail,Transport for Wales,Cadoxton,CAD,51.412181,-3.248765
+National Rail,Transport for Wales,Llantwit Major,LWM,51.4096499,-3.4814284
+National Rail,Transport for Wales,Fairwater,FRW,51.4938863,-3.2338039
+National Rail,Transport for Wales,Ninian Park,NNP,51.4765231,-3.2013873
 National Rail,Great Western Railway,Paignton,PGN,50.434598,-3.5649134
-National Rail,Transport for Wales Rail,Barry Island,BYI,51.3923125,-3.2742115
+National Rail,Transport for Wales,Barry Island,BYI,51.3923125,-3.2742115
 National Rail,Northern Trains,Chapeltown,CLN,53.4625006,-1.4664375
 National Rail;Elizabeth line,Heathrow Express,Heathrow Terminal 4,HAF,51.4590893,-0.4459987
 National Rail,Greater Anglia,Gunton,GNT,52.866075,1.349369
@@ -832,13 +832,13 @@ National Rail,Greater Anglia,Lowestoft,LWT,52.47424,1.7499873
 National Rail,Greater Anglia,Darsham,DSM,52.2732073,1.5235994
 National Rail,Northern Trains,Mirfield,MIR,53.6713909,-1.6922471
 National Rail,East Midlands Railway,Peartree,PEA,52.8976023,-1.4722913
-National Rail,Transport for Wales Rail,Tonfanau,TNF,52.6136283,-4.1235375
-National Rail,Transport for Wales Rail,Coryton,COY,51.5204441,-3.2314774
-National Rail,Transport for Wales Rail,Whitchurch,WHT,51.5208287,-3.2221654
-National Rail,Transport for Wales Rail,Rhiwbina,RHI,51.521084,-3.2144829
-National Rail,Transport for Wales Rail,Birchgrove,BCG,51.5215349,-3.2024605
-National Rail,Transport for Wales Rail,Heath Low Level,HLL,51.5157674,-3.1822078
-National Rail,Transport for Wales Rail,Ludlow,LUD,52.3711007,-2.71598
+National Rail,Transport for Wales,Tonfanau,TNF,52.6136283,-4.1235375
+National Rail,Transport for Wales,Coryton,COY,51.5204441,-3.2314774
+National Rail,Transport for Wales,Whitchurch,WHT,51.5208287,-3.2221654
+National Rail,Transport for Wales,Rhiwbina,RHI,51.521084,-3.2144829
+National Rail,Transport for Wales,Birchgrove,BCG,51.5215349,-3.2024605
+National Rail,Transport for Wales,Heath Low Level,HLL,51.5157674,-3.1822078
+National Rail,Transport for Wales,Ludlow,LUD,52.3711007,-2.71598
 National Rail,West Midlands Trains (West Midlands Railway),Wilnecote,WNE,52.6106234,-1.6797007
 National Rail,Greater Anglia,Acle,ACL,52.6346757,1.5439772
 National Rail,Greater Anglia,Berney Arms,BYA,52.5902585,1.6310707
@@ -848,8 +848,8 @@ National Rail,Greater Anglia,Lingwood,LGD,52.6220505,1.4896908
 National Rail,Greater Anglia,Hatfield Peverel,HAP,51.7803142,0.5927716
 National Rail,Greater Anglia,Mistley,MIS,51.9435862,1.081649
 National Rail,Northern Trains,Stockton,STK,54.5698829,-1.3182234
-National Rail,Transport for Wales Rail,Danescourt,DCT,51.5004014,-3.2339459
-National Rail,Transport for Wales Rail,Lisvane and Thornhill,LVT,51.5444152,-3.1855685
+National Rail,Transport for Wales,Danescourt,DCT,51.5004014,-3.2339459
+National Rail,Transport for Wales,Lisvane and Thornhill,LVT,51.5444152,-3.1855685
 National Rail,Great Western Railway,Cam and Dursley,CDU,51.7176405,-2.3591702
 National Rail,Northern Trains,Hyde North,HYT,53.4644638,-2.0850338
 National Rail,Great Western Railway,Worle,WOR,51.3578502,-2.9093225
@@ -863,21 +863,21 @@ National Rail,Northern Trains,Kirk Sandall,KKS,53.5636066,-1.0745371
 National Rail,Northern Trains,Thorne South,TNS,53.6033448,-0.9552556
 National Rail,Northern Trains,Barnsley Interchange,BNY,53.55441,-1.4772756
 National Rail,Northern Trains,Fitzwilliam,FZW,53.6326086,-1.374636
-National Rail,Transport for Wales Rail,Roman Bridge,RMB,53.0443968,-3.9215232
-National Rail,Transport for Wales Rail,Dolwyddelan,DWD,53.0515703,-3.8845507
-National Rail,Transport for Wales Rail,Pont-y-Pant,PYP,53.0651111,-3.8627144
+National Rail,Transport for Wales,Roman Bridge,RMB,53.0443968,-3.9215232
+National Rail,Transport for Wales,Dolwyddelan,DWD,53.0515703,-3.8845507
+National Rail,Transport for Wales,Pont-y-Pant,PYP,53.0651111,-3.8627144
 National Rail,Northern Trains,Huyton,HUY,53.409627,-2.8432195
 National Rail,Northern Trains,Whiston,WHN,53.413914,-2.7965205
 National Rail,Merseyrail,Kirkdale,KKD,53.4407853,-2.9811665
 National Rail,Merseyrail,Bank Hall,BAH,53.4378965,-2.9878045
-National Rail,Transport for Wales Rail,Penarth,PEN,51.4358489,-3.1746781
+National Rail,Transport for Wales,Penarth,PEN,51.4358489,-3.1746781
 National Rail,Northern Trains,Bromley Cross,BMC,53.6139542,-2.4108352
 National Rail,Northern Trains,Hall i' th' Wood,HID,53.5974456,-2.4130759
-National Rail,Transport for Wales Rail,Sarn,SRR,51.5385115,-3.58953
-National Rail,Transport for Wales Rail,Maesteg Ewenny Road,MEW,51.6052667,-3.6482526
-National Rail,Transport for Wales Rail,Blaenau Ffestiniog,BFF,52.9946896,-3.938464
-National Rail,Transport for Wales Rail,Risca and Pontymister,RCA,51.6058043,-3.0920412
-National Rail,Transport for Wales Rail,Tŷ Glas,TGS,51.5217357,-3.1971025
+National Rail,Transport for Wales,Sarn,SRR,51.5385115,-3.58953
+National Rail,Transport for Wales,Maesteg Ewenny Road,MEW,51.6052667,-3.6482526
+National Rail,Transport for Wales,Blaenau Ffestiniog,BFF,52.9946896,-3.938464
+National Rail,Transport for Wales,Risca and Pontymister,RCA,51.6058043,-3.0920412
+National Rail,Transport for Wales,Tŷ Glas,TGS,51.5217357,-3.1971025
 National Rail,Greater Anglia,Brampton,BRP,52.3955079,1.5438215
 National Rail,Greater Anglia,Melton,MES,52.1043512,1.3381527
 National Rail,Greater Anglia,Thorpe-le-Soken,TLS,51.8478614,1.1604018
@@ -889,21 +889,21 @@ National Rail,Great Western Railway,Lelant Saltings,LTS,50.1785858,-5.441159
 National Rail,Great Western Railway,Quintrell Downs,QUI,50.4041228,-5.0288475
 National Rail,Greater Anglia,Somerleyton,SYT,52.5101525,1.6522512
 National Rail,Greater Anglia,Oulton Broad South,OUS,52.4695869,1.7074886
-National Rail,Transport for Wales Rail,Tondu,TDU,51.5474662,-3.5951781
+National Rail,Transport for Wales,Tondu,TDU,51.5474662,-3.5951781
 National Rail,Greater Anglia,Walton-on-the-Naze,WON,51.8462158,1.2678629
 National Rail,Northern Trains,Bentley (South Yorkshire),BYK,53.5437098,-1.1507181
 National Rail;London Overground,London Overground,West Croydon,WCY,51.378808,-0.1020387
 London Underground,London Underground,Pimlico,ZPO,51.4891579,-0.1353308
-National Rail,Glasgow Prestwick Airport Ltd,Prestwick International Airport,PRA,55.5090231,-4.61414
+National Rail,Glasgow Prestwick Airport,Prestwick International Airport,PRA,55.5090231,-4.61414
 National Rail,Great Western Railway,Filton Abbey Wood,FIT,51.503393,-2.563826
 National Rail,Greater Anglia,Cantley,CNY,52.5787207,1.5136275
 National Rail,West Midlands Trains (West Midlands Railway),Sandwell and Dudley,SAD,52.508635,-2.0117688
-Docklands Light Railway,KeolisAmey Docklands Ltd,Beckton Park,ZBJ,51.5087601,0.0549426
+Docklands Light Railway,Docklands Light Railway,Beckton Park,ZBJ,51.5087601,0.0549426
 National Rail,Northern Trains,Navigation Road,NVR,53.3957446,-2.3432686
 National Rail;West Midlands Metro,West Midlands Trains (West Midlands Railway),The Hawthorns,THW,52.5056717,-1.9650419
-National Rail,Transport for Wales Rail,Knucklas,KNU,52.3597573,-3.0965228
+National Rail,Transport for Wales,Knucklas,KNU,52.3597573,-3.0965228
 National Rail,Govia Thameslink Railway (Southern),East Croydon,ECR,51.3758448,-0.0927317
-National Rail,Transport for Wales Rail,Colwyn Bay,CWB,53.2968237,-3.7258927
+National Rail,Transport for Wales,Colwyn Bay,CWB,53.2968237,-3.7258927
 National Rail,Greater Anglia,Saxmundham,SAX,52.2152245,1.4902723
 National Rail,Greater Anglia,Prittlewell,PRL,51.5505931,0.7106494
 National Rail,Great Western Railway,Digby and Sowton,DIG,50.7141806,-3.473603
@@ -926,9 +926,9 @@ National Rail,Northern Trains,Wigton,WGT,54.8291227,-3.1642894
 National Rail,Great Western Railway,Nailsea and Backwell,NLS,51.4196718,-2.7496898
 National Rail,Northern Trains,Dunston,DOT,54.9499976,-1.6414408
 National Rail,ScotRail,Pollokshields East,PLE,55.8407278,-4.2689803
-National Rail,Transport for Wales Rail,Frodsham,FRD,53.2957797,-2.7237343
+National Rail,Transport for Wales,Frodsham,FRD,53.2957797,-2.7237343
 National Rail,ScotRail,Drumfrochar,DFR,55.9412926,-4.7715063
-National Rail,Transport for Wales Rail,Mountain Ash,MTA,51.6817619,-3.376667
+National Rail,Transport for Wales,Mountain Ash,MTA,51.6817619,-3.376667
 National Rail,Northern Trains,Shipley,SHY,53.8335128,-1.7736115
 National Rail,ScotRail,Whifflet,WFF,55.8538301,-4.0185953
 National Rail,Northern Trains,Garforth,GRF,53.7965742,-1.382282
@@ -949,12 +949,12 @@ National Rail,Southeastern,Swale,SWL,51.3889653,0.7468492
 National Rail,Northern Trains,Ashton-under-Lyne,AHN,53.4912163,-2.0937021
 National Rail,Govia Thameslink Railway (Great Northern),Biggleswade,BIW,52.0850343,-0.260819
 National Rail,ScotRail,Blackridge,BKR,55.8843825,-3.7502801
-National Rail,Transport for Wales Rail,Severn Tunnel Junction,STJ,51.584253,-2.7772968
-National Rail,Transport for Wales Rail,Wem,WEM,52.8561108,-2.7182651
-National Rail,Transport for Wales Rail,Whitchurch,WTC,52.9682221,-2.6716574
-National Rail,Transport for Wales Rail,Nantwich,NAN,53.0635485,-2.5187309
-National Rail,Transport for Wales Rail,Prees,PRS,52.8994613,-2.6895572
-National Rail,Transport for Wales Rail,Wrenbury,WRE,53.0195948,-2.5956111
+National Rail,Transport for Wales,Severn Tunnel Junction,STJ,51.584253,-2.7772968
+National Rail,Transport for Wales,Wem,WEM,52.8561108,-2.7182651
+National Rail,Transport for Wales,Whitchurch,WTC,52.9682221,-2.6716574
+National Rail,Transport for Wales,Nantwich,NAN,53.0635485,-2.5187309
+National Rail,Transport for Wales,Prees,PRS,52.8994613,-2.6895572
+National Rail,Transport for Wales,Wrenbury,WRE,53.0195948,-2.5956111
 National Rail,Greater Anglia,Halesworth,HAS,52.3469592,1.5057452
 National Rail,East Midlands Railway,Longport,LPT,53.0420907,-2.2167116
 National Rail;London Overground,London Overground,Bushey,BSH,51.6455311,-0.3850068
@@ -976,7 +976,7 @@ National Rail,Avanti West Coast,Wigan North Western,WGN,53.5433996,-2.632996
 National Rail,South Western Railway (Island Line),Lake,LKE,50.6461826,-1.1664698
 National Rail,Northern Trains,Billingham,BIL,54.6057149,-1.2795366
 National Rail,Govia Thameslink Railway (Southern),Hove,HOV,50.8352056,-0.17018
-National Rail,Transport for Wales Rail,Waun-gron Park,WNG,51.488302,-3.22969
+National Rail,Transport for Wales,Waun-gron Park,WNG,51.488302,-3.22969
 National Rail,Northern Trains,Appleby,APP,54.58041,-2.486536
 London Underground,London Underground,Archway,ZAR,51.5653116,-0.1348189
 National Rail,Northern Trains,Danby,DNY,54.4661746,-0.910998
@@ -999,7 +999,7 @@ London Underground,London Underground,Snaresbrook,ZSN,51.5808033,0.0215864
 National Rail,East Midlands Railway,Long Eaton,LGE,52.8849696,-1.2872821
 National Rail,South Western Railway,Strawberry Hill,STW,51.4391919,-0.3393309
 National Rail,Govia Thameslink Railway (Great Northern),Littleport,LTP,52.4623343,0.3163815
-National Rail,Transport for Wales Rail,Grangetown,GTN,51.4672525,-3.1895595
+National Rail,Transport for Wales,Grangetown,GTN,51.4672525,-3.1895595
 National Rail,Great Western Railway,Crowthorne,CRN,51.3664877,-0.8192585
 National Rail,Great Western Railway,Sandhurst,SND,51.3465435,-0.8038071
 National Rail,West Midlands Trains (West Midlands Railway),Bedworth,BEH,52.4794836,-1.4675162
@@ -1031,21 +1031,21 @@ National Rail,Great Western Railway,Goring & Streatley,GOR,51.5211885,-1.1331195
 National Rail;London Underground,London Underground,Greenford,GFD,51.5421177,-0.3447996
 London Overground,London Overground,Wanstead Park,WNP,51.5517605,0.0260733
 London Overground,London Overground,Leytonstone High Road,LER,51.5636822,0.0082011
-National Rail,Transport for Wales Rail,Fishguard and Goodwick,FGW,52.0039692,-4.9950733
+National Rail,Transport for Wales,Fishguard and Goodwick,FGW,52.0039692,-4.9950733
 National Rail,Chiltern Railways,King's Sutton,KGS,52.0210915,-1.2809729
 National Rail,South Western Railway,Virginia Water,VIR,51.4015235,-0.5620827
 National Rail,ScotRail,Saltcoats,SLT,55.6339122,-4.7845685
 National Rail,Great Western Railway,Pangbourne,PAN,51.4853553,-1.0904319
-Tyne and Wear Metro,Nexus,Fellgate,FEG,54.957505,-1.4852346
+Tyne and Wear Metro,Tyne and Wear Metro,Fellgate,FEG,54.957505,-1.4852346
 London Underground,London Underground,Mill Hill East,ZML,51.6082746,-0.2101451
 London Underground,London Underground,West Finchley,ZWH,51.6094298,-0.1883313
 London Underground,London Underground,Woodside Park,ZWI,51.617938,-0.185523
-National Rail,Transport for Wales Rail,Porthmadog,PTM,52.930988,-4.1353065
+National Rail,Transport for Wales,Porthmadog,PTM,52.930988,-4.1353065
 National Rail,Northern Trains,Mills Hill,MIH,53.5508557,-2.1714727
-National Rail,Transport for Wales Rail,Llandecwyn,LLC,52.9210189,-4.0565564
+National Rail,Transport for Wales,Llandecwyn,LLC,52.9210189,-4.0565564
 London Underground,London Underground,Epping,ZEG,51.6936318,0.1139888
 National Rail,Great Western Railway,Portsmouth Arms,PMA,50.9569792,-3.9512803
-National Rail,Transport for Wales Rail,Pencoed,PCD,51.5239041,-3.501372
+National Rail,Transport for Wales,Pencoed,PCD,51.5239041,-3.501372
 National Rail,ScotRail,Shawfair,SFI,55.9176966,-3.0902235
 National Rail,ScotRail,Eskbank,EKB,55.8812053,-3.0827946
 National Rail;Elizabeth line,Greater Anglia,Shenfield,SNF,51.6306401,0.3300193
@@ -1074,7 +1074,7 @@ London Underground,London Underground,South Harrow,ZSX,51.5646517,-0.3522211
 London Underground,London Underground,Sudbury Town,ZSY,51.550751,-0.3156202
 National Rail,Northern Trains,Ramsgreave and Wilpshire,RGW,53.7799943,-2.4780606
 National Rail,Northern Trains,Grosmont,GMT,54.436456,-0.7253575
-National Rail,Transport for Wales Rail,Energlyn & Churchill Park,ECP,51.584548,-3.2290773
+National Rail,Transport for Wales,Energlyn & Churchill Park,ECP,51.584548,-3.2290773
 London Overground,London Overground,Acton Central,ACC,51.5087164,-0.2628073
 London Underground,London Underground,Sudbury Hill,ZSH,51.5568815,-0.3362525
 National Rail,South Western Railway,Hamworthy,HAM,50.7253686,-2.0190513
@@ -1085,7 +1085,7 @@ National Rail,Greater Anglia,Wrabness,WRB,51.9395281,1.1716892
 National Rail,Greater Anglia,Harwich International,HPQ,51.9472249,1.2560388
 National Rail,Southeastern,Kidbrooke,KDB,51.4620317,0.0279002
 National Rail,Northern Trains,Bolton,BON,53.5735158,-2.4251259
-National Rail,Transport for Wales Rail,Llandanwg,LDN,52.8362322,-4.1236151
+National Rail,Transport for Wales,Llandanwg,LDN,52.8362322,-4.1236151
 London Underground;London Overground;Elizabeth line,London Underground,Whitechapel,ZLW,51.5197615,-0.0600874
 London Overground,London Overground,Haggerston,HGG,51.5386574,-0.0755835
 London Overground,London Overground,Rotherhithe,ROE,51.5008237,-0.0519666
@@ -1108,8 +1108,8 @@ National Rail,Govia Thameslink Railway (Great Northern),Waterbeach,WBC,52.262281
 National Rail,West Midlands Trains (London Northwestern Railway),Polesworth,PSW,52.6258348,-1.6107049
 National Rail,London North Eastern Railway,Peterborough,PBO,52.5746038,-0.2503162
 National Rail,South Western Railway,Alton,AON,51.1518972,-0.9671299
-National Rail,Transport for Wales Rail,Ebbw Vale Town,EBB,51.7766272,-3.2024224
-National Rail,Transport for Wales Rail,Barry Docks,BYD,51.4026036,-3.261156
+National Rail,Transport for Wales,Ebbw Vale Town,EBB,51.7766272,-3.2024224
+National Rail,Transport for Wales,Barry Docks,BYD,51.4026036,-3.261156
 National Rail,Northern Trains,Mossley,MSL,53.5150389,-2.041538
 National Rail,Greater Anglia,Billericay,BIC,51.6288429,0.4181268
 National Rail,Greater Anglia,Wickford,WIC,51.6148276,0.5194087
@@ -1126,8 +1126,8 @@ National Rail,ScotRail,Carmyle,CML,55.8342637,-4.1580726
 National Rail,ScotRail,Milliken Park,MIN,55.8248309,-4.5342076
 National Rail,ScotRail,Kilwinning,KWN,55.6561839,-4.7095388
 National Rail,South Western Railway,Weymouth,WEY,50.6159266,-2.4549096
-National Rail,Transport for Wales Rail,Neath,NTH,51.6620303,-3.8073972
-National Rail,Transport for Wales Rail,Skewen,SKE,51.6614691,-3.8467749
+National Rail,Transport for Wales,Neath,NTH,51.6620303,-3.8073972
+National Rail,Transport for Wales,Skewen,SKE,51.6614691,-3.8467749
 National Rail,ScotRail,Bishopbriggs,BBG,55.9039668,-4.2245231
 National Rail,Greater Anglia,Shippea Hill,SPP,52.4302535,0.4127561
 National Rail,ScotRail,Easterhouse,EST,55.8598473,-4.1068753
@@ -1226,7 +1226,7 @@ National Rail,Great Western Railway,Newcourt,NCO,50.7026543,-3.4725733
 National Rail,South Western Railway,Hinchley Wood,HYW,51.3750431,-0.3406172
 National Rail;London Underground,London Underground,Amersham,AMR,51.6740875,-0.6073643
 National Rail,South Western Railway,Farnborough (Main),FNB,51.2968188,-0.7555158
-National Rail,Transport for Wales Rail,Betws-y-Coed,BYC,53.092687,-3.800542
+National Rail,Transport for Wales,Betws-y-Coed,BYC,53.092687,-3.800542
 National Rail;London Underground,London Underground,Chalfont & Latimer,CFO,51.6681019,-0.5611671
 National Rail,Southeastern,Wye,WYE,51.1855902,0.9296702
 National Rail;London Overground,London Overground,Penge West,PNW,51.4175031,-0.060661
@@ -1290,7 +1290,7 @@ National Rail,Northern Trains,Stocksmoor,SSM,53.5941495,-1.7232658
 National Rail,Northern Trains,Bamber Bridge,BMB,53.7269093,-2.6614198
 National Rail,Northern Trains,Pleasington,PLS,53.7310487,-2.5440104
 National Rail,South Western Railway,Bracknell,BCE,51.4130054,-0.7522572
-National Rail,Transport for Wales Rail,Runcorn East,RUE,53.3279397,-2.6654958
+National Rail,Transport for Wales,Runcorn East,RUE,53.3279397,-2.6654958
 National Rail,Northern Trains,Redcar Central,RCC,54.6159857,-1.0703222
 National Rail,Northern Trains,South Bank,SBK,54.5840107,-1.1762715
 National Rail,TransPennine Express,Yarm,YRM,54.4937626,-1.3514668
@@ -1313,9 +1313,9 @@ National Rail,West Midlands Trains (West Midlands Railway),Cosford,COS,52.644845
 National Rail,West Midlands Trains (West Midlands Railway),Oakengates,OKN,52.6930906,-2.450188
 National Rail,West Midlands Trains (West Midlands Railway),Shifnal,SFN,52.6660075,-2.3716887
 National Rail,West Midlands Trains (West Midlands Railway),Telford Central,TFC,52.6811135,-2.441178
-National Rail,Transport for Wales Rail,Church Stretton,CTT,52.5373034,-2.8036843
-National Rail,Transport for Wales Rail,Gobowen,GOB,52.8933219,-3.0368846
-National Rail,Transport for Wales Rail,Knighton,KNI,52.3450164,-3.0423373
+National Rail,Transport for Wales,Church Stretton,CTT,52.5373034,-2.8036843
+National Rail,Transport for Wales,Gobowen,GOB,52.8933219,-3.0368846
+National Rail,Transport for Wales,Knighton,KNI,52.3450164,-3.0423373
 National Rail,Northern Trains,Littleborough,LTL,53.6427541,-2.0950109
 National Rail,Northern Trains,Moston,MSO,53.5232522,-2.1710273
 National Rail,Northern Trains,Smithy Bridge,SMB,53.6328465,-2.1140606
@@ -1395,9 +1395,9 @@ National Rail,ScotRail,Pollokshaws West,PWW,55.8238539,-4.3014144
 London Overground,London Overground,Shadwell,SDE,51.511289,-0.0569187
 National Rail,Southeastern,Thanet Parkway,THP,51.3307843,1.3614558
 National Rail,Greater Thameslink Railway,Wimbledon Chase,WBO,51.410247,-0.2147881
-National Rail,Transport for Wales Rail,Rhoose Cardiff International Airport,RIA,51.3871547,-3.3494457
+National Rail,Transport for Wales,Rhoose Cardiff International Airport,RIA,51.3871547,-3.3494457
 National Rail,ScotRail,High Street,HST,55.8593458,-4.2399263
-National Rail,Transport for Wales Rail,Saundersfoot,SDF,51.7220045,-4.7180532
+National Rail,Transport for Wales,Saundersfoot,SDF,51.7220045,-4.7180532
 National Rail,ScotRail,Shieldmuir,SDM,55.7774347,-3.9578507
 National Rail,South Western Railway,North Sheen,NSH,51.4653247,-0.2865821
 National Rail,ScotRail,Coatbridge Central,CBC,55.8626694,-4.0320785
@@ -1478,7 +1478,6 @@ National Rail,Govia Thameslink Railway (Great Northern),Knebworth,KBW,51.8670421
 National Rail,ScotRail,East Kilbride,EKL,55.7660974,-4.1797164
 National Rail,ScotRail,Hairmyres,HMY,55.7618249,-4.2298945
 National Rail,ScotRail,Busby,BUS,55.7803927,-4.2622278
-NIR,Translink NI Railways,Belfast Lanyon Place,BFC,54.5951512,-5.9172896
 National Rail,c2c,Tilbury Town,TIL,51.4624598,0.3538289
 National Rail,Great Western Railway,Truro,TRU,50.2639862,-5.0642026
 National Rail,Great Western Railway,Plymouth,PLY,50.3780967,-4.1433925
@@ -1521,21 +1520,21 @@ National Rail,West Midlands Trains (London Northwestern Railway),Tring,TRI,51.80
 National Rail,Northern Trains,Chinley,CLY,53.3401158,-1.9445158
 Elizabeth line,Elizabeth line,Woolwich,WWC,51.491954,0.070615
 London Underground,London Underground,Upton Park,ZUP,51.5351062,0.0339842
-National Rail,Transport for Wales Rail,Bangor,BNG,53.2226448,-4.135518
+National Rail,Transport for Wales,Bangor,BNG,53.2226448,-4.135518
 National Rail,Great Western Railway,Tackley,TAC,51.8814551,-1.297508
 National Rail,Northern Trains,Heworth,HEW,54.9515942,-1.5575801
-Tyne and Wear Metro,Nexus,St Peter's,STZ,54.9110683,-1.3837588
-Tyne and Wear Metro,Nexus,Stadium of Light,STI,54.9181372,-1.3829516
+Tyne and Wear Metro,Tyne and Wear Metro,St Peter's,STZ,54.9110683,-1.3837588
+Tyne and Wear Metro,Tyne and Wear Metro,Stadium of Light,STI,54.9181372,-1.3829516
 National Rail;Tyne and Wear Metro,Northern Trains,Sunderland,SUN,54.9061115,-1.3824404
 London Underground,London Underground,Clapham Common,ZCC,51.4620748,-0.1373589
 London Underground,London Underground,White City,ZWC,51.5119347,-0.2242361
-Tyne and Wear Metro,Nexus,East Boldon,EBL,54.946345,-1.4201545
-Tyne and Wear Metro,Nexus,Brockley Whins,BNR,54.9595193,-1.460684
-Tyne and Wear Metro,Nexus,Seaburn,SEB,54.9295618,-1.3865039
+Tyne and Wear Metro,Tyne and Wear Metro,East Boldon,EBL,54.946345,-1.4201545
+Tyne and Wear Metro,Tyne and Wear Metro,Brockley Whins,BNR,54.9595193,-1.460684
+Tyne and Wear Metro,Tyne and Wear Metro,Seaburn,SEB,54.9295618,-1.3865039
 National Rail,Northern Trains,Manors,MAS,54.972671,-1.6056318
 National Rail,Northern Trains,Allens West,ALW,54.524557,-1.3616516
 National Rail,Great Western Railway,Tilehurst,TLH,51.4716513,-1.0296647
-Docklands Light Railway,KeolisAmey Docklands Ltd,Lewisham DLR,ZBV,51.4649887,-0.0130109
+Docklands Light Railway,Docklands Light Railway,Lewisham DLR,ZDM,51.4649887,-0.0130109
 National Rail,Govia Thameslink Railway (Southern),Seaford,SEF,50.7729237,0.0999463
 National Rail,Northern Trains,Low Moor,LMR,53.7501367,-1.7523839
 National Rail,Merseyrail,Hunts Cross,HNX,53.3607333,-2.8554087
@@ -1567,9 +1566,9 @@ National Rail,Northern Trains,Mill Hill,MLH,53.735339,-2.5019404
 National Rail,Northern Trains,Castleton,CAS,53.5927444,-2.1777231
 London Underground,London Underground,Aldgate East,ZAE,51.5156185,-0.070839
 National Rail,Govia Thameslink Railway (Southern),Littlehampton,LIT,50.8101746,-0.5462574
-National Rail,Transport for Wales Rail,Wildmill,WMI,51.5198051,-3.5802725
+National Rail,Transport for Wales,Wildmill,WMI,51.5198051,-3.5802725
 National Rail,Northern Trains,Blaydon,BLO,54.9659633,-1.7128813
-National Rail,Transport for Wales Rail,Chester,CTR,53.1967494,-2.8795296
+National Rail,Transport for Wales,Chester,CTR,53.1967494,-2.8795296
 National Rail,Northern Trains,Buxton,BUX,53.2607853,-1.9131016
 National Rail,Northern Trains,Skipton,SKI,53.9584308,-2.0260314
 National Rail,Northern Trains,Kirkstall Forge,KLF,53.8253007,-1.627075
@@ -1587,11 +1586,11 @@ National Rail,Northern Trains,Barrow-in-Furness,BIF,54.1191205,-3.2260261
 National Rail,Northern Trains,Chorley,CRL,53.6529842,-2.626934
 National Rail,Northern Trains,Ravenglass,RAV,54.3556605,-3.4088794
 National Rail,Northern Trains,Whitehaven,WTH,54.5532204,-3.5871793
-National Rail,Transport for Wales Rail,Shrewsbury,SHR,52.7118509,-2.7494043
+National Rail,Transport for Wales,Shrewsbury,SHR,52.7118509,-2.7494043
 National Rail,Northern Trains,Nunthorpe,NNT,54.5280386,-1.1697897
-National Rail,Transport for Wales Rail,Tywyn,TYW,52.5853794,-4.0933648
-National Rail,Transport for Wales Rail,Pwllheli,PWL,52.8881946,-4.4161558
-National Rail,Transport for Wales Rail,Barmouth,BRM,52.7224433,-4.0567929
+National Rail,Transport for Wales,Tywyn,TYW,52.5853794,-4.0933648
+National Rail,Transport for Wales,Pwllheli,PWL,52.8881946,-4.4161558
+National Rail,Transport for Wales,Barmouth,BRM,52.7224433,-4.0567929
 London Underground,London Underground,Parsons Green,ZPG,51.4750837,-0.201549
 National Rail,c2c,London Fenchurch Street,FST,51.5113281,-0.0774191
 London Underground,London Underground,Fulham Broadway,ZFB,51.480827,-0.1945023
@@ -1655,7 +1654,7 @@ National Rail,Govia Thameslink Railway (Southern),Whyteleafe,WHY,51.3099209,-0.0
 National Rail,Govia Thameslink Railway (Southern),Upper Warlingham,UWL,51.3085512,-0.0778344
 National Rail,Govia Thameslink Railway (Southern),Woldingham,WOH,51.2896975,-0.0516667
 National Rail;Elizabeth line,Elizabeth line,Langley,LNY,51.507818,-0.5409049
-Docklands Light Railway,KeolisAmey Docklands Ltd,Mudchute,ZMC,51.4915188,-0.0149135
+Docklands Light Railway,Docklands Light Railway,Mudchute,ZMC,51.4915188,-0.0149135
 National Rail,Northern Trains,South Milford,SOM,53.7823824,-1.2511292
 National Rail,Northern Trains,Mobberley,MOB,53.3295673,-2.3336005
 National Rail,Northern Trains,Widnes,WID,53.3786146,-2.7341997
@@ -1681,10 +1680,10 @@ London Underground,London Underground,Warwick Avenue,ZWV,51.5229834,-0.1833083
 National Rail,Northern Trains,Brampton,BMP,54.9321536,-2.7038502
 London Underground,London Underground,Tottenham Court Road,ZTC,51.5159715,-0.1305125
 National Rail;Docklands Light Railway,Southeastern,Greenwich,GNW,51.4781086,-0.0154152
-Docklands Light Railway,KeolisAmey Docklands Ltd,West India Quay,ZIQ,51.5067417,-0.0204833
-Docklands Light Railway,KeolisAmey Docklands Ltd,All Saints,ZAS,51.5108398,-0.0130551
-Docklands Light Railway,KeolisAmey Docklands Ltd,Stratford High Street,ZST,51.5376469,-0.0001288
-Docklands Light Railway,KeolisAmey Docklands Ltd,Bow Church,ZBC,51.5274411,-0.0206424
+Docklands Light Railway,Docklands Light Railway,West India Quay,ZIQ,51.5067417,-0.0204833
+Docklands Light Railway,Docklands Light Railway,All Saints,ZAS,51.5108398,-0.0130551
+Docklands Light Railway,Docklands Light Railway,Stratford High Street,ZST,51.5376469,-0.0001288
+Docklands Light Railway,Docklands Light Railway,Bow Church,ZBC,51.5274411,-0.0206424
 National Rail,c2c,Limehouse,LHS,51.5128705,-0.0390456
 London Underground,London Underground,Bounds Green,ZBG,51.607376,-0.1249047
 London Underground,London Underground,Hammersmith (Circle and Hammersmith & City lines),ZHZ,51.494109,-0.2250607
@@ -1811,7 +1810,7 @@ National Rail,Southeastern,Clock House,CLK,51.4083449,-0.0408182
 National Rail,Southeastern,West Wickham,WWI,51.3815143,-0.0147334
 National Rail,Southeastern,Eden Park,EDN,51.3901801,-0.0263691
 National Rail,Southeastern,Elmers End,ELE,51.398012,-0.0497025
-National Rail,Transport for Wales Rail,Chepstow,CPW,51.6399688,-2.6710757
+National Rail,Transport for Wales,Chepstow,CPW,51.6399688,-2.6710757
 National Rail,West Midlands Trains (West Midlands Railway),Aston,AST,52.5044196,-1.8720376
 National Rail,South Western Railway,Aldershot,AHT,51.2462832,-0.7599088
 National Rail,South Western Railway,Ash Vale,AHV,51.2725337,-0.7214571
@@ -1885,7 +1884,7 @@ National Rail,South Western Railway,Chertsey,CHY,51.3871309,-0.5094641
 National Rail,South Western Railway,Addlestone,ASN,51.3731128,-0.4845082
 National Rail,South Western Railway,Norbiton,NBT,51.4123109,-0.2840843
 National Rail,South Western Railway,Teddington,TED,51.4244662,-0.3325731
-National Rail,Transport for Wales Rail,Narberth,NAR,51.7994817,-4.7270723
+National Rail,Transport for Wales,Narberth,NAR,51.7994817,-4.7270723
 National Rail,Great Western Railway,Dawlish,DWL,50.5806101,-3.4644482
 National Rail,South Western Railway,Fareham,FRM,50.8534057,-1.1923427
 National Rail,South Western Railway,St Denys,SDN,50.9222702,-1.3878591
@@ -1942,22 +1941,22 @@ National Rail,Greater Anglia,Hertford East,HFE,51.7993962,-0.0717505
 National Rail,Greater Anglia,Ware,WAR,51.8079808,-0.0287596
 National Rail,Greater Anglia,St Margarets,SMT,51.7881973,0.0009329
 National Rail,Greater Anglia,Rye House,RYH,51.7693606,0.0055221
-Docklands Light Railway,KeolisAmey Docklands Ltd,Elverson Road,ZER,51.4685232,-0.0162072
-Docklands Light Railway,KeolisAmey Docklands Ltd,Deptford Bridge,ZDP,51.4741638,-0.0223933
-Docklands Light Railway,KeolisAmey Docklands Ltd,Crossharbour,ZCH,51.4959022,-0.0144418
-Docklands Light Railway,KeolisAmey Docklands Ltd,South Quay,ZSQ,51.5000357,-0.0162525
-Docklands Light Railway,KeolisAmey Docklands Ltd,King George V,ZKG,51.502006,0.0623526
-Docklands Light Railway,KeolisAmey Docklands Ltd,Royal Victoria,ZRB,51.5091168,0.0175913
-Docklands Light Railway,KeolisAmey Docklands Ltd,Custom House,ZCE,51.5096341,0.0259614
-Docklands Light Railway,KeolisAmey Docklands Ltd,Prince Regent,ZPD,51.5094778,0.0331521
-Docklands Light Railway,KeolisAmey Docklands Ltd,Royal Albert,ZRC,51.5083952,0.0458839
-Docklands Light Railway,KeolisAmey Docklands Ltd,Gallions Reach,ZGC,51.5089622,0.0717937
-Docklands Light Railway,KeolisAmey Docklands Ltd,Beckton,ZBV,51.5144099,0.0617936
-Docklands Light Railway,KeolisAmey Docklands Ltd,Blackwall,ZBH,51.5079378,-0.0071843
-Docklands Light Railway,KeolisAmey Docklands Ltd,East India,ZEI,51.5093835,-0.0021873
-Docklands Light Railway,KeolisAmey Docklands Ltd,London City Airport,ZAF,51.5035322,0.048542
-Docklands Light Railway,KeolisAmey Docklands Ltd,West Silvertown,ZAI,51.5028811,0.0223323
-Docklands Light Railway,KeolisAmey Docklands Ltd,Pontoon Dock,ZAH,51.5022501,0.0332232
+Docklands Light Railway,Docklands Light Railway,Elverson Road,ZER,51.4685232,-0.0162072
+Docklands Light Railway,Docklands Light Railway,Deptford Bridge,ZDP,51.4741638,-0.0223933
+Docklands Light Railway,Docklands Light Railway,Crossharbour,ZCH,51.4959022,-0.0144418
+Docklands Light Railway,Docklands Light Railway,South Quay,ZSQ,51.5000357,-0.0162525
+Docklands Light Railway,Docklands Light Railway,King George V,ZKG,51.502006,0.0623526
+Docklands Light Railway,Docklands Light Railway,Royal Victoria,ZRB,51.5091168,0.0175913
+Docklands Light Railway,Docklands Light Railway,Custom House,ZCE,51.5096341,0.0259614
+Docklands Light Railway,Docklands Light Railway,Prince Regent,ZPD,51.5094778,0.0331521
+Docklands Light Railway,Docklands Light Railway,Royal Albert,ZRC,51.5083952,0.0458839
+Docklands Light Railway,Docklands Light Railway,Gallions Reach,ZGC,51.5089622,0.0717937
+Docklands Light Railway,Docklands Light Railway,Beckton,ZBV,51.5144099,0.0617936
+Docklands Light Railway,Docklands Light Railway,Blackwall,ZBH,51.5079378,-0.0071843
+Docklands Light Railway,Docklands Light Railway,East India,ZEI,51.5093835,-0.0021873
+Docklands Light Railway,Docklands Light Railway,London City Airport,ZAF,51.5035322,0.048542
+Docklands Light Railway,Docklands Light Railway,West Silvertown,ZAI,51.5028811,0.0223323
+Docklands Light Railway,Docklands Light Railway,Pontoon Dock,ZAH,51.5022501,0.0332232
 London Underground,London Underground,North Acton,ZNA,51.5235769,-0.2597818
 National Rail,Northern Trains,Westhoughton,WHG,53.5558849,-2.523221
 London Underground,London Underground,Hammersmith (District and Piccadilly lines),ZHA,51.4921603,-0.223247
@@ -2135,12 +2134,12 @@ National Rail,Govia Thameslink Railway (Southern),South Bermondsey,SBM,51.487951
 National Rail,Great Western Railway,Oxford,OXF,51.7534512,-1.2699542
 London Underground,London Underground,Wanstead,ZWN,51.575646,0.0286373
 London Underground,London Underground,Queensway,ZQW,51.5104729,-0.1872329
-Docklands Light Railway,KeolisAmey Docklands Ltd,Cutty Sark for Maritime Greenwich,ZCS,51.4817267,-0.0107517
+Docklands Light Railway,Docklands Light Railway,Cutty Sark for Maritime Greenwich,ZCS,51.4817267,-0.0107517
 National Rail,Greater Anglia,Witham,WTM,51.8059244,0.6394272
 National Rail,c2c,Shoeburyness,SRY,51.531446,0.7945675
 National Rail;Elizabeth line,Elizabeth line,Maryland,MYL,51.5461244,0.0063775
 London Overground,London Overground,West Hampstead,WHD,51.5473011,-0.1920126
-Docklands Light Railway,KeolisAmey Docklands Ltd,Tower Gateway,ZTG,51.5106288,-0.0739505
+Docklands Light Railway,Docklands Light Railway,Tower Gateway,ZTG,51.5106288,-0.0739505
 National Rail,Southeastern,Lewisham,LEW,51.4656437,-0.0139562
 National Rail,Greater Thameslink Railway,West Hampstead Thameslink,WHP,51.5484242,-0.192322
 National Rail,Govia Thameslink Railway (Southern),Selhurst,SRS,51.3922136,-0.0886537
@@ -2157,8 +2156,8 @@ National Rail;Elizabeth line,Elizabeth line,Manor Park,MNP,51.5521996,0.0450354
 National Rail;Elizabeth line,Elizabeth line,Forest Gate,FOG,51.549251,0.0232808
 National Rail,Great Western Railway,Didcot Parkway,DID,51.6112197,-1.2425171
 National Rail;Elizabeth line,Network Rail,Reading,RDG,51.4592197,-0.9723182
-National Rail,Transport for Wales Rail,Newport,NWP,51.5887675,-3.000425
-National Rail,Transport for Wales Rail,Cardiff Central,CDF,51.4755495,-3.1797057
+National Rail,Transport for Wales,Newport,NWP,51.5887675,-3.000425
+National Rail,Transport for Wales,Cardiff Central,CDF,51.4755495,-3.1797057
 National Rail,Great Western Railway,Bristol Parkway,BPW,51.5138815,-2.542979
 National Rail,Great Western Railway,Bath Spa,BTH,51.3776019,-2.3567189
 National Rail,Great Western Railway,Theale,THE,51.4333628,-1.074364
@@ -2216,7 +2215,7 @@ National Rail,West Midlands Trains (London Northwestern Railway),Leighton Buzzar
 National Rail,West Midlands Trains (West Midlands Railway),Northfield,NFD,52.4082951,-1.9651246
 National Rail,Avanti West Coast,Coventry,COV,52.400739,-1.5135474
 National Rail,South Western Railway,Chandler's Ford,CFR,50.9834549,-1.3848946
-National Rail,HS1 Ltd,Ebbsfleet International,EBD,51.4435253,0.3213747
+National Rail,HS1,Ebbsfleet International,EBD,51.4435253,0.3213747
 National Rail,Avanti West Coast,Preston,PRE,53.7552898,-2.7071573
 National Rail,Southeastern,Gillingham,GLM,51.3868466,0.5514468
 National Rail,West Midlands Trains (London Northwestern Railway),Hartford,HTF,53.241569,-2.553519
@@ -2287,7 +2286,7 @@ National Rail,Greater Thameslink Railway,Nunhead,NHD,51.4668348,-0.0523755
 National Rail,Greater Thameslink Railway,Crofton Park,CFT,51.4552149,-0.0366299
 National Rail,Greater Thameslink Railway,Bellingham,BGM,51.4328307,-0.0195194
 National Rail,Greater Thameslink Railway,Beckenham Hill,BEC,51.4245222,-0.0159101
-National Rail,Transport for Wales Rail,Hereford,HFD,52.0611986,-2.7081221
+National Rail,Transport for Wales,Hereford,HFD,52.0611986,-2.7081221
 National Rail,Greater Thameslink Railway,Ravensbourne,RVB,51.4143132,-0.0076295
 National Rail,Greater Thameslink Railway,Loughborough Junction,LGJ,51.4662551,-0.1021612
 National Rail,Northern Trains,Kirkby Stephen,KSW,54.4549076,-2.368703
@@ -2370,7 +2369,7 @@ London Underground,London Underground,Regent's Park,ZRP,51.5236277,-0.1466357
 London Underground,London Underground,Maida Vale,ZMV,51.5298672,-0.1857447
 National Rail,West Midlands Trains (London Northwestern Railway),Rugeley Trent Valley,RGL,52.7696788,-1.9299278
 National Rail,West Midlands Trains (London Northwestern Railway),Nuneaton,NUN,52.5267605,-1.4641837
-National Rail,HS1 Ltd,Stratford International,SFA,51.5447954,-0.0087494
+National Rail,HS1,Stratford International,SFA,51.5447954,-0.0087494
 National Rail,TransPennine Express,Northallerton,NTR,54.3324731,-1.441378
 London Underground,London Underground,Wood Green,ZWD,51.597416,-0.1097795
 London Underground,London Underground,Manor House,ZMR,51.5703208,-0.0963971
@@ -2409,40 +2408,40 @@ National Rail,Southeastern,West Malling,WMA,51.2920962,0.4186871
 London Overground,London Overground,Finchley Road & Frognal,FNY,51.5501132,-0.1835843
 National Rail,Greater Anglia,March,MCH,52.5600848,0.0913188
 National Rail,Great Western Railway,Penzance,PNZ,50.1224396,-5.5320276
-National Rail,Transport for Wales Rail,Swansea,SWA,51.6256789,-3.9403729
-National Rail,Transport for Wales Rail,Merthyr Tydfil,MER,51.7444793,-3.3773565
+National Rail,Transport for Wales,Swansea,SWA,51.6256789,-3.9403729
+National Rail,Transport for Wales,Merthyr Tydfil,MER,51.7444793,-3.3773565
 National Rail,Great Western Railway,Barnstaple,BNP,51.0736094,-4.0630236
-National Rail,Transport for Wales Rail,Pontypridd,PPD,51.5992956,-3.3418374
+National Rail,Transport for Wales,Pontypridd,PPD,51.5992956,-3.3418374
 National Rail;Elizabeth line,Elizabeth line,Gidea Park,GDP,51.581785,0.2057283
 London Overground,London Overground,Emerson Park,EMP,51.5686007,0.2202375
 National Rail,c2c,Purfleet,PFL,51.4810858,0.2369945
-Docklands Light Railway,KeolisAmey Docklands Ltd,Pudding Mill Lane,ZPM,51.5338301,-0.0135365
-National Rail,Transport for Wales Rail,Ffairfach,FFA,51.8730081,-3.9927793
-National Rail,Transport for Wales Rail,Llandybie,LLI,51.8209328,-4.0037378
-National Rail,Transport for Wales Rail,Llandeilo,LLL,51.8851723,-3.9868387
-National Rail,Transport for Wales Rail,Llanwrda,LNR,51.9626513,-3.8721201
-National Rail,Transport for Wales Rail,Ammanford,AMF,51.7955509,-3.996828
-National Rail,Transport for Wales Rail,Pantyffynnon,PTF,51.7786637,-3.997538
-National Rail,Transport for Wales Rail,Pontarddulais,PTD,51.7170446,-4.045435
-National Rail,Transport for Wales Rail,Bynea,BYE,51.6722799,-4.0987158
-National Rail,Transport for Wales Rail,Llangammarch,LLM,52.1142069,-3.5551178
-National Rail,Transport for Wales Rail,Cilmeri,CIM,52.1504164,-3.4567317
-National Rail,Transport for Wales Rail,Llandrindod,LLO,52.242258,-3.3794358
-National Rail,Transport for Wales Rail,Dolau,DOL,52.2949972,-3.2633324
-National Rail,Transport for Wales Rail,Gowerton,GWN,51.6489264,-4.0356664
-National Rail,Transport for Wales Rail,Broome,BME,52.4231523,-2.8844821
-National Rail,Transport for Wales Rail,Llangadog,LLG,51.9402678,-3.8931979
-National Rail,Transport for Wales Rail,Garth,GTH,52.1333876,-3.5301867
-National Rail,Transport for Wales Rail,Builth Road,BHR,52.1691098,-3.4271436
-National Rail,Transport for Wales Rail,Pen-y-bont,PNY,52.2743417,-3.3215797
-National Rail,Transport for Wales Rail,Llangynllo,LGO,52.3501452,-3.1615439
-National Rail,Transport for Wales Rail,Hopton Heath,HPT,52.391361,-2.9120277
-National Rail,Transport for Wales Rail,Llandovery,LLV,51.9953596,-3.8029237
-National Rail,Transport for Wales Rail,Llanbister Road,LLT,52.3363191,-3.2131872
-National Rail,Transport for Wales Rail,Bucknell,BUK,52.3572768,-2.947694
-National Rail,Transport for Wales Rail,Craven Arms,CRV,52.4424204,-2.8376284
-National Rail,Transport for Wales Rail,Sugar Loaf,SUG,52.0820713,-3.685776
-National Rail,Transport for Wales Rail,Llangennech,LLH,51.6913467,-4.07874
+Docklands Light Railway,Docklands Light Railway,Pudding Mill Lane,ZPM,51.5338301,-0.0135365
+National Rail,Transport for Wales,Ffairfach,FFA,51.8730081,-3.9927793
+National Rail,Transport for Wales,Llandybie,LLI,51.8209328,-4.0037378
+National Rail,Transport for Wales,Llandeilo,LLL,51.8851723,-3.9868387
+National Rail,Transport for Wales,Llanwrda,LNR,51.9626513,-3.8721201
+National Rail,Transport for Wales,Ammanford,AMF,51.7955509,-3.996828
+National Rail,Transport for Wales,Pantyffynnon,PTF,51.7786637,-3.997538
+National Rail,Transport for Wales,Pontarddulais,PTD,51.7170446,-4.045435
+National Rail,Transport for Wales,Bynea,BYE,51.6722799,-4.0987158
+National Rail,Transport for Wales,Llangammarch,LLM,52.1142069,-3.5551178
+National Rail,Transport for Wales,Cilmeri,CIM,52.1504164,-3.4567317
+National Rail,Transport for Wales,Llandrindod,LLO,52.242258,-3.3794358
+National Rail,Transport for Wales,Dolau,DOL,52.2949972,-3.2633324
+National Rail,Transport for Wales,Gowerton,GWN,51.6489264,-4.0356664
+National Rail,Transport for Wales,Broome,BME,52.4231523,-2.8844821
+National Rail,Transport for Wales,Llangadog,LLG,51.9402678,-3.8931979
+National Rail,Transport for Wales,Garth,GTH,52.1333876,-3.5301867
+National Rail,Transport for Wales,Builth Road,BHR,52.1691098,-3.4271436
+National Rail,Transport for Wales,Pen-y-bont,PNY,52.2743417,-3.3215797
+National Rail,Transport for Wales,Llangynllo,LGO,52.3501452,-3.1615439
+National Rail,Transport for Wales,Hopton Heath,HPT,52.391361,-2.9120277
+National Rail,Transport for Wales,Llandovery,LLV,51.9953596,-3.8029237
+National Rail,Transport for Wales,Llanbister Road,LLT,52.3363191,-3.2131872
+National Rail,Transport for Wales,Bucknell,BUK,52.3572768,-2.947694
+National Rail,Transport for Wales,Craven Arms,CRV,52.4424204,-2.8376284
+National Rail,Transport for Wales,Sugar Loaf,SUG,52.0820713,-3.685776
+National Rail,Transport for Wales,Llangennech,LLH,51.6913467,-4.07874
 National Rail,Network Rail,Liverpool Lime Street,LIV,53.4076085,-2.9775854
 National Rail,ScotRail,Perth,PTH,56.3914751,-3.4383963
 National Rail,Govia Thameslink Railway (Great Northern),Watlington,WTG,52.6728741,0.3831294
@@ -2467,13 +2466,13 @@ National Rail,ScotRail,Robroyston,RRN,55.886885,-4.1743912
 National Rail;Elizabeth line,Great Western Railway,Slough,SLO,51.512103,-0.591276
 National Rail,Northern Trains,Outwood,OUT,53.7152957,-1.5104273
 National Rail;Elizabeth line,Elizabeth line,Brentwood,BRE,51.6135231,0.3006105
-Docklands Light Railway,KeolisAmey Docklands Ltd,Heron Quays,ZHQ,51.5029301,-0.0215033
+Docklands Light Railway,Docklands Light Railway,Heron Quays,ZHQ,51.5029301,-0.0215033
 National Rail;Elizabeth line,Elizabeth line,Harold Wood,HRO,51.5932171,0.2341995
-Docklands Light Railway,KeolisAmey Docklands Ltd,Woolwich Arsenal DLR,ZAJ,51.4901052,0.0695827
-Docklands Light Railway,KeolisAmey Docklands Ltd,Westferry,ZWF,51.5094025,-0.026644
-Docklands Light Railway,KeolisAmey Docklands Ltd,Island Gardens,ZIG,51.4880683,-0.0105052
+Docklands Light Railway,Docklands Light Railway,Woolwich Arsenal DLR,ZAJ,51.4901052,0.0695827
+Docklands Light Railway,Docklands Light Railway,Westferry,ZWF,51.5094025,-0.026644
+Docklands Light Railway,Docklands Light Railway,Island Gardens,ZIG,51.4880683,-0.0105052
 National Rail\;Elizabeth line,Network Rail,London Paddington,PAD,51.5170952,-0.177317
-National Rail,Transport for Wales Rail,Yorton,YRT,52.8090881,-2.7363694
+National Rail,Transport for Wales,Yorton,YRT,52.8090881,-2.7363694
 National Rail,West Midlands Trains (London Northwestern Railway),Bletchley,BLY,51.9954534,-0.7363
 National Rail,Network Rail,Charing Cross,CHX,51.5074975,-0.1236888
 National Rail,Govia Thameslink Railway (Great Northern),Stevenage,SVG,51.9018356,-0.207144
@@ -2498,7 +2497,7 @@ Elizabeth line,Elizabeth line,Hanwell,HAN,51.5118253,-0.3381509
 National Rail;Elizabeth line,Elizabeth line,Goodmayes,GMY,51.565803,0.1119305
 National Rail;Elizabeth line,Elizabeth line,Acton Main Line,AML,51.5169789,-0.2679825
 London Overground,London Overground,Brondesbury,BSY,51.5450493,-0.2025961
-Docklands Light Railway,KeolisAmey Docklands Ltd,Star Lane,ZCJ,51.5205083,0.0043357
+Docklands Light Railway,Docklands Light Railway,Star Lane,ZCJ,51.5205083,0.0043357
 London Overground,London Overground,Kensal Rise,KNR,51.534447,-0.2202239
 National Rail;London Overground,London Overground,Hackney Downs,HAC,51.5486455,-0.060686
 London Overground,London Overground,Homerton,HMN,51.5470789,-0.043121
@@ -2511,9 +2510,9 @@ London Overground,London Overground,Hackney Wick,HKW,51.5434383,-0.0241542
 London Overground,London Overground,Bush Hill Park,BHK,51.641707,-0.0693944
 London Overground,London Overground,London Fields,LOF,51.5410518,-0.0577737
 London Overground,London Overground,South Hampstead,SOH,51.5414337,-0.1788007
-Docklands Light Railway,KeolisAmey Docklands Ltd,Devons Road,ZDR,51.5222078,-0.0172729
-Docklands Light Railway,KeolisAmey Docklands Ltd,Poplar,ZPL,51.5077131,-0.0172859
-Docklands Light Railway,KeolisAmey Docklands Ltd,Langdon Park,ZLP,51.5152051,-0.0141164
+Docklands Light Railway,Docklands Light Railway,Devons Road,ZDR,51.5222078,-0.0172729
+Docklands Light Railway,Docklands Light Railway,Poplar,ZPL,51.5077131,-0.0172859
+Docklands Light Railway,Docklands Light Railway,Langdon Park,ZLP,51.5152051,-0.0141164
 National Rail,ScotRail,Morar,MRR,56.9689555,-5.8220885
 National Rail,ScotRail,Singer,SIN,55.9074847,-4.4054997
 National Rail,ScotRail,Mallaig,MLG,57.0055416,-5.8302296
@@ -2533,19 +2532,19 @@ National Rail,West Midlands Trains (London Northwestern Railway),Tamworth,TAM,52
 National Rail,Chiltern Railways,Princes Risborough,PRR,51.7180454,-0.8440858
 National Rail,Chiltern Railways,Aylesbury,AYS,51.8134286,-0.8143149
 National Rail,Northern Trains,Poynton,PYT,53.3505513,-2.134793
-National Rail,Transport for Wales Rail,Holyhead,HHD,53.3073739,-4.6312147
+National Rail,Transport for Wales,Holyhead,HHD,53.3073739,-4.6312147
 National Rail,Avanti West Coast,Stoke-on-Trent,SOT,53.0079887,-2.1810781
-National Rail,Transport for Wales Rail,Abergavenny,AGV,51.8174352,-3.0090126
+National Rail,Transport for Wales,Abergavenny,AGV,51.8174352,-3.0090126
 National Rail,Avanti West Coast,Macclesfield,MAC,53.2593665,-2.1219368
 National Rail,Great Western Railway,Warminster,WMN,51.2069721,-2.1769016
 National Rail,Great Western Railway,Cheltenham Spa,CNM,51.8969882,-2.1001222
-National Rail,Transport for Wales Rail,Leominster,LEO,52.2258095,-2.7304447
+National Rail,Transport for Wales,Leominster,LEO,52.2258095,-2.7304447
 National Rail,West Midlands Trains (London Northwestern Railway),Wolverton,WOL,52.065978,-0.8047602
 National Rail,Merseyrail,Port Sunlight,PSL,53.3484812,-2.9982505
 National Rail,East Midlands Railway,Chesterfield,CHD,53.2382236,-1.4197283
 National Rail,Northern Trains,Glazebrook,GLZ,53.4282913,-2.4599923
 National Rail,Great Western Railway,Henley-on-Thames,HOT,51.5338451,-0.899422
-National Rail,Transport for Wales Rail,Wrexham Central,WXC,53.0463361,-2.9996254
+National Rail,Transport for Wales,Wrexham Central,WXC,53.0463361,-2.9996254
 National Rail,Northern Trains,Whaley Bridge,WBR,53.3302649,-1.9847378
 National Rail,Merseyrail,Liverpool Central,LVC,53.4042207,-2.9795092
 National Rail,Merseyrail,Sandhills,SDL,53.4295369,-2.9920015
@@ -2618,7 +2617,7 @@ National Rail,East Midlands Railway,Ilkeston,ILN,52.9790983,-1.2950397
 National Rail,West Midlands Trains (West Midlands Railway),Longbridge,LOB,52.3970107,-1.9807611
 National Rail,Northern Trains,Arnside,ARN,54.202601,-2.8280672
 National Rail,South Western Railway,Sholing,SHO,50.8964487,-1.364194
-National Rail,Transport for Wales Rail,Llansamlet,LAS,51.6615072,-3.8854619
+National Rail,Transport for Wales,Llansamlet,LAS,51.6615072,-3.8854619
 National Rail,Southeastern,Ramsgate,RAM,51.3410764,1.4052264
 National Rail,South Western Railway,Woolston,WLS,50.8990424,-1.3766466
 National Rail,South Western Railway,Swaythling,SWG,50.9411238,-1.3764672
@@ -2732,12 +2731,12 @@ National Rail,Northern Trains,Castleford,CFD,53.7240751,-1.3551009
 National Rail,Northern Trains,Goole,GOO,53.7049682,-0.874258
 National Rail,Northern Trains,Thorne North,TNN,53.6161857,-0.9724456
 National Rail,Northern Trains,Horden,HRE,54.7637874,-1.3071992
-National Rail,Transport for Wales Rail,Bow Street,BOW,52.4399137,-4.0303603
+National Rail,Transport for Wales,Bow Street,BOW,52.4399137,-4.0303603
 National Rail,Great Western Railway,Mortimer,MOR,51.3720595,-1.0356438
 National Rail,Great Western Railway,Bramley,BMY,51.3299792,-1.0608367
 National Rail,ScotRail,Dumbarton East,DBE,55.9423477,-4.5540413
 National Rail,West Midlands Trains (London Northwestern Railway),Northampton,NMP,52.2373719,-0.9069697
-National Rail,Transport for Wales Rail,Hawarden,HWD,53.1848468,-3.0320721
+National Rail,Transport for Wales,Hawarden,HWD,53.1848468,-3.0320721
 National Rail,West Midlands Trains (West Midlands Railway),Cannock,CAO,52.6860971,-2.0223507
 National Rail,West Midlands Trains (West Midlands Railway),Witton,WTT,52.512194,-1.8839327
 National Rail,West Midlands Trains (West Midlands Railway),Earlswood,EWD,52.3665989,-1.8614034
@@ -2758,7 +2757,7 @@ National Rail,Great Western Railway,Castle Bar Park,CBP,51.5228669,-0.3315024
 National Rail,Great Western Railway,Drayton Green,DRG,51.5163854,-0.3301943
 National Rail,Great Western Railway,Windsor and Eton Central,WNC,51.4832744,-0.6105638
 National Rail,West Midlands Trains (West Midlands Railway),Blake Street,BKT,52.6043776,-1.8446597
-National Rail,Transport for Wales Rail,Wrexham General,WRX,53.0505698,-3.0015161
+National Rail,Transport for Wales,Wrexham General,WRX,53.0505698,-3.0015161
 National Rail,Southeastern,Ashford International,AFK,51.143379,0.8752323
 National Rail,Greater Anglia,Colchester,COL,51.9005793,0.8924554
 National Rail,Northern Trains,Cramlington,CRM,55.0877627,-1.5986832
@@ -2783,7 +2782,7 @@ National Rail,ScotRail,Strathcarron,STC,57.4227498,-5.4285637
 National Rail,Northern Trains,Roose,ROO,54.1150592,-3.1943835
 National Rail,Northern Trains,Meols Cop,MEC,53.6460698,-2.9753812
 National Rail,West Midlands Trains (West Midlands Railway),Shirley,SRL,52.4035742,-1.8451962
-National Rail,Transport for Wales Rail,Pye Corner,PYE,51.5813041,-3.0412227
+National Rail,Transport for Wales,Pye Corner,PYE,51.5813041,-3.0412227
 National Rail,Govia Thameslink Railway (Southern),Tulse Hill,TUH,51.4399271,-0.1048466
 National Rail,Merseyrail,Headbolt Lane,HBL,53.4915834,-2.8837132
 National Rail,Great Western Railway,Reading Green Park,RGP,51.4265936,-1.0013637
@@ -2798,9 +2797,9 @@ National Rail,West Midlands Trains (West Midlands Railway),Alvechurch,ALV,52.346
 National Rail,Northern Trains,Aspatria,ASP,54.7589539,-3.3318813
 National Rail,Northern Trains,Corkickle,CKL,54.5416692,-3.5821304
 National Rail,Northern Trains,Parton,PRN,54.5704232,-3.5807799
-National Rail,Transport for Wales Rail,Cynghordy,CYN,52.0514798,-3.7484121
+National Rail,Transport for Wales,Cynghordy,CYN,52.0514798,-3.7484121
 National Rail,Great Western Railway,Portway Park and Ride,PRI,51.4881079,-2.6875586
-National Rail,Transport for Wales Rail,Crosskeys,CKY,51.6207575,-3.1258367
+National Rail,Transport for Wales,Crosskeys,CKY,51.6207575,-3.1258367
 National Rail,West Midlands Trains (West Midlands Railway),Yardley Wood,YRD,52.421023,-1.8545598
 National Rail,ScotRail,Reston,RSN,55.849914,-2.1926024
 Elizabeth line,Elizabeth line,Custom House,CUS,51.5098025,0.0272279
@@ -2832,7 +2831,7 @@ National Rail,Merseyrail,Little Sutton,LTT,53.2853509,-2.9431269
 National Rail,Merseyrail,Overpool,OVE,53.2840873,-2.9249263
 National Rail,Merseyrail,Capenhurst,CPU,53.260233,-2.9426005
 National Rail,Merseyrail,Bache,BAC,53.2082623,-2.8913945
-National Rail,Transport for Wales Rail,Cardiff Queen Street,CDQ,51.4820022,-3.1702926
+National Rail,Transport for Wales,Cardiff Queen Street,CDQ,51.4820022,-3.1702926
 National Rail,ScotRail,Barrhead,BRR,55.8039857,-4.3971091
 National Rail,ScotRail,Kirkhill,KKH,55.8141497,-4.1679698
 National Rail,Northern Trains,St Helens Central,SNH,53.4526608,-2.7299776
@@ -2845,3 +2844,11 @@ National Rail,Greater Anglia,Cambridge South,CMS,52.1740325,0.1312738
 National Rail,ScotRail,East Linton,ELT,55.9871488,-2.6628247
 National Rail,Great Western Railway,Ashley Down,ASD,51.4781307,-2.5766511
 National Rail,Greater Anglia,Beaulieu Park,BPA,51.757694,0.5194956
+National Rail,Great Western Railway,Sampford Courtenay,SFC,50.7901245,-3.9400112
+National Rail,ScotRail,IBM,IBM,55.932815,-4.79374
+National Rail,Northern Trains,Ashington,ASL,55.1812,-1.5684
+National Rail,Northern Trains,Newsham,NWH,55.1098,-1.5287
+National Rail,Northern Trains,Teesside Airport,TEA,54.5161,-1.4286
+National Rail,Transport for Wales,Llanhilleth,LTH,51.7011,-3.1362
+Bus,PLUSBUS,Oswestry Bus Station,OSW,52.8619,-3.0508
+National Rail,Northern Trains,Redcar British Steal,RBS,54.609888,-1.1126612
