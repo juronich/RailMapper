@@ -152,7 +152,7 @@ fetch('data/stations.csv')
         	journey.DestinationCRS === selectedCRS
     	);	
     	const destinationStations = relevantJourneys.map(journey => {
-        	const crs: journey.OriginCRS === selectedCRS
+        	const crs = journey.OriginCRS === selectedCRS
             	? journey.DestinationCRS
             	: journey.OriginCRS;
 			return {
