@@ -150,9 +150,9 @@ fetch('data/stations.csv')
     	const relevantJourneys = journeys.filter(journey =>
         	journey.OriginCRS === selectedCRS ||
         	journey.DestinationCRS === selectedCRS
-    	);
+    	);	
     	const destinationStations = relevantJourneys.map(journey => {
-        	crs: journey.OriginCRS === selectedCRS
+        	const crs: journey.OriginCRS === selectedCRS
             	? journey.DestinationCRS
             	: journey.OriginCRS;
 			return {
