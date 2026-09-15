@@ -167,22 +167,6 @@ fetch('data/stations.csv')
 		})
 		.catch(error => console.error('Error loading journey data:', error));
 	
-	/*
-	fetch('data/journeys.csv')
-    .then(response => response.text())
-    .then(csv => {
-        const rows = csv.trim().split('\n').map(row => row.split(','));
-        const headers = rows.shift();
-        rows.forEach(row => {
-        	const journey = {};
-            headers.forEach((header, i) => journey[header.trim()] = row[i]?.trim());
-            journeys.push(journey);
-        });
-        console.log('Journey data:', journeys);
-    })
-   	 .catch(error => console.error('Error loading journey data:', error));
-	 */
-
 	function updateDestinationBubbles(selectedCRS) {
     	destinationLayer.clearLayers();
 		const selectedStation = stations.find(station => station.CRS === selectedCRS);
@@ -191,8 +175,8 @@ fetch('data/stations.csv')
         		parseFloat(selectedStation.Latitude),
         		parseFloat(selectedStation.Longitude)
     		], {
-        		radius: 7,
-        		weight: 2,
+        		radius: 10,
+        		weight: 4,
         		color: 'black',
         		fillColor: 'yellow',
         		fillOpacity: 0.9
