@@ -236,13 +236,14 @@ fetch('data/stations.csv')
 
 
 				
-        	.bindPopup(`
+        	/*.bindPopup(`
             	<strong>${destination.station.Name}</strong> (${destination.station.CRS})<br>
             	Journeys from/to: ${originInput.value}<br><br>
             	${destination.yearlyJourneys
                 	.map(year => `${year.year}: ${year.journeys.toLocaleString()}`)
                 	.join('<br>')}
         	`)
+			*/
         	.addTo(destinationLayer);
     	});
 	}
