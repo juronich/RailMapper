@@ -130,7 +130,44 @@ fetch('data/stations.csv')
         }
 	});
     stations.sort((a, b) => a.Name.localeCompare(b.Name));
-	fetch('data/journeys.csv')
+
+	const journeyFiles = [
+    	'data/json/ODM_Scotland.json',
+    	'data/json/ODM_North.json',
+    	'data/json/ODM_Midlands.json',
+    	'data/json/ODM_Wales.json',
+    	'data/json/ODM_South.json',
+    	'data/json/ODM_London.json'
+	];
+	const journeys = [];
+	originInput.disabled = true;
+	Promise.all(
+    	journeyFiles.map(file =>
+        	fetch(file).then(response => response.json())
+    	)
+	)
+		.then(journeyDataFiles => {
+    		journeyDataFiles.forEach(data => {
+        		const years = data.years;
+        		Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
+            		Object.entries(destinations).forEach(([secondCRS, values]) => {
+                		const journey = {
+                    		OriginCRS: firstCRS,
+                    		DestinationCRS: secondCRS
+                		};
+                		years.forEach((year, index) => {
+                    		journey[year] = values[index] || 0;
+               			});
+                		journeys.push(journey);
+            		});
+        		});
+    		});
+    		console.log('Journey data loaded:', journeys.length, 'station pairs');
+			originInput.disabled = false;
+		})
+		.catch(error => console.error('Error loading journey data:', error));
+	
+	/*fetch('data/journeys.csv')
     .then(response => response.text())
     .then(csv => {
         const rows = csv.trim().split('\n').map(row => row.split(','));
@@ -142,7 +179,7 @@ fetch('data/stations.csv')
         });
         console.log('Journey data:', journeys);
     })
-   	 .catch(error => console.error('Error loading journey data:', error));
+   	 .catch(error => console.error('Error loading journey data:', error));*/
 
 	function updateDestinationBubbles(selectedCRS) {
     	destinationLayer.clearLayers();
