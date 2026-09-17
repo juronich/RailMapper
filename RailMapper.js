@@ -5,6 +5,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 
 const destinationLayer = L.layerGroup().addTo(map);
+const routeLayer = L.layerGroup().addTo(map);
 
 const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
@@ -412,9 +413,7 @@ yearInput.addEventListener('change', () => {
     updateDestinationBubbles(selectedCRS);
 });
 
-console.log('Finding route...');
-const route = findRailwayRoute('BTN', 'VIC');
-console.log(route);
+
 
 /*const map = L.map('map').setView([54.5, -3], 6);
 
