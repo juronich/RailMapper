@@ -216,7 +216,30 @@ function findRailwayRoute(startCRS, endCRS) {
 
     return null;
 }
+function drawRailwayRoute(route) {
+    routeLayer.clearLayers();
 
+    if (!route) {
+        console.error('No route found');
+        return;
+    }
+
+    const coordinates = route.nodes
+        .map(nodeId => railwayNodes.get(String(nodeId)))
+        .filter(node => node)
+        .map(node => [node.latitude, node.longitude]);
+
+    L.polyline(coordinates, {
+        color: 'blue',
+        weight: 5,
+        opacity: 0.9
+    }).addTo(routeLayer);
+
+    console.log('Route nodes:', route.nodes.length);
+    console.log('Route distance:', (route.distance / 1000).toFixed(2), 'km');
+
+    map.fitBounds(coordinates);
+}
 
 const journeyFiles = [
     'data/journeys/ODM_Scotland.json',
@@ -389,6 +412,7 @@ yearInput.addEventListener('change', () => {
     updateDestinationBubbles(selectedCRS);
 });
 
+console.log('Finding route...');
 const route = findRailwayRoute('BTN', 'VIC');
 console.log(route);
 
