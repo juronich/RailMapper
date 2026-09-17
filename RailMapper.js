@@ -29,6 +29,8 @@ Promise.all([
     const ways = Array.isArray(waysData) ? waysData : waysData.ways;
     const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
     const waysMetaById = new Map(waysMeta.map(way => [String(way[0]), way]));
+	const routingEdges = routingData.edges;
+
 
     stations = Object.entries(stationsData).map(([crs, record]) => ({
         crs: crs,
