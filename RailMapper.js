@@ -15,14 +15,16 @@ let journeys = [];
 let stations = [];
 let railwayNodes = new Map();
 let railwayGraph = new Map();
+let railwayRoutingGraph = new Map();
 
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
     fetch('data/railway-ways.json').then(response => response.json()),
     fetch('data/railway-ways-data.json').then(response => response.json()),
-    fetch('data/stations.json').then(response => response.json())
+    fetch('data/stations.json').then(response => response.json()),
+	fetch('data/railway-routing.json').then(response => response.json()),
 ])
-.then(([nodesData, waysData, waysMetaData, stationsData]) => {
+.then(([nodesData, waysData, waysMetaData, stationsData, routingData]) => {
     const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
     const ways = Array.isArray(waysData) ? waysData : waysData.ways;
     const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
@@ -126,95 +128,100 @@ Promise.all([
     });
 })
 .catch(error => console.error('Error loading railway network data:', error));
+routingData.edges.forEach(edge => {
+    const [from, to, distance, path] = edge;
+
+    if (!railwayRoutingGraph.has(String(from))) railwayRoutingGraph.set(String(from), []);
+    if (!railwayRoutingGraph.has(String(to))) railwayRoutingGraph.set(String(to), []);
+
+    railwayRoutingGraph.get(String(from)).push({
+        node: String(to),
+        distance: distance,
+        path: path
+    });
+
+    railwayRoutingGraph.get(String(to)).push({
+        node: String(from),
+        distance: distance,
+        path: [...path].reverse()
+    });
+});
+console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
 
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
     const endStation = stations.find(station => station.crs === endCRS);
-
     if (!startStation || !endStation) {
         console.error('Could not find start or end station');
         return null;
     }
-
     const startNodes = startStation.stop_positions
         .map(id => String(id))
-        .filter(id => railwayNodes.has(id));
-
-    const endNodes = endStation.stop_positions
-        .map(id => String(id))
-        .filter(id => railwayNodes.has(id));
-
-    if (!startNodes.length || !endNodes.length) {
-        console.error('One or both stations have no usable railway stop positions');
+        .filter(id => railwayRoutingGraph.has(id));
+    const endNodes = new Set(
+        endStation.stop_positions
+            .map(id => String(id))
+            .filter(id => railwayRoutingGraph.has(id))
+    );
+    if (!startNodes.length || !endNodes.size) {
+        console.error('One or both stations have no usable routing nodes');
         return null;
     }
-
-    const endNodeSet = new Set(endNodes);
     const distances = new Map();
     const previous = new Map();
     const unvisited = new Set();
-
-    railwayGraph.forEach((neighbours, node) => {
+    railwayRoutingGraph.forEach((edges, node) => {
         distances.set(node, Infinity);
         unvisited.add(node);
     });
-
-    startNodes.forEach(node => distances.set(node, 0));
-
+    startNodes.forEach(node =>{distances.set(node, 0)});
     while (unvisited.size > 0) {
         let currentNode = null;
         let currentDistance = Infinity;
-
         for (const node of unvisited) {
-            if (distances.get(node) < currentDistance) {
+            const distance = distances.get(node);
+            if (distance < currentDistance) {
                 currentNode = node;
-                currentDistance = distances.get(node);
+                currentDistance = distance;
             }
         }
-
-        if (currentNode === null || currentDistance === Infinity) break;
-
-        if (endNodeSet.has(currentNode)) {
-            const path = [];
+        if (currentNode === null || currentDistance === Infinity) {
+            break;
+        }
+        if (endNodes.has(currentNode)) {
+            const routingEdges = [];
             let node = currentNode;
-
-            while (node !== undefined) {
-                path.unshift(node);
-                node = previous.get(node);
+            while (previous.has(node)) {
+                const previousStep = previous.get(node);
+                routingEdges.unshift(previousStep.edge);
+                node = previousStep.node;
             }
-
+            const physicalNodes = [];
+            routingEdges.forEach((edge, index) => {
+                if (index === 0) {
+                    physicalNodes.push(...edge.path);
+                } else {
+                    physicalNodes.push(...edge.path.slice(1));
+                }
+            });
             return {
-                nodes: path,
+                nodes: physicalNodes,
                 distance: currentDistance
             };
         }
-
         unvisited.delete(currentNode);
-
-        for (const neighbour of railwayGraph.get(currentNode) || []) {
-            if (!unvisited.has(neighbour)) continue;
-
-            const current = railwayNodes.get(currentNode);
-            const next = railwayNodes.get(neighbour);
-
-            const lat1 = current.latitude * Math.PI / 180;
-            const lat2 = next.latitude * Math.PI / 180;
-            const dLat = (next.latitude - current.latitude) * Math.PI / 180;
-            const dLon = (next.longitude - current.longitude) * Math.PI / 180;
-
-            const x = dLon * Math.cos((lat1 + lat2) / 2);
-            const y = dLat;
-
-            const edgeDistance = Math.sqrt(x * x + y * y) * 6371000;
-            const newDistance = currentDistance + edgeDistance;
-
-            if (newDistance < distances.get(neighbour)) {
-                distances.set(neighbour, newDistance);
-                previous.set(neighbour, currentNode);
+        for (const edge of railwayRoutingGraph.get(currentNode) || []) {
+            if (!unvisited.has(edge.node)) continue;
+            const newDistance = currentDistance + edge.distance;
+            if (newDistance < distances.get(edge.node)) {
+                distances.set(edge.node, newDistance);
+                previous.set(edge.node, {
+                    node: currentNode,
+                    edge: edge
+                });
             }
         }
     }
-
     return null;
 }
 function drawRailwayRoute(route) {
