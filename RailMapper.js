@@ -12,6 +12,8 @@ const originResults = document.getElementById('origin-results');
 
 let journeys = [];
 let stations = [];
+let railwayNodes = new Map();
+let railwayGraph = new Map();
 
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
@@ -40,8 +42,6 @@ Promise.all([
     console.log('Railway ways-data:', waysMeta.length);
     console.log('Railway stations:', stations.length);
 
-    const railwayNodes = new Map();
-    const railwayGraph = new Map();
     const railwayFeatures = [];
 
     nodes.forEach(node => {
@@ -125,6 +125,98 @@ Promise.all([
     });
 })
 .catch(error => console.error('Error loading railway network data:', error));
+
+function findRailwayRoute(startCRS, endCRS) {
+    const startStation = stations.find(station => station.crs === startCRS);
+    const endStation = stations.find(station => station.crs === endCRS);
+
+    if (!startStation || !endStation) {
+        console.error('Could not find start or end station');
+        return null;
+    }
+
+    const startNodes = startStation.stop_positions
+        .map(id => String(id))
+        .filter(id => railwayNodes.has(id));
+
+    const endNodes = endStation.stop_positions
+        .map(id => String(id))
+        .filter(id => railwayNodes.has(id));
+
+    if (!startNodes.length || !endNodes.length) {
+        console.error('One or both stations have no usable railway stop positions');
+        return null;
+    }
+
+    const endNodeSet = new Set(endNodes);
+    const distances = new Map();
+    const previous = new Map();
+    const unvisited = new Set();
+
+    railwayGraph.forEach((neighbours, node) => {
+        distances.set(node, Infinity);
+        unvisited.add(node);
+    });
+
+    startNodes.forEach(node => distances.set(node, 0));
+
+    while (unvisited.size > 0) {
+        let currentNode = null;
+        let currentDistance = Infinity;
+
+        for (const node of unvisited) {
+            if (distances.get(node) < currentDistance) {
+                currentNode = node;
+                currentDistance = distances.get(node);
+            }
+        }
+
+        if (currentNode === null || currentDistance === Infinity) break;
+
+        if (endNodeSet.has(currentNode)) {
+            const path = [];
+            let node = currentNode;
+
+            while (node !== undefined) {
+                path.unshift(node);
+                node = previous.get(node);
+            }
+
+            return {
+                nodes: path,
+                distance: currentDistance
+            };
+        }
+
+        unvisited.delete(currentNode);
+
+        for (const neighbour of railwayGraph.get(currentNode) || []) {
+            if (!unvisited.has(neighbour)) continue;
+
+            const current = railwayNodes.get(currentNode);
+            const next = railwayNodes.get(neighbour);
+
+            const lat1 = current.latitude * Math.PI / 180;
+            const lat2 = next.latitude * Math.PI / 180;
+            const dLat = (next.latitude - current.latitude) * Math.PI / 180;
+            const dLon = (next.longitude - current.longitude) * Math.PI / 180;
+
+            const x = dLon * Math.cos((lat1 + lat2) / 2);
+            const y = dLat;
+
+            const edgeDistance = Math.sqrt(x * x + y * y) * 6371000;
+            const newDistance = currentDistance + edgeDistance;
+
+            if (newDistance < distances.get(neighbour)) {
+                distances.set(neighbour, newDistance);
+                previous.set(neighbour, currentNode);
+            }
+        }
+    }
+
+    return null;
+}
+
 
 const journeyFiles = [
     'data/journeys/ODM_Scotland.json',
@@ -296,6 +388,9 @@ yearInput.addEventListener('change', () => {
 
     updateDestinationBubbles(selectedCRS);
 });
+
+const route = findRailwayRoute('BTN', 'VIC');
+console.log(route);
 
 /*const map = L.map('map').setView([54.5, -3], 6);
 
