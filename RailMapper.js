@@ -112,7 +112,7 @@ Promise.all([
         features: railwayFeatures
     }, {
         style: {
-            color: '#777',
+            color: '#4EA72E',
             weight: 1,
             opacity: 0.7
         }
