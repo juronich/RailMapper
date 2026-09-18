@@ -128,27 +128,28 @@ Promise.all([
         .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
         .addTo(map);
     });
+	routingData.edges.forEach(edge => {
+    	const [from, to, distance, path] = edge;
+
+    	if (!railwayRoutingGraph.has(String(from))) railwayRoutingGraph.set(String(from), []);
+    	if (!railwayRoutingGraph.has(String(to))) railwayRoutingGraph.set(String(to), []);
+
+    	railwayRoutingGraph.get(String(from)).push({
+        	node: String(to),
+        	distance: distance,
+        	path: path
+    	});
+
+    	railwayRoutingGraph.get(String(to)).push({
+        	node: String(from),
+        	distance: distance,
+        	path: [...path].reverse()
+    	});
+	});
+	console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
 })
 .catch(error => console.error('Error loading railway network data:', error));
-routingData.edges.forEach(edge => {
-    const [from, to, distance, path] = edge;
 
-    if (!railwayRoutingGraph.has(String(from))) railwayRoutingGraph.set(String(from), []);
-    if (!railwayRoutingGraph.has(String(to))) railwayRoutingGraph.set(String(to), []);
-
-    railwayRoutingGraph.get(String(from)).push({
-        node: String(to),
-        distance: distance,
-        path: path
-    });
-
-    railwayRoutingGraph.get(String(to)).push({
-        node: String(from),
-        distance: distance,
-        path: [...path].reverse()
-    });
-});
-console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
 
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
