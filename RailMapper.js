@@ -163,6 +163,138 @@ function getTransferNodes(crs) {
         .map(id => String(id))
         .filter(id => railwayRoutingGraph.has(id));
 }
+
+function buildOriginRoutingTree(originCRS) {
+    const originStation = stations.find(station => station.crs === originCRS);
+
+    if (!originStation) {
+        console.error('Could not find origin station:', originCRS);
+        return null;
+    }
+
+    const distances = new Map();
+    const previous = new Map();
+    const unvisited = new Set();
+
+    railwayRoutingGraph.forEach((edges, node) => {
+        distances.set(node, Infinity);
+        unvisited.add(node);
+    });
+
+    const startNodes = originStation.stop_positions
+        .map(id => String(id))
+        .filter(id => railwayRoutingGraph.has(id));
+
+    if (!startNodes.length) {
+        console.error('Origin station has no usable routing nodes:', originCRS);
+        return null;
+    }
+
+    startNodes.forEach(node => {
+        distances.set(node, 0);
+    });
+
+    const stationByStopPosition = new Map();
+
+    stations.forEach(station => {
+        station.stop_positions.forEach(id => {
+            stationByStopPosition.set(String(id), station);
+        });
+    });
+
+    const transfersByCRS = new Map();
+
+    stationTransfers.forEach(([crs1, crs2]) => {
+        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
+        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
+
+        transfersByCRS.get(crs1).push(crs2);
+        transfersByCRS.get(crs2).push(crs1);
+    });
+
+    while (unvisited.size > 0) {
+        let currentNode = null;
+        let currentDistance = Infinity;
+
+        for (const node of unvisited) {
+            const distance = distances.get(node);
+
+            if (distance < currentDistance) {
+                currentNode = node;
+                currentDistance = distance;
+            }
+        }
+
+        if (currentNode === null || currentDistance === Infinity) {
+            break;
+        }
+
+        unvisited.delete(currentNode);
+
+        for (const edge of railwayRoutingGraph.get(currentNode) || []) {
+            if (!unvisited.has(edge.node)) continue;
+
+            const newDistance = currentDistance + edge.distance;
+
+            if (newDistance < distances.get(edge.node)) {
+                distances.set(edge.node, newDistance);
+                previous.set(edge.node, {
+                    node: currentNode,
+                    edge: edge
+                });
+            }
+        }
+
+        const currentStation = stationByStopPosition.get(currentNode);
+
+        if (currentStation) {
+            const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
+
+            for (const targetCRS of connectedCRS) {
+    			const targetStation = stations.find(station => station.crs === targetCRS);
+
+    			if (!targetStation) continue;
+
+    			for (const stopPosition of targetStation.stop_positions) {
+        			const transferNode = String(stopPosition);
+
+        			if (!unvisited.has(transferNode)) continue;
+        			if (!railwayRoutingGraph.has(transferNode)) continue;
+
+        			const newDistance = currentDistance;
+
+        			if (newDistance < distances.get(transferNode)) {
+            			distances.set(transferNode, newDistance);
+            			previous.set(transferNode, {
+                			node: currentNode,
+                			edge: {
+                    			node: transferNode,
+                    			distance: 0,
+                    			path: [],
+                    			transfer: true,
+                    			fromCoordinates: [
+                        			currentStation.latitude,
+                        			currentStation.longitude
+                    			],
+                    			toCoordinates: [
+                        			targetStation.latitude,
+                        			targetStation.longitude
+                    			]
+                			}
+            			});
+        			}
+    			}
+			}
+        }
+    }
+
+    return {
+        originCRS: originCRS,
+        distances: distances,
+        previous: previous
+    };
+}
+
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
     const endStation = stations.find(station => station.crs === endCRS);
