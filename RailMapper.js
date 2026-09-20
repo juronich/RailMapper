@@ -149,10 +149,11 @@ Promise.all([
     	});
 	});
 	console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
+	stationTransfers = transfersData.transfers || [];
+	console.log('Station transfers loaded:', stationTransfers.length);
 })
 .catch(error => console.error('Error loading railway network data:', error));
-stationTransfers = transfersData.transfers || [];
-console.log('Station transfers loaded:', stationTransfers.length);
+
 
 function getTransferNodes(crs) {
     const station = stations.find(station => station.crs === crs);
