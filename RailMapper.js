@@ -590,6 +590,76 @@ function drawRailwayRoute(route) {
     map.fitBounds(coordinates);
 }
 
+function drawDestinationRoute(tree, destinationCRS) {
+    routeLayer.clearLayers();
+
+    if (!tree || !currentOriginCRS) return;
+
+    const destinationStation = stations.find(
+        station => station.crs === destinationCRS
+    );
+
+    if (!destinationStation) return;
+
+    const destinationNodes = destinationStation.stop_positions
+        .map(id => String(id))
+        .filter(id => tree.distances.get(id) !== Infinity);
+
+    if (!destinationNodes.length) return;
+
+    const destinationNode = destinationNodes.reduce((closest, node) => {
+        if (!closest) return node;
+
+        return tree.distances.get(node) < tree.distances.get(closest)
+            ? node
+            : closest;
+    }, null);
+
+    const routingEdges = [];
+    let node = destinationNode;
+
+    while (tree.previous.has(node)) {
+        const previous = tree.previous.get(node);
+
+        routingEdges.unshift(previous.edge);
+        node = previous.node;
+    }
+
+    const coordinates = [];
+
+    routingEdges.forEach(edge => {
+        if (edge.transfer) {
+            coordinates.push(edge.fromCoordinates);
+            coordinates.push(edge.toCoordinates);
+            return;
+        }
+
+        const edgeCoordinates = edge.path
+            .map(nodeId => railwayNodes.get(String(nodeId)))
+            .filter(node => node)
+            .map(node => [
+                node.latitude,
+                node.longitude
+            ]);
+
+        if (coordinates.length === 0) {
+            coordinates.push(...edgeCoordinates);
+        } else {
+            coordinates.push(...edgeCoordinates.slice(1));
+        }
+    });
+
+    if (coordinates.length < 2) return;
+
+    L.polyline(coordinates, {
+        color: '#ff6600',
+        weight: 7,
+        opacity: 0.9,
+        lineCap: 'round',
+        lineJoin: 'round'
+    }).addTo(routeLayer);
+}
+
 const journeyFiles = [
     'data/journeys/ODM_Scotland.json',
     'data/journeys/ODM_North.json',
@@ -633,9 +703,7 @@ Promise.all(
 
 function updateDestinationBubbles(selectedCRS) {
     destinationLayer.clearLayers();
-
     const selectedYear = yearInput.value;
-
     const relevantJourneys = journeys.filter(journey =>
         journey.OriginCRS === selectedCRS ||
         journey.DestinationCRS === selectedCRS
@@ -662,17 +730,20 @@ function updateDestinationBubbles(selectedCRS) {
     destinationStations.forEach(destination => {
         if (!destination.station) return;
 
-        L.circleMarker([
-            destination.station.latitude,
-            destination.station.longitude
-        ], {
-            radius: Math.pow(destination.journeys, 0.25) * 1.5,
-            weight: 2,
-            color: 'black',
-            fillColor: 'red',
-            fillOpacity: 0.45
-        })
-        .bindPopup(`
+		L.circleMarker([
+    		destination.station.latitude,
+    		destination.station.longitude
+		], {
+    		radius: Math.pow(destination.journeys, 0.25) * 1.5,
+    		weight: 2,
+    		color: 'black',
+    		fillColor: 'red',
+    		fillOpacity: 0.45
+		})
+		.on('click', () => {
+    		drawDestinationRoute(currentRoutingTree, destination.station.crs);
+		})
+		.bindPopup(`
             <strong>${destination.station.name}</strong> (${destination.station.crs})<br>
             Journeys from/to: ${originInput.value}<br><br>
             <strong>Average: ${Math.round(
@@ -764,20 +835,14 @@ originInput.addEventListener('input', () => {
 
 yearInput.addEventListener('change', () => {
     const selectedCRS = originInput.dataset.crs;
-
     if (!selectedCRS) return;
-
     updateDestinationBubbles(selectedCRS);
-
     if (!currentRoutingTree || currentOriginCRS !== selectedCRS) return;
-
     const selectedYear = yearInput.value;
-
     const flows = calculatePassengerFlows(
         currentRoutingTree,
         selectedCRS,
         selectedYear
     );
-
     drawPassengerFlows(currentRoutingTree, flows);
 });
