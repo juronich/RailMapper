@@ -768,4 +768,16 @@ yearInput.addEventListener('change', () => {
     if (!selectedCRS) return;
 
     updateDestinationBubbles(selectedCRS);
+
+    if (!currentRoutingTree || currentOriginCRS !== selectedCRS) return;
+
+    const selectedYear = yearInput.value;
+
+    const flows = calculatePassengerFlows(
+        currentRoutingTree,
+        selectedCRS,
+        selectedYear
+    );
+
+    drawPassengerFlows(currentRoutingTree, flows);
 });
