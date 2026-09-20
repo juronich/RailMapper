@@ -11,7 +11,7 @@ const flowLayer = L.layerGroup().addTo(map);
 const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
-flowLayer.bringToFront();
+
 
 let journeys = [];
 let stations = [];
