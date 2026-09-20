@@ -299,7 +299,6 @@ function buildOriginRoutingTree(originCRS) {
 }
 function calculatePassengerFlows(tree, originCRS, year, originStation) {
     const stationNodes = new Map();
-		
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
             const node = String(id);
@@ -309,98 +308,69 @@ function calculatePassengerFlows(tree, originCRS, year, originStation) {
             }
         });
     });
-
     const destinationVolumes = new Map();
-
     journeys.forEach(journey => {
         let destinationCRS = null;
-
         if (journey.OriginCRS === originCRS) {
             destinationCRS = journey.DestinationCRS;
         } else if (journey.DestinationCRS === originCRS) {
             destinationCRS = journey.OriginCRS;
         }
-
         if (!destinationCRS || destinationCRS === originCRS) return;
-
         const volume = Number(journey[year]) || 0;
-
         if (volume === 0) return;
-
         destinationVolumes.set(
             destinationCRS,
             (destinationVolumes.get(destinationCRS) || 0) + volume
         );
     });
-
     const nodeVolumes = new Map();
-
     destinationVolumes.forEach((volume, destinationCRS) => {
         const station = stations.find(station => station.crs === destinationCRS);
-
         if (!station) return;
-
         const reachableNodes = station.stop_positions
             .map(id => String(id))
             .filter(id => tree.distances.get(id) !== Infinity);
-
         if (!reachableNodes.length) return;
-
         const destinationNode = reachableNodes.reduce((closest, node) => {
             if (!closest) return node;
-
             return tree.distances.get(node) < tree.distances.get(closest)
                 ? node
                 : closest;
         }, null);
-
         nodeVolumes.set(
             destinationNode,
             (nodeVolumes.get(destinationNode) || 0) + volume
         );
     });
-
     const edgeFlows = new Map();
-
     const nodesByDistance = [...tree.distances.entries()]
         .filter(([node, distance]) => distance !== Infinity)
         .sort((a, b) => b[1] - a[1]);
-
     nodesByDistance.forEach(([node]) => {
         const volume = nodeVolumes.get(node) || 0;
-
         if (!volume) return;
-
         const previous = tree.previous.get(node);
-
         if (!previous) return;
-
         const edgeKey = `${previous.node}->${node}`;
-
         edgeFlows.set(
             edgeKey,
             (edgeFlows.get(edgeKey) || 0) + volume
         );
-
         nodeVolumes.set(
             previous.node,
             (nodeVolumes.get(previous.node) || 0) + volume
         );
     });
-
     const originStopFlows = new Map();
-
 	originStation.stop_positions.forEach(id => {
     	const node = String(id);
-
     	const flow = [...edgeFlows.entries()]
         	.find(([edgeKey]) => edgeKey.startsWith(`${node}->`))?.[1] || 0;
-
     	if (flow > 0) {
        	 originStopFlows.set(node, flow);
     	}
 	});
-
 	return {
     	edgeFlows,
     	originStopFlows
@@ -408,22 +378,16 @@ function calculatePassengerFlows(tree, originCRS, year, originStation) {
 }
 function drawPassengerFlows(tree, flows) {
     flowLayer.clearLayers();
-
-    if (!tree || !flows || !flows.size) return;
-
+	if (!tree || !flows || !flows.edgeFlows || !flows.edgeFlows.size) return;
     const edgeFlows = flows.edgeFlows;
 	const originStopFlows = flows.originStopFlows;
-
 	const maxFlow = Math.max(...edgeFlows.values());
     edgeFlows.forEach((flow, edgeKey) => {
         const [fromNode, toNode] = edgeKey.split('->');
         const previous = tree.previous.get(toNode);
-
         if (!previous || previous.node !== fromNode) return;
-
         const edge = previous.edge;
         let coordinates = [];
-
         if (edge.transfer) {
             coordinates = [
                 edge.fromCoordinates,
@@ -438,11 +402,8 @@ function drawPassengerFlows(tree, flows) {
                     node.longitude
                 ]);
         }
-
         if (coordinates.length < 2) return;
-
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
-
         L.polyline(coordinates, {
             color: '#D86DCD',
             weight: width,
@@ -454,15 +415,11 @@ function drawPassengerFlows(tree, flows) {
 	const originStation = stations.find(
     	station => station.crs === currentOriginCRS
 	);
-
 	if (originStation) {
     	originStopFlows.forEach((flow, nodeId) => {
         	const node = railwayNodes.get(String(nodeId));
-
         	if (!node) return;
-
         	const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
-
         	L.polyline([
             	[originStation.latitude, originStation.longitude],
             	[node.latitude, node.longitude]
@@ -691,7 +648,19 @@ function drawDestinationRoute(tree, destinationCRS) {
             coordinates.push(...edgeCoordinates.slice(1));
         }
     });
+	const destinationCoordinates = [
+    	destinationStation.latitude,
+    	destinationStation.longitude
+	];
 
+	const lastCoordinate = coordinates[coordinates.length - 1];
+
+	if (
+    	lastCoordinate[0] !== destinationCoordinates[0] ||
+    	lastCoordinate[1] !== destinationCoordinates[1]
+	) {
+    	coordinates.push(destinationCoordinates);
+	}
     if (coordinates.length < 2) return;
 
     L.polyline(coordinates, {
