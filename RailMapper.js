@@ -213,7 +213,14 @@ function findRailwayRoute(startCRS, endCRS) {
             }
             const physicalNodes = [];
             routingEdges.forEach((edge, index) => {
-    			if (edge.transfer) return;
+    			if (edge.transfer) {
+        			physicalNodes.push({
+            			transfer: true,
+            			fromCoordinates: edge.fromCoordinates,
+            			toCoordinates: edge.toCoordinates
+        			});
+        			return;
+    			}
 
     			if (index === 0) {
         			physicalNodes.push(...edge.path);
@@ -259,11 +266,16 @@ function findRailwayRoute(startCRS, endCRS) {
                 		previous.set(transferNode, {
                     		node: currentNode,
                     		edge: {
-                        		node: transferNode,
-                        		distance: 0,
-                        		path: [],
-                        		transfer: true
-                    		}
+    							node: transferNode,
+    							distance: 0,
+    							path: [],
+    							transfer: true,
+    							fromCoordinates: [currentStation.latitude, currentStation.longitude],
+    							toCoordinates: [
+									stations.find(station => station.crs === targetCRS).latitude, 
+									stations.find(station => station.crs === targetCRS).longitude
+								]
+							}
                 		});
             		}
         		}
@@ -280,10 +292,20 @@ function drawRailwayRoute(route) {
         return;
     }
 
-    const coordinates = route.nodes
-        .map(nodeId => railwayNodes.get(String(nodeId)))
-        .filter(node => node)
-        .map(node => [node.latitude, node.longitude]);
+    const coordinates = [];
+	route.nodes.forEach(node => {
+    	if (typeof node === 'object' && node.transfer) {
+        	coordinates.push(node.fromCoordinates);
+        	coordinates.push(node.toCoordinates);
+        	return;
+    	}
+
+    	const railwayNode = railwayNodes.get(String(node));
+
+    	if (railwayNode) {
+        	coordinates.push([railwayNode.latitude, railwayNode.longitude]);
+    	}
+	});
 
     L.polyline(coordinates, {
         color: 'blue',
