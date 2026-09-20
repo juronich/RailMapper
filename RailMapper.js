@@ -299,12 +299,7 @@ function buildOriginRoutingTree(originCRS) {
 }
 function calculatePassengerFlows(tree, originCRS, year, originStation) {
     const stationNodes = new Map();
-	const originStation = stations.find(
-    	station => station.crs === originCRS
-	);
-
-	if (!originStation) return null;
-	
+		
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
             const node = String(id);
