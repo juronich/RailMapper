@@ -392,7 +392,7 @@ function calculatePassengerFlows(tree, originCRS, year) {
 function drawPassengerFlows(tree, flows) {
     flowLayer.clearLayers();
 
-    if (!tree || !flows || !flows.size) return;
+    if (!tree || !flows || !flows.size || !currentOriginCRS) return;
 
     const maxFlow = Math.max(...flows.values());
 
@@ -425,9 +425,43 @@ function drawPassengerFlows(tree, flows) {
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
 
         L.polyline(coordinates, {
-            color: '#D86DCD',
+            color: '#3388ff',
             weight: width,
-            opacity: 0.9,
+            opacity: 0.75,
+            lineCap: 'round',
+            lineJoin: 'round'
+        }).addTo(flowLayer);
+    });
+
+    const originStation = stations.find(
+        station => station.crs === currentOriginCRS
+    );
+
+    if (!originStation) return;
+
+    originStation.stop_positions.forEach(id => {
+        const nodeId = String(id);
+
+        if (!railwayRoutingGraph.has(nodeId)) return;
+
+        const node = railwayNodes.get(nodeId);
+
+        if (!node) return;
+
+        const flow = [...flows.entries()]
+            .find(([edgeKey]) => edgeKey.startsWith(`${nodeId}->`))?.[1] || 0;
+
+        if (!flow) return;
+
+        const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
+
+        L.polyline([
+            [originStation.latitude, originStation.longitude],
+            [node.latitude, node.longitude]
+        ], {
+            color: '#3388ff',
+            weight: width,
+            opacity: 0.75,
             lineCap: 'round',
             lineJoin: 'round'
         }).addTo(flowLayer);
