@@ -826,13 +826,13 @@ originInput.addEventListener('input', () => {
             const selectedYear = yearInput.value;
 
             const flowData = calculatePassengerFlows(
-    currentRoutingTree,
-    selectedCRS,
-    selectedYear
-);
+    			currentRoutingTree,
+    			selectedCRS,
+    			selectedYear
+			);
 
-currentPassengerFlows = flowData.edgeFlows;
-drawPassengerFlows(currentRoutingTree, flowData);
+			currentPassengerFlows = flowData.edgeFlows;
+			drawPassengerFlows(currentRoutingTree, flowData);
 
             console.log('Year: ', selectedYear);
         });
@@ -853,11 +853,11 @@ yearInput.addEventListener('change', () => {
     const selectedYear = yearInput.value;
 
     const flowData = calculatePassengerFlows(
-    currentRoutingTree,
-    selectedCRS,
-    selectedYear
-);
+    	currentRoutingTree,
+    	selectedCRS,
+    	selectedYear
+	);
 
-currentPassengerFlows = flowData.edgeFlows;
-drawPassengerFlows(currentRoutingTree, flowData);
+	currentPassengerFlows = flowData.edgeFlows;
+	drawPassengerFlows(currentRoutingTree, flowData);
 });
