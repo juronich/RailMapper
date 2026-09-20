@@ -10,6 +10,7 @@ const flowLayer = L.layerGroup().addTo(map);
 const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
+flowLayer.bringToFront();
 
 let journeys = [];
 let stations = [];
@@ -399,6 +400,16 @@ function drawPassengerFlows(tree, flows) {
         	stopInfo.coordinates,
         	[stopCoordinates.latitude, stopCoordinates.longitude]
     	], {
+        	color: '#000000',
+        	weight: width + 3,
+        	opacity: 0.9,
+        	lineCap: 'round',
+        	lineJoin: 'round'
+    	}).addTo(flowLayer);
+		L.polyline([
+        	stopInfo.coordinates,
+        	[stopCoordinates.latitude, stopCoordinates.longitude]
+    	], {
         	color: '#D86DCD',
         	weight: width,
         	opacity: 0.9,
@@ -406,6 +417,7 @@ function drawPassengerFlows(tree, flows) {
         	lineJoin: 'round'
     	}).addTo(flowLayer);
 	});
+	
     flows.forEach((flow, edgeKey) => {
         const [fromNode, toNode] = edgeKey.split('->');
         const previous = tree.previous.get(toNode);
@@ -429,6 +441,13 @@ function drawPassengerFlows(tree, flows) {
         if (coordinates.length < 2) return;
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
         L.polyline(coordinates, {
+            color: '#000000',
+            weight: width + 3,
+            opacity: 0.9,
+            lineCap: 'round',
+            lineJoin: 'round'
+        }).addTo(flowLayer);
+		L.polyline(coordinates, {
             color: '#D86DCD',
             weight: width,
             opacity: 0.9,
@@ -598,48 +617,35 @@ function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
     routeLayer.clearLayers();
 	if (!tree || !currentOriginCRS) return;
 	const maxFlow = Math.max(...currentPassengerFlows.values());
-
 	const width = 1 + (Math.sqrt(destinationJourneys / maxFlow) * 12);
-
     const destinationStation = stations.find(
         station => station.crs === destinationCRS
     );
-
     if (!destinationStation) return;
-
     const destinationNodes = destinationStation.stop_positions
         .map(id => String(id))
         .filter(id => tree.distances.get(id) !== Infinity);
-
     if (!destinationNodes.length) return;
-
     const destinationNode = destinationNodes.reduce((closest, node) => {
         if (!closest) return node;
-
         return tree.distances.get(node) < tree.distances.get(closest)
             ? node
             : closest;
     }, null);
-
     const routingEdges = [];
     let node = destinationNode;
-
     while (tree.previous.has(node)) {
         const previous = tree.previous.get(node);
-
         routingEdges.unshift(previous.edge);
         node = previous.node;
     }
-
     const coordinates = [];
-
     routingEdges.forEach(edge => {
         if (edge.transfer) {
             coordinates.push(edge.fromCoordinates);
             coordinates.push(edge.toCoordinates);
             return;
         }
-
         const edgeCoordinates = edge.path
             .map(nodeId => railwayNodes.get(String(nodeId)))
             .filter(node => node)
@@ -647,17 +653,21 @@ function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
                 node.latitude,
                 node.longitude
             ]);
-
         if (coordinates.length === 0) {
             coordinates.push(...edgeCoordinates);
         } else {
             coordinates.push(...edgeCoordinates.slice(1));
         }
     });
-
     if (coordinates.length < 2) return;
-
     L.polyline(coordinates, {
+        color: '#000000',
+        weight: width + 3,
+        opacity: 0.9,
+        lineCap: 'round',
+        lineJoin: 'round'
+    }).addTo(routeLayer);
+	L.polyline(coordinates, {
         color: '#ff6600',
         weight: width,
         opacity: 0.9,
