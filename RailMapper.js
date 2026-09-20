@@ -294,6 +294,100 @@ function buildOriginRoutingTree(originCRS) {
         previous: previous
     };
 }
+function calculatePassengerFlows(tree, originCRS, year) {
+    const stationNodes = new Map();
+
+    stations.forEach(station => {
+        station.stop_positions.forEach(id => {
+            const node = String(id);
+
+            if (tree.distances.get(node) !== Infinity) {
+                stationNodes.set(node, station.crs);
+            }
+        });
+    });
+
+    const destinationVolumes = new Map();
+
+    journeys.forEach(journey => {
+        let destinationCRS = null;
+
+        if (journey.OriginCRS === originCRS) {
+            destinationCRS = journey.DestinationCRS;
+        } else if (journey.DestinationCRS === originCRS) {
+            destinationCRS = journey.OriginCRS;
+        }
+
+        if (!destinationCRS || destinationCRS === originCRS) return;
+
+        const volume = Number(journey[year]) || 0;
+
+        if (volume === 0) return;
+
+        destinationVolumes.set(
+            destinationCRS,
+            (destinationVolumes.get(destinationCRS) || 0) + volume
+        );
+    });
+
+    const nodeVolumes = new Map();
+
+    destinationVolumes.forEach((volume, destinationCRS) => {
+        const station = stations.find(station => station.crs === destinationCRS);
+
+        if (!station) return;
+
+        const reachableNodes = station.stop_positions
+            .map(id => String(id))
+            .filter(id => tree.distances.get(id) !== Infinity);
+
+        if (!reachableNodes.length) return;
+
+        const destinationNode = reachableNodes.reduce((closest, node) => {
+            if (!closest) return node;
+
+            return tree.distances.get(node) < tree.distances.get(closest)
+                ? node
+                : closest;
+        }, null);
+
+        nodeVolumes.set(
+            destinationNode,
+            (nodeVolumes.get(destinationNode) || 0) + volume
+        );
+    });
+
+    const edgeFlows = new Map();
+
+    const nodesByDistance = [...tree.distances.entries()]
+        .filter(([node, distance]) => distance !== Infinity)
+        .sort((a, b) => b[1] - a[1]);
+
+    nodesByDistance.forEach(([node]) => {
+        const volume = nodeVolumes.get(node) || 0;
+
+        if (!volume) return;
+
+        const previous = tree.previous.get(node);
+
+        if (!previous) return;
+
+        const edgeKey = `${previous.node}->${node}`;
+
+        edgeFlows.set(
+            edgeKey,
+            (edgeFlows.get(edgeKey) || 0) + volume
+        );
+
+        nodeVolumes.set(
+            previous.node,
+            (nodeVolumes.get(previous.node) || 0) + volume
+        );
+    });
+
+    return edgeFlows;
+}
+
 
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
