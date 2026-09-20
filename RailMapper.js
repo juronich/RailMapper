@@ -17,6 +17,8 @@ let stationTransfers = [];
 let railwayNodes = new Map();
 let railwayGraph = new Map();
 let railwayRoutingGraph = new Map();
+let currentRoutingTree = null;
+let currentOriginCRS = null;
 
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
@@ -738,12 +740,21 @@ originInput.addEventListener('input', () => {
             ], 9);
 
             const selectedCRS = station.crs;
-
+			currentOriginCRS = selectedCRS;
+			currentRoutingTree = buildOriginRoutingTree(selectedCRS);
             updateDestinationBubbles(selectedCRS);
 
             console.log('Selected station:', selectedCRS);
 
             const selectedYear = yearInput.value;
+			const flows = calculatePassengerFlows(
+    			currentRoutingTree,
+    			selectedCRS,
+    			selectedYear
+			);
+
+			drawPassengerFlows(currentRoutingTree, flows);
+
             console.log('Year: ', selectedYear);
         });
 
