@@ -19,6 +19,7 @@ let railwayGraph = new Map();
 let railwayRoutingGraph = new Map();
 let currentRoutingTree = null;
 let currentOriginCRS = null;
+let currentPassengerFlows = null;
 
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
@@ -593,10 +594,12 @@ function drawRailwayRoute(route) {
     map.fitBounds(coordinates);
 }
 
-function drawDestinationRoute(tree, destinationCRS) {
+function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
     routeLayer.clearLayers();
+	if (!tree || !currentOriginCRS) return;
+	const maxFlow = Math.max(...currentPassengerFlows.values());
 
-    if (!tree || !currentOriginCRS) return;
+	const width = 1 + (Math.sqrt(destinationJourneys / maxFlow) * 12);
 
     const destinationStation = stations.find(
         station => station.crs === destinationCRS
@@ -656,7 +659,7 @@ function drawDestinationRoute(tree, destinationCRS) {
 
     L.polyline(coordinates, {
         color: '#ff6600',
-        weight: 7,
+        weight: width,
         opacity: 0.9,
         lineCap: 'round',
         lineJoin: 'round'
@@ -744,7 +747,11 @@ function updateDestinationBubbles(selectedCRS) {
     		fillOpacity: 0.45
 		})
 		.on('click', () => {
-    		drawDestinationRoute(currentRoutingTree, destination.station.crs);
+    		drawDestinationRoute(
+        		currentRoutingTree,
+        		destination.station.crs,
+        		destination.journeys
+    		);
 		})
 		.on('popupclose', () => {
     		routeLayer.clearLayers();
@@ -829,7 +836,7 @@ originInput.addEventListener('input', () => {
     			selectedCRS,
     			selectedYear
 			);
-
+			currentPassengerFlows = flows;
 			drawPassengerFlows(currentRoutingTree, flows);
 
             console.log('Year: ', selectedYear);
@@ -850,5 +857,6 @@ yearInput.addEventListener('change', () => {
         selectedCRS,
         selectedYear
     );
+	currentPassengerFlows = flows;
     drawPassengerFlows(currentRoutingTree, flows);
 });
