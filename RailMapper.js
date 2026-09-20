@@ -743,6 +743,9 @@ function updateDestinationBubbles(selectedCRS) {
 		.on('click', () => {
     		drawDestinationRoute(currentRoutingTree, destination.station.crs);
 		})
+		.on('popupclose', () => {
+    		routeLayer.clearLayers();
+		})
 		.bindPopup(`
             <strong>${destination.station.name}</strong> (${destination.station.crs})<br>
             Journeys from/to: ${originInput.value}<br><br>
