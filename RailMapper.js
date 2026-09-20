@@ -423,9 +423,9 @@ function drawPassengerFlows(tree, flows) {
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
 
         L.polyline(coordinates, {
-            color: '#3388ff',
+            color: '#D86DCD',
             weight: width,
-            opacity: 0.75,
+            opacity: 0.9,
             lineCap: 'round',
             lineJoin: 'round'
         }).addTo(flowLayer);
