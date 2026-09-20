@@ -185,7 +185,6 @@ function buildOriginRoutingTree(originCRS) {
     const startNodes = originStation.stop_positions
         .map(id => String(id))
         .filter(id => railwayRoutingGraph.has(id));
-
     if (!startNodes.length) {
         console.error('Origin station has no usable routing nodes:', originCRS);
         return null;
@@ -193,27 +192,28 @@ function buildOriginRoutingTree(originCRS) {
     startNodes.forEach(node => {
         distances.set(node, 0);
     });
-	const originStopPositions = new Map();
-
-	startNodes.forEach(node => {
-    	originStopPositions.set(node, {
-        	coordinates: [
-            	originStation.latitude,
-            	originStation.longitude
-        	]
-    	});
-	});
-    const stationByStopPosition = new Map();
+    const stationConnections = new Map();
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
-            stationByStopPosition.set(String(id), station);
+            const node = String(id);
+            if (!railwayRoutingGraph.has(node)) return;
+            stationConnections.set(node, {
+                stationCRS: station.crs,
+                fromCoordinates: [
+                    station.latitude,
+                    station.longitude
+                ],
+                toCoordinates: [
+                    railwayNodes.get(node).latitude,
+                    railwayNodes.get(node).longitude
+                ]
+            });
         });
     });
     const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
         if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
         if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
-
         transfersByCRS.get(crs1).push(crs2);
         transfersByCRS.get(crs2).push(crs1);
     });
@@ -222,6 +222,7 @@ function buildOriginRoutingTree(originCRS) {
         let currentDistance = Infinity;
         for (const node of unvisited) {
             const distance = distances.get(node);
+
             if (distance < currentDistance) {
                 currentNode = node;
                 currentDistance = distance;
@@ -246,57 +247,47 @@ function buildOriginRoutingTree(originCRS) {
         if (currentStation) {
             const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
             for (const targetCRS of connectedCRS) {
-    			const targetStation = stations.find(station => station.crs === targetCRS);
-    			if (!targetStation) continue;
-    			for (const stopPosition of targetStation.stop_positions) {
-        			const transferNode = String(stopPosition);
-        			if (!unvisited.has(transferNode)) continue;
-        			if (!railwayRoutingGraph.has(transferNode)) continue;
-        			const newDistance = currentDistance;
-        			if (newDistance < distances.get(transferNode)) {
-            			distances.set(transferNode, newDistance);
-            			previous.set(transferNode, {
-                			node: currentNode,
-                			edge: {
-                    			node: transferNode,
-                    			distance: 0,
-                    			path: [],
-                    			transfer: true,
-                    			fromCoordinates: [
-                        			currentStation.latitude,
-                        			currentStation.longitude
-                    			],
-                    			toCoordinates: [
-                        			targetStation.latitude,
-                        			targetStation.longitude
-                    			]
-                			}
-            			});
-        			}
-    			}
-			}
+                const targetStation = stations.find(
+                    station => station.crs === targetCRS
+                );
+                if (!targetStation) continue;
+                for (const stopPosition of targetStation.stop_positions) {
+                    const transferNode = String(stopPosition);
+                    if (!unvisited.has(transferNode)) continue;
+                    if (!railwayRoutingGraph.has(transferNode)) continue;
+                    const newDistance = currentDistance;
+                    if (newDistance < distances.get(transferNode)) {
+                        distances.set(transferNode, newDistance);
+                        previous.set(transferNode, {
+                            node: currentNode,
+                            edge: {
+                                node: transferNode,
+                                distance: 0,
+                                path: [],
+                                transfer: true,
+                                fromCoordinates: [
+                                    currentStation.latitude,
+                                    currentStation.longitude
+                                ],
+                                toCoordinates: [
+                                    targetStation.latitude,
+                                    targetStation.longitude
+                                ]
+                            }
+                        });
+                    }
+                }
+            }
         }
     }
     return {
-    originCRS: originCRS,
-    originStopPositions: originStopPositions,
-    distances: distances,
-    previous: previous
-};
+        originCRS: originCRS,
+        stationConnections: stationConnections,
+        distances: distances,
+        previous: previous
+    };
 }
 function calculatePassengerFlows(tree, originCRS, year) {
-    const stationNodes = new Map();
-
-    stations.forEach(station => {
-        station.stop_positions.forEach(id => {
-            const node = String(id);
-
-            if (tree.distances.get(node) !== Infinity) {
-                stationNodes.set(node, station.crs);
-            }
-        });
-    });
-
     const destinationVolumes = new Map();
 
     journeys.forEach(journey => {
@@ -321,6 +312,7 @@ function calculatePassengerFlows(tree, originCRS, year) {
     });
 
     const nodeVolumes = new Map();
+    const destinationNodes = new Map();
 
     destinationVolumes.forEach((volume, destinationCRS) => {
         const station = stations.find(station => station.crs === destinationCRS);
@@ -345,6 +337,8 @@ function calculatePassengerFlows(tree, originCRS, year) {
             destinationNode,
             (nodeVolumes.get(destinationNode) || 0) + volume
         );
+
+        destinationNodes.set(destinationNode, destinationCRS);
     });
 
     const edgeFlows = new Map();
@@ -375,90 +369,59 @@ function calculatePassengerFlows(tree, originCRS, year) {
         );
     });
 
-    return edgeFlows;
+    return {
+        edgeFlows: edgeFlows,
+        destinationNodes: destinationNodes
+    };
 }
+
+
 function drawPassengerFlows(tree, flows) {
     flowLayer.clearLayers();
+
     if (!tree || !flows || !flows.size) return;
+
     const maxFlow = Math.max(...flows.values());
-	const originStopPositions = tree.originStopPositions || new Map();
-	/*originStopPositions.forEach((stopInfo, stopNode) => {
-    	const firstEdge = [...flows.entries()].find(([edgeKey]) =>
-        	edgeKey.startsWith(`${stopNode}->`)
-    	);
 
-    	if (!firstEdge) return;
-
-    	const flow = firstEdge[1];
-    	if (flow <= 0) return;
-
-    	const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
-
-    	const stopCoordinates = railwayNodes.get(String(stopNode));
-    	if (!stopCoordinates) return;
-
-    	L.polyline([
-        	stopInfo.coordinates,
-        	[stopCoordinates.latitude, stopCoordinates.longitude]
-    	], {
-        	color: '#000000',
-        	weight: width + 3,
-        	opacity: 0.9,
-        	lineCap: 'round',
-        	lineJoin: 'round'
-    	}).addTo(flowLayer);
-		L.polyline([
-        	stopInfo.coordinates,
-        	[stopCoordinates.latitude, stopCoordinates.longitude]
-    	], {
-        	color: '#D86DCD',
-        	weight: width,
-        	opacity: 0.9,
-        	lineCap: 'round',
-        	lineJoin: 'round'
-    	}).addTo(flowLayer);
-	});*/
-	
     flows.forEach((flow, edgeKey) => {
         const [fromNode, toNode] = edgeKey.split('->');
         const previous = tree.previous.get(toNode);
+
         if (!previous || previous.node !== fromNode) return;
+
         const edge = previous.edge;
         let coordinates = [];
-        if (edge.transfer) {
-    		coordinates = [
-        		edge.fromCoordinates,
-        		edge.toCoordinates
-    		];
-		} else {
-    		coordinates = edge.path
-        		.map(nodeId => railwayNodes.get(String(nodeId)))
-        		.filter(node => node)
-        		.map(node => [
-            		node.latitude,
-            		node.longitude
-        		]);
 
-    		if (originStopPositions.has(fromNode)) {
-        		coordinates.unshift(
-            		originStopPositions.get(fromNode).coordinates
-        		);
-    		}
-		}
+        if (edge.transfer) {
+            coordinates = [
+                edge.fromCoordinates,
+                edge.toCoordinates
+            ];
+        } else {
+            coordinates = edge.path
+                .map(nodeId => railwayNodes.get(String(nodeId)))
+                .filter(node => node)
+                .map(node => [
+                    node.latitude,
+                    node.longitude
+                ]);
+        }
+
         if (coordinates.length < 2) return;
+
+        const stationConnection = tree.stationConnections?.get(fromNode);
+
+        if (stationConnection && stationConnection.stationCRS === tree.originCRS) {
+            coordinates.unshift(stationConnection.fromCoordinates);
+        }
+
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
+
         L.polyline(coordinates, {
-            color: '#000000',
-            weight: width + 3,
-            opacity: 0.9,
-            lineCap: 'round',
-            lineJoin: 'round'
-        }).addTo(flowLayer);
-		L.polyline(coordinates, {
-            color: '#D86DCD',
+            color: '#3388ff',
             weight: width,
-            opacity: 0.9,
-            lineCap: 'round',
+            opacity: 1,
+            lineCap: 'butt',
             lineJoin: 'round'
         }).addTo(flowLayer);
     });
@@ -647,25 +610,36 @@ function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
         node = previous.node;
     }
     const coordinates = [];
-    routingEdges.forEach(edge => {
-        if (edge.transfer) {
-            coordinates.push(edge.fromCoordinates);
-            coordinates.push(edge.toCoordinates);
-            return;
-        }
-        const edgeCoordinates = edge.path
-            .map(nodeId => railwayNodes.get(String(nodeId)))
-            .filter(node => node)
-            .map(node => [
-                node.latitude,
-                node.longitude
-            ]);
-        if (coordinates.length === 0) {
-            coordinates.push(...edgeCoordinates);
-        } else {
-            coordinates.push(...edgeCoordinates.slice(1));
-        }
-    });
+
+
+routingEdges.forEach(edge => {
+    if (edge.transfer) {
+        coordinates.push(edge.fromCoordinates);
+        coordinates.push(edge.toCoordinates);
+        return;
+    }
+
+    const edgeCoordinates = edge.path
+        .map(nodeId => railwayNodes.get(String(nodeId)))
+        .filter(node => node)
+        .map(node => [
+            node.latitude,
+            node.longitude
+        ]);
+
+    if (coordinates.length === 0) {
+        coordinates.push(...edgeCoordinates);
+    } else {
+        coordinates.push(...edgeCoordinates.slice(1));
+    }
+});
+
+// Add the destination stop-position → station connection
+const destinationConnection = tree.stationConnections?.get(destinationNode);
+
+if (destinationConnection) {
+    coordinates.push(destinationConnection.fromCoordinates);
+}
     if (coordinates.length < 2) return;
     L.polyline(coordinates, {
         color: '#000000',
@@ -841,20 +815,24 @@ originInput.addEventListener('input', () => {
             ], 9);
 
             const selectedCRS = station.crs;
-			currentOriginCRS = selectedCRS;
-			currentRoutingTree = buildOriginRoutingTree(selectedCRS);
+
+            currentOriginCRS = selectedCRS;
+            currentRoutingTree = buildOriginRoutingTree(selectedCRS);
+
             updateDestinationBubbles(selectedCRS);
 
             console.log('Selected station:', selectedCRS);
 
             const selectedYear = yearInput.value;
-			const flows = calculatePassengerFlows(
-    			currentRoutingTree,
-    			selectedCRS,
-    			selectedYear
-			);
-			currentPassengerFlows = flows;
-			drawPassengerFlows(currentRoutingTree, flows);
+
+            const flowData = calculatePassengerFlows(
+    currentRoutingTree,
+    selectedCRS,
+    selectedYear
+);
+
+currentPassengerFlows = flowData.edgeFlows;
+drawPassengerFlows(currentRoutingTree, flowData);
 
             console.log('Year: ', selectedYear);
         });
@@ -865,15 +843,21 @@ originInput.addEventListener('input', () => {
 
 yearInput.addEventListener('change', () => {
     const selectedCRS = originInput.dataset.crs;
+
     if (!selectedCRS) return;
+
     updateDestinationBubbles(selectedCRS);
+
     if (!currentRoutingTree || currentOriginCRS !== selectedCRS) return;
+
     const selectedYear = yearInput.value;
-    const flows = calculatePassengerFlows(
-        currentRoutingTree,
-        selectedCRS,
-        selectedYear
-    );
-	currentPassengerFlows = flows;
-    drawPassengerFlows(currentRoutingTree, flows);
+
+    const flowData = calculatePassengerFlows(
+    currentRoutingTree,
+    selectedCRS,
+    selectedYear
+);
+
+currentPassengerFlows = flowData.edgeFlows;
+drawPassengerFlows(currentRoutingTree, flowData);
 });
