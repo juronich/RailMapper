@@ -6,7 +6,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 
 const destinationLayer = L.layerGroup().addTo(map);
 const routeLayer = L.layerGroup().addTo(map);
-
+const flowLayer = L.layerGroup().addTo(map);
 const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
@@ -387,7 +387,50 @@ function calculatePassengerFlows(tree, originCRS, year) {
 
     return edgeFlows;
 }
+function drawPassengerFlows(tree, flows) {
+    flowLayer.clearLayers();
 
+    if (!tree || !flows || !flows.size) return;
+
+    const maxFlow = Math.max(...flows.values());
+
+    flows.forEach((flow, edgeKey) => {
+        const [fromNode, toNode] = edgeKey.split('->');
+        const previous = tree.previous.get(toNode);
+
+        if (!previous || previous.node !== fromNode) return;
+
+        const edge = previous.edge;
+        let coordinates = [];
+
+        if (edge.transfer) {
+            coordinates = [
+                edge.fromCoordinates,
+                edge.toCoordinates
+            ];
+        } else {
+            coordinates = edge.path
+                .map(nodeId => railwayNodes.get(String(nodeId)))
+                .filter(node => node)
+                .map(node => [
+                    node.latitude,
+                    node.longitude
+                ]);
+        }
+
+        if (coordinates.length < 2) return;
+
+        const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
+
+        L.polyline(coordinates, {
+            color: '#3388ff',
+            weight: width,
+            opacity: 0.75,
+            lineCap: 'round',
+            lineJoin: 'round'
+        }).addTo(flowLayer);
+    });
+}
 
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
