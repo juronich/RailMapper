@@ -32,7 +32,7 @@ Promise.all([
     const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
     const waysMetaById = new Map(waysMeta.map(way => [String(way[0]), way]));
 	const routingEdges = routingData.edges;
-
+	const transfers = Array.isArray(transfersData) ? transfersData : transfersData.transfers;
 
     stations = Object.entries(stationsData).map(([crs, record]) => ({
         crs: crs,
@@ -151,7 +151,7 @@ Promise.all([
 	console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
 })
 .catch(error => console.error('Error loading railway network data:', error));
-stationTransfers = transfersData.transfers || [];
+stationTransfers = transfers || [];
 console.log('Station transfers loaded:', stationTransfers.length);
 
 function getTransferNodes(crs) {
