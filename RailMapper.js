@@ -1,7 +1,8 @@
 const map = L.map('map').setView([54.5, -3], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap contributors'
+    attribution: '&copy; OpenStreetMap contributors',
+	className: 'osm-basemap'
 }).addTo(map);
 
 const destinationLayer = L.layerGroup().addTo(map);
