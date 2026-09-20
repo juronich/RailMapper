@@ -48,7 +48,13 @@ Promise.all([
         TOC: record.station?.TOC || [],
         stop_positions: record.stop_positions || []
     })).filter(station => station.name && !isNaN(station.latitude) && !isNaN(station.longitude));
+	const stationByStopPosition = new Map();
 
+	stations.forEach(station => {
+    	station.stop_positions.forEach(id => {
+        	stationByStopPosition.set(String(id), station);
+    	});
+	});
     console.log('Railway nodes:', nodes.length);
     console.log('Railway ways:', ways.length);
     console.log('Railway ways-data:', waysMeta.length);
