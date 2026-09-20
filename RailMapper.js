@@ -382,7 +382,7 @@ function drawPassengerFlows(tree, flows) {
     if (!tree || !flows || !flows.size) return;
     const maxFlow = Math.max(...flows.values());
 	const originStopPositions = tree.originStopPositions || new Map();
-	originStopPositions.forEach((stopInfo, stopNode) => {
+	/*originStopPositions.forEach((stopInfo, stopNode) => {
     	const firstEdge = [...flows.entries()].find(([edgeKey]) =>
         	edgeKey.startsWith(`${stopNode}->`)
     	);
@@ -417,7 +417,7 @@ function drawPassengerFlows(tree, flows) {
         	lineCap: 'round',
         	lineJoin: 'round'
     	}).addTo(flowLayer);
-	});
+	});*/
 	
     flows.forEach((flow, edgeKey) => {
         const [fromNode, toNode] = edgeKey.split('->');
@@ -426,19 +426,25 @@ function drawPassengerFlows(tree, flows) {
         const edge = previous.edge;
         let coordinates = [];
         if (edge.transfer) {
-            coordinates = [
-                edge.fromCoordinates,
-                edge.toCoordinates
-            ];
-        } else {
-            coordinates = edge.path
-                .map(nodeId => railwayNodes.get(String(nodeId)))
-                .filter(node => node)
-                .map(node => [
-                    node.latitude,
-                    node.longitude
-                ]);
-        }
+    		coordinates = [
+        		edge.fromCoordinates,
+        		edge.toCoordinates
+    		];
+		} else {
+    		coordinates = edge.path
+        		.map(nodeId => railwayNodes.get(String(nodeId)))
+        		.filter(node => node)
+        		.map(node => [
+            		node.latitude,
+            		node.longitude
+        		]);
+
+    		if (originStopPositions.has(fromNode)) {
+        		coordinates.unshift(
+            		originStopPositions.get(fromNode).coordinates
+        		);
+    		}
+		}
         if (coordinates.length < 2) return;
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
         L.polyline(coordinates, {
