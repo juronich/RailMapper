@@ -26,7 +26,7 @@ Promise.all([
 	fetch('data/railway-routing.json').then(response => response.json()),
 	fetch('data/station-transfers.json').then(response => response.json())
 ])
-.then(([nodesData, waysData, waysMetaData, stationsData, routingData,transfersData]) => {
+.then(([nodesData, waysData, waysMetaData, stationsData, routingData, transfersData]) => {
     const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
     const ways = Array.isArray(waysData) ? waysData : waysData.ways;
     const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
