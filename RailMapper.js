@@ -13,6 +13,7 @@ const originResults = document.getElementById('origin-results');
 
 let journeys = [];
 let stations = [];
+let stationTransfers = [];
 let railwayNodes = new Map();
 let railwayGraph = new Map();
 let railwayRoutingGraph = new Map();
@@ -23,8 +24,9 @@ Promise.all([
     fetch('data/railway-ways-data.json').then(response => response.json()),
     fetch('data/stations.json').then(response => response.json()),
 	fetch('data/railway-routing.json').then(response => response.json()),
+	fetch('data/station-transfers.json').then(response => response.json())
 ])
-.then(([nodesData, waysData, waysMetaData, stationsData, routingData]) => {
+.then(([nodesData, waysData, waysMetaData, stationsData, routingData,transfersData]) => {
     const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
     const ways = Array.isArray(waysData) ? waysData : waysData.ways;
     const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
@@ -149,8 +151,17 @@ Promise.all([
 	console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
 })
 .catch(error => console.error('Error loading railway network data:', error));
+stationTransfers = transfersData.transfers || [];
+console.log('Station transfers loaded:', stationTransfers.length);
 
+function getTransferNodes(crs) {
+    const station = stations.find(station => station.crs === crs);
+    if (!station) return [];
 
+    return station.stop_positions
+        .map(id => String(id))
+        .filter(id => railwayRoutingGraph.has(id));
+}
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
     const endStation = stations.find(station => station.crs === endCRS);
@@ -201,12 +212,14 @@ function findRailwayRoute(startCRS, endCRS) {
             }
             const physicalNodes = [];
             routingEdges.forEach((edge, index) => {
-                if (index === 0) {
-                    physicalNodes.push(...edge.path);
-                } else {
-                    physicalNodes.push(...edge.path.slice(1));
-                }
-            });
+    			if (edge.transfer) return;
+
+    			if (index === 0) {
+        			physicalNodes.push(...edge.path);
+    			} else {
+        			physicalNodes.push(...edge.path.slice(1));
+    			}
+			});
             return {
                 nodes: physicalNodes,
                 distance: currentDistance
@@ -214,16 +227,47 @@ function findRailwayRoute(startCRS, endCRS) {
         }
         unvisited.delete(currentNode);
         for (const edge of railwayRoutingGraph.get(currentNode) || []) {
-            if (!unvisited.has(edge.node)) continue;
-            const newDistance = currentDistance + edge.distance;
-            if (newDistance < distances.get(edge.node)) {
-                distances.set(edge.node, newDistance);
-                previous.set(edge.node, {
-                    node: currentNode,
-                    edge: edge
-                });
-            }
-        }
+    		if (!unvisited.has(edge.node)) continue;
+    		const newDistance = currentDistance + edge.distance;
+    		if (newDistance < distances.get(edge.node)) {
+        		distances.set(edge.node, newDistance);
+        		previous.set(edge.node, {
+            		node: currentNode,
+            		edge: edge
+        		});
+    		}
+		}
+		const currentStation = stations.find(station =>
+    		station.stop_positions.map(id => String(id)).includes(currentNode)
+		);
+		if (currentStation) {
+    		for (const [fromCRS, toCRS] of stationTransfers) {
+        		let targetCRS = null;
+        		if (fromCRS === currentStation.crs) {
+            		targetCRS = toCRS;
+        		} else if (toCRS === currentStation.crs) {
+            		targetCRS = fromCRS;
+        		}
+        		if (!targetCRS) continue;
+        		const transferNodes = getTransferNodes(targetCRS);
+        		for (const transferNode of transferNodes) {
+            		if (!unvisited.has(transferNode)) continue;
+            		const newDistance = currentDistance;
+            		if (newDistance < distances.get(transferNode)) {
+                		distances.set(transferNode, newDistance);
+                		previous.set(transferNode, {
+                    		node: currentNode,
+                    		edge: {
+                        		node: transferNode,
+                        		distance: 0,
+                        		path: [],
+                        		transfer: true
+                    		}
+                		});
+            		}
+        		}
+    		}
+		}
     }
     return null;
 }
