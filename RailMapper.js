@@ -22,6 +22,7 @@ let railwayRoutingGraph = new Map();
 let currentRoutingTree = null;
 let currentOriginCRS = null;
 let currentPassengerFlows = null;
+let stationByStopPosition = new Map();
 
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
@@ -48,7 +49,7 @@ Promise.all([
         TOC: record.station?.TOC || [],
         stop_positions: record.stop_positions || []
     })).filter(station => station.name && !isNaN(station.latitude) && !isNaN(station.longitude));
-	const stationByStopPosition = new Map();
+	stationByStopPosition.clear();
 
 	stations.forEach(station => {
     	station.stop_positions.forEach(id => {
