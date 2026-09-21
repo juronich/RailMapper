@@ -34,7 +34,7 @@ Promise.all([
 ])
 .then(([nodesData, waysData, waysMetaData, stationsData, routingData, transfersData]) => {
 	// NODE LOADING
-	const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
+	const nodes = nodesData.nodes;
 	console.log('Railway nodes:', nodes.length);
     const railwayFeatures = [];
     nodes.forEach(node => {
@@ -46,8 +46,8 @@ Promise.all([
 	// END OF NODE LOADING
 
 	// WAYS LOADING (inc. Meta Data)
-	const ways = Array.isArray(waysData) ? waysData : waysData.ways;
-	const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
+	const ways = waysData.ways;
+	const waysMeta = waysMetaData["ways-data"];
     const waysMetaById = new Map(waysMeta.map(way => [String(way[0]), way]));
 	console.log('Railway ways:', ways.length);
 	console.log('Railway ways-data:', waysMeta.length);
@@ -137,15 +137,17 @@ Promise.all([
 	const routingEdges = routingData.edges;
 	routingData.edges.forEach(edge => {
     	const [from, to, distance, path] = edge;
-    	if (!railwayRoutingGraph.has(String(from))) railwayRoutingGraph.set(String(from), []);
-    	if (!railwayRoutingGraph.has(String(to))) railwayRoutingGraph.set(String(to), []);
-    	railwayRoutingGraph.get(String(from)).push({
-        	node: String(to),
+		const fromNode = String(from);
+    	const toNode = String(to);
+    	if (!railwayRoutingGraph.has(fromNode)) railwayRoutingGraph.set(fromNode, []);
+    	if (!railwayRoutingGraph.has(toNode)) railwayRoutingGraph.set(toNode, []);
+    	railwayRoutingGraph.get(fromNode).push({
+        	node: toNode,
         	distance: distance,
         	path: path
     	});
-    	railwayRoutingGraph.get(String(to)).push({
-        	node: String(from),
+    	railwayRoutingGraph.get(toNode).push({
+        	node: fromNode,
         	distance: distance,
         	path: [...path].reverse()
     	});
