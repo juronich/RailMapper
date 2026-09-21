@@ -22,6 +22,7 @@ let currentRoutingTree = null;
 let currentOriginCRS = null;
 let currentPassengerFlows = null;
 let stationByStopPosition = new Map();
+let stationConnections = new Map();
 
 // INITIAL LOADING
 Promise.all([
