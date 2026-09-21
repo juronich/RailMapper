@@ -26,7 +26,7 @@ let stationByStopPosition = new Map();
 let routingLoaded = false;
 let routingLoading = false;
 
-// Initial Loading
+// INITIAL LOADING
 Promise.all([
     fetch('data/railway-nodes.json').then(response => response.json()),
     fetch('data/railway-ways.json').then(response => response.json()),
@@ -166,10 +166,10 @@ Promise.all([
 	console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
 	stationTransfers = transfersData.transfers || [];
 	console.log('Station transfers loaded:', stationTransfers.length);
-})
+}) // END OF: INITIAL LOADING
 .catch(error => console.error('Error loading railway network data:', error));
 
-
+// FUNCTION: getTransferNodes() - Used in X to 
 function getTransferNodes(crs) {
     const station = stations.find(station => station.crs === crs);
     if (!station) return [];
@@ -177,9 +177,9 @@ function getTransferNodes(crs) {
     return station.stop_positions
         .map(id => String(id))
         .filter(id => railwayRoutingGraph.has(id));
-}
+} // END OF FUNCTION: getTransferNodes() 
 
-// Function to process the selected Origin Station
+// FUNCTION: processSelectedOrigin() - To process the selected Origin Station
 function processSelectedOrigin(selectedCRS) {
 	destinationLayer.clearLayers();
     currentOriginCRS = selectedCRS;
@@ -195,9 +195,9 @@ function processSelectedOrigin(selectedCRS) {
     currentPassengerFlows = flowData.edgeFlows;
     drawPassengerFlows(currentRoutingTree, flowData);
     console.log('Year: ', selectedYear);
-}
+} // END OF FUNCTION: processSelectedOrigin()
 
-// Function to build the possible routes from the selected Origin
+// FUNCTION: buildOriginRoutingTree() - Function to build the possible routes from the selected Origin
 function buildOriginRoutingTree(originCRS) {
     const originStation = stations.find(station => station.crs === originCRS);
     if (!originStation) {
@@ -315,10 +315,9 @@ function buildOriginRoutingTree(originCRS) {
         distances: distances,
         previous: previous
     };
-}
+} // END OF FUNCTION: buildOriginRoutingTree()
 
-
-// Calculate the journeys from the selected Origin station
+// FUNCTION: calculatePassengerFlows() - Calculate the journeys from the selected Origin station
 function calculatePassengerFlows(tree, originCRS, year) {
     const destinationVolumes = new Map();
     journeys.forEach(journey => {
@@ -380,9 +379,9 @@ function calculatePassengerFlows(tree, originCRS, year) {
         edgeFlows: edgeFlows,
         destinationNodes: destinationNodes
     };
-}
+} // END OF FUNCTION: calculatePassengerFlows()
 
-// Draw the passenger flows from the origin station to all its journey destinations
+// FUNCTION: drawPassengerFlows() - Draw the passenger flows from the origin station to all its journey destinations
 function drawPassengerFlows(tree, flowData) {
     flowLayer.clearLayers();
     if (!tree || !flowData || !flowData.edgeFlows || !flowData.edgeFlows.size) return;
@@ -432,9 +431,9 @@ function drawPassengerFlows(tree, flowData) {
             lineJoin: 'round'
         }).addTo(flowLayer);
     });
-}
+} // END OF FUNCTION: drawPassengerFlows()
 
-// Debug function to find a route between two stations
+// FUNCTION - findRailwayRoute() - Debug function to find a route between two stations
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
     const endStation = stations.find(station => station.crs === endCRS);
@@ -554,9 +553,9 @@ function findRailwayRoute(startCRS, endCRS) {
 		}
     }
     return null;
-}
+} // END OF FUNCTION - findRailwayRoute()
 
-// Debug function to draw railway route between the two stations in findRailwayRoute()
+// FUNCTION: drawRailwayRoute() - Debug function to draw railway route between the two stations in findRailwayRoute()
 function drawRailwayRoute(route) {
     routeLayer.clearLayers();
     if (!route) {
@@ -583,9 +582,9 @@ function drawRailwayRoute(route) {
     console.log('Route nodes:', route.nodes.length);
     console.log('Route distance:', (route.distance / 1000).toFixed(2), 'km');
     map.fitBounds(coordinates);
-}
+} // END OF FUNCTION: drawRailwayRoute()
 
-// Function to draw the route from the Origin station to a selected destination station
+// FUNCTION: drawDestinationRoute() - Function to draw the route from the Origin station to a selected destination station
 function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
     routeLayer.clearLayers();
 	if (!tree || !currentOriginCRS) return;
@@ -654,8 +653,9 @@ function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
         lineCap: 'round',
         lineJoin: 'round'
     }).addTo(routeLayer);
-}
+} // END OF  FUNCTION: drawDestinationRoute()
 
+// JOURNEY LOADING
 const journeyFiles = [
     'data/journeys/ODM_Scotland.json',
     'data/journeys/ODM_North.json',
@@ -664,39 +664,31 @@ const journeyFiles = [
     'data/journeys/ODM_South.json',
     'data/journeys/ODM_London.json'
 ];
-
 originInput.disabled = true;
-
-Promise.all(
-    journeyFiles.map(file =>
-        fetch(file).then(response => response.json())
-    )
-)
+Promise.all(journeyFiles.map(file =>fetch(file).then(response => response.json())))
 .then(journeyDataFiles => {
     journeyDataFiles.forEach(data => {
         const years = data.years;
-
         Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
             Object.entries(destinations).forEach(([secondCRS, values]) => {
                 const journey = {
                     OriginCRS: firstCRS,
                     DestinationCRS: secondCRS
                 };
-
                 years.forEach((year, index) => {
                     journey[year] = values[index] || 0;
                 });
-
                 journeys.push(journey);
             });
         });
     });
-
     console.log('Journey data loaded:', journeys.length, 'station pairs');
     originInput.disabled = false;
 })
 .catch(error => console.error('Error loading journey data:', error));
+// END OF: JOURNEY LOADING
 
+// FUNCTION: updateDestinationBubbles()
 function updateDestinationBubbles(selectedCRS) {
     destinationLayer.clearLayers();
     const selectedYear = yearInput.value;
@@ -704,12 +696,10 @@ function updateDestinationBubbles(selectedCRS) {
         journey.OriginCRS === selectedCRS ||
         journey.DestinationCRS === selectedCRS
     );
-
     const destinationStations = relevantJourneys.map(journey => {
         const crs = journey.OriginCRS === selectedCRS
             ? journey.DestinationCRS
             : journey.OriginCRS;
-
         return {
             station: stations.find(station => station.crs === crs),
             journeys: parseInt(journey[selectedYear], 10) || 0,
@@ -722,10 +712,8 @@ function updateDestinationBubbles(selectedCRS) {
                 }))
         };
     });
-
     destinationStations.forEach(destination => {
         if (!destination.station) return;
-
 		L.circleMarker([
     		destination.station.latitude,
     		destination.station.longitude
@@ -762,9 +750,7 @@ function updateDestinationBubbles(selectedCRS) {
         `)
         .addTo(destinationLayer);
     });
-
     const selectedStation = stations.find(station => station.crs === selectedCRS);
-
     if (selectedStation) {
         L.circleMarker([
             selectedStation.latitude,
@@ -779,22 +765,19 @@ function updateDestinationBubbles(selectedCRS) {
         .bindPopup(`<strong>${selectedStation.name}</strong> (${selectedStation.crs})`)
         .addTo(destinationLayer);
     }
-}
+} // END OF FUNCTION: updateDestinationBubbles()
 
+// LISTENERS
 originInput.addEventListener('input', () => {
     const search = originInput.value.toLowerCase().trim();
-
     originResults.innerHTML = '';
-
     if (!search) return;
-
     const matches = stations
         .filter(station =>
             station.name.toLowerCase().includes(search) ||
             station.crs.toLowerCase().includes(search)
         )
         .slice(0, 10);
-
     matches.forEach(station => {
         const result = document.createElement('div');
         result.className = 'origin-result';
@@ -810,28 +793,20 @@ originInput.addEventListener('input', () => {
             const selectedCRS = station.crs;
 			processSelectedOrigin(selectedCRS);
         });
-
         originResults.appendChild(result);
     });
 });
-
 yearInput.addEventListener('change', () => {
     const selectedCRS = originInput.dataset.crs;
-
     if (!selectedCRS) return;
-
     updateDestinationBubbles(selectedCRS);
-
     if (!currentRoutingTree || currentOriginCRS !== selectedCRS) return;
-
     const selectedYear = yearInput.value;
-
     const flowData = calculatePassengerFlows(
     	currentRoutingTree,
     	selectedCRS,
     	selectedYear
 	);
-
 	currentPassengerFlows = flowData.edgeFlows;
 	drawPassengerFlows(currentRoutingTree, flowData);
 });
