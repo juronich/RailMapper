@@ -131,6 +131,7 @@ Promise.all([
     	.bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
     	.addTo(map);
 	});
+	const stationConnections = new Map();
 	// END OF STATION LOADING
 
 	// ROUTING
@@ -214,7 +215,7 @@ function buildOriginRoutingTree(originCRS) {
     startNodes.forEach(node => {
         distances.set(node, 0);
     });
-    const stationConnections = new Map();
+    //const stationConnections = new Map();
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
             const node = String(id);
