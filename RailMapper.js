@@ -393,9 +393,7 @@ function drawPassengerFlows(tree, flowData) {
 
     const flows = flowData.edgeFlows;
     const destinationNodes = flowData.destinationNodes || new Map();
-
     const maxFlow = Math.max(...flows.values());
-	
 
     flows.forEach((flow, edgeKey) => {
         const [fromNode, toNode] = edgeKey.split('->');
@@ -427,6 +425,15 @@ function drawPassengerFlows(tree, flowData) {
 
         if (stationConnection && stationConnection.stationCRS === tree.originCRS) {
             coordinates.unshift(stationConnection.fromCoordinates);
+        }
+
+        // Extend the final destination segment to the station coordinates.
+        if (destinationNodes.has(toNode)) {
+            const destinationConnection = tree.stationConnections?.get(toNode);
+
+            if (destinationConnection) {
+                coordinates.push(destinationConnection.fromCoordinates);
+            }
         }
 
         const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
