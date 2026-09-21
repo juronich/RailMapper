@@ -294,6 +294,9 @@ function buildOriginRoutingTree(originCRS) {
         previous: previous
     };
 }
+
+
+
 function calculatePassengerFlows(tree, originCRS, year) {
     const destinationVolumes = new Map();
 
@@ -383,12 +386,16 @@ function calculatePassengerFlows(tree, originCRS, year) {
 }
 
 
-function drawPassengerFlows(tree, flows) {
+function drawPassengerFlows(tree, flowData) {
     flowLayer.clearLayers();
 
-    if (!tree || !flows || !flows.size) return;
+    if (!tree || !flowData || !flowData.edgeFlows || !flowData.edgeFlows.size) return;
+
+    const flows = flowData.edgeFlows;
+    const destinationNodes = flowData.destinationNodes || new Map();
 
     const maxFlow = Math.max(...flows.values());
+	
 
     flows.forEach((flow, edgeKey) => {
         const [fromNode, toNode] = edgeKey.split('->');
