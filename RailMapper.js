@@ -133,6 +133,23 @@ Promise.all([
     	.addTo(map);
 	});
 	const stationConnections = new Map();
+	stations.forEach(station => {
+        station.stop_positions.forEach(id => {
+            const node = String(id);
+            if (!railwayRoutingGraph.has(node)) return;
+            stationConnections.set(node, {
+                stationCRS: station.crs,
+                fromCoordinates: [
+                    station.latitude,
+                    station.longitude
+                ],
+                toCoordinates: [
+                    railwayNodes.get(node).latitude,
+                    railwayNodes.get(node).longitude
+                ]
+            });
+        });
+    });
 	// END OF STATION LOADING
 
 	// ROUTING
@@ -217,7 +234,7 @@ function buildOriginRoutingTree(originCRS) {
         distances.set(node, 0);
     });
     //const stationConnections = new Map();
-    stations.forEach(station => {
+    /*stations.forEach(station => {
         station.stop_positions.forEach(id => {
             const node = String(id);
             if (!railwayRoutingGraph.has(node)) return;
@@ -233,7 +250,7 @@ function buildOriginRoutingTree(originCRS) {
                 ]
             });
         });
-    });
+    });*/
     const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
         if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
