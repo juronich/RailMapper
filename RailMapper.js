@@ -421,7 +421,8 @@ function drawPassengerFlows(tree, flowData) {
                 coordinates.push(destinationConnection.fromCoordinates);
             }
         }
-        const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
+        //const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
+		const width = 1 + (Math.log10(flow + 1) / 6) * 14;
         L.polyline(coordinates, {
             color: '#3388ff',
             weight: width,
@@ -588,7 +589,8 @@ function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
     routeLayer.clearLayers();
 	if (!tree || !currentOriginCRS) return;
 	const maxFlow = Math.max(...currentPassengerFlows.values());
-	const width = 1 + (Math.sqrt(destinationJourneys / maxFlow) * 12);
+	//const width = 1 + (Math.sqrt(destinationJourneys / maxFlow) * 12);
+	const width = 1 + (Math.log10(destinationJourneys + 1) / 6) * 14;
     const destinationStation = stations.find(
         station => station.crs === destinationCRS
     );
