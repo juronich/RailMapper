@@ -274,9 +274,7 @@ function buildOriginRoutingTree(originCRS) {
         if (currentStation) {
             const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
             for (const targetCRS of connectedCRS) {
-                const targetStation = stations.find(
-                    station => station.crs === targetCRS
-                );
+                const targetStation = stations.find(station => station.crs === targetCRS);
                 if (!targetStation) continue;
                 for (const stopPosition of targetStation.stop_positions) {
                     const transferNode = String(stopPosition);
