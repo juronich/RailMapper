@@ -51529,7 +51529,7 @@
     "ALR": {
         "station": {
             "id": 3308241319,
-            "name": "Alresford",
+            "name": "Alresford (Essex)",
             "latitude": 51.8539985,
             "longitude": 0.9970365,
             "Network": [
@@ -51540,8 +51540,8 @@
             ]
         },
         "stop_positions": [
-            "8929373183",
-            "10012116800"
+            "2941940002",
+            "259809009"
         ]
     },
     "MNG": {
