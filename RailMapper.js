@@ -12,7 +12,6 @@ const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
 
-
 let journeys = [];
 let stations = [];
 let stationTransfers = [];
@@ -36,13 +35,9 @@ Promise.all([
 	fetch('data/station-transfers.json').then(response => response.json())
 ])
 .then(([nodesData, waysData, waysMetaData, stationsData, routingData, transfersData]) => {
-    const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
-    const ways = Array.isArray(waysData) ? waysData : waysData.ways;
-    const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
-    const waysMetaById = new Map(waysMeta.map(way => [String(way[0]), way]));
 	const routingEdges = routingData.edges;
 
-
+	// STATION LOADING
     stations = Object.entries(stationsData).map(([crs, record]) => ({
         crs: crs,
         name: record.station?.name,
@@ -52,38 +47,44 @@ Promise.all([
         TOC: record.station?.TOC || [],
         stop_positions: record.stop_positions || []
     })).filter(station => station.name && !isNaN(station.latitude) && !isNaN(station.longitude));
-	stationByStopPosition.clear();
+	console.log('Railway stations:', stations.length);
+	// END OF STATION LOADING
 
+	// STATIONS BY STOP POSITION (research what this is)
+	stationByStopPosition.clear();
 	stations.forEach(station => {
     	station.stop_positions.forEach(id => {
         	stationByStopPosition.set(String(id), station);
     	});
-	});
-    console.log('Railway nodes:', nodes.length);
-    console.log('Railway ways:', ways.length);
-    console.log('Railway ways-data:', waysMeta.length);
-    console.log('Railway stations:', stations.length);
-
+	}); 
+	// END OF STATIONS BY STOP POSITION
+	
+	// NODE LOADING
+	const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
+	console.log('Railway nodes:', nodes.length);
     const railwayFeatures = [];
-
     nodes.forEach(node => {
         railwayNodes.set(String(node[0]), {
             latitude: node[1],
             longitude: node[2]
         });
     });
+	// END OF NODE LOADING
 
+	// WAYS LOADING (inc. Meta Data)
+	const ways = Array.isArray(waysData) ? waysData : waysData.ways;
+	const waysMeta = Array.isArray(waysMetaData) ? waysMetaData : waysMetaData["ways-data"];
+    const waysMetaById = new Map(waysMeta.map(way => [String(way[0]), way]));
+	console.log('Railway ways:', ways.length);
+	console.log('Railway ways-data:', waysMeta.length);
     ways.forEach(way => {
         const wayId = way[0];
         const nodeIds = way[1];
         if (!nodeIds || nodeIds.length < 2) return;
-
         const coordinates = nodeIds
             .map(nodeId => railwayNodes.get(String(nodeId)))
             .filter(node => node);
-
         const wayMeta = waysMetaById.get(String(wayId));
-
         if (coordinates.length >= 2) {
             railwayFeatures.push({
                 type: 'Feature',
@@ -104,24 +105,21 @@ Promise.all([
                 }
             });
         }
-
         for (let i = 0; i < nodeIds.length - 1; i++) {
             const startNode = String(nodeIds[i]);
             const endNode = String(nodeIds[i + 1]);
-
             if (!railwayGraph.has(startNode)) {
                 railwayGraph.set(startNode, []);
             }
-
             if (!railwayGraph.has(endNode)) {
                 railwayGraph.set(endNode, []);
             }
-
             railwayGraph.get(startNode).push(endNode);
             railwayGraph.get(endNode).push(startNode);
         }
     });
-
+	// END OF WAYS LOADING
+	
     console.log('Railway graph nodes:', railwayGraph.size);
 
     const railwayLayer = L.geoJSON({
