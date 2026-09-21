@@ -22,8 +22,6 @@ let currentRoutingTree = null;
 let currentOriginCRS = null;
 let currentPassengerFlows = null;
 let stationByStopPosition = new Map();
-let routingLoaded = false;
-let routingLoading = false;
 
 // INITIAL LOADING
 Promise.all([
@@ -35,30 +33,6 @@ Promise.all([
 	fetch('data/station-transfers.json').then(response => response.json())
 ])
 .then(([nodesData, waysData, waysMetaData, stationsData, routingData, transfersData]) => {
-	const routingEdges = routingData.edges;
-
-	// STATION LOADING
-    stations = Object.entries(stationsData).map(([crs, record]) => ({
-        crs: crs,
-        name: record.station?.name,
-        latitude: parseFloat(record.station?.latitude),
-        longitude: parseFloat(record.station?.longitude),
-        Network: record.station?.Network || [],
-        TOC: record.station?.TOC || [],
-        stop_positions: record.stop_positions || []
-    })).filter(station => station.name && !isNaN(station.latitude) && !isNaN(station.longitude));
-	console.log('Railway stations:', stations.length);
-	// END OF STATION LOADING
-
-	// STATIONS BY STOP POSITION (research what this is)
-	stationByStopPosition.clear();
-	stations.forEach(station => {
-    	station.stop_positions.forEach(id => {
-        	stationByStopPosition.set(String(id), station);
-    	});
-	}); 
-	// END OF STATIONS BY STOP POSITION
-	
 	// NODE LOADING
 	const nodes = Array.isArray(nodesData) ? nodesData : nodesData.nodes;
 	console.log('Railway nodes:', nodes.length);
@@ -118,10 +92,10 @@ Promise.all([
             railwayGraph.get(endNode).push(startNode);
         }
     });
+	console.log('Railway graph nodes:', railwayGraph.size);
 	// END OF WAYS LOADING
-	
-    console.log('Railway graph nodes:', railwayGraph.size);
 
+	// DRAW BASE RAILWAY ONTO MAP
     const railwayLayer = L.geoJSON({
         type: 'FeatureCollection',
         features: railwayFeatures
@@ -132,29 +106,44 @@ Promise.all([
             opacity: 0.7
         }
     }).addTo(map);
+	// END OF DRAWING BASE RAILWAY
 
-    console.log('Railway stations:', stations.length);
+	// STATION LOADING
+    stations = Object.entries(stationsData).map(([crs, record]) => ({
+        crs: crs,
+        name: record.station?.name,
+        latitude: parseFloat(record.station?.latitude),
+        longitude: parseFloat(record.station?.longitude),
+        Network: record.station?.Network || [],
+        TOC: record.station?.TOC || [],
+        stop_positions: record.stop_positions || []
+    })).filter(station => station.name && !isNaN(station.latitude) && !isNaN(station.longitude));
+	console.log('Railway stations:', stations.length);
+	stationByStopPosition.clear();
+	stations.forEach(station => {
+    	station.stop_positions.forEach(id => {
+        	stationByStopPosition.set(String(id), station);
+    	});
+    	L.circleMarker([station.latitude, station.longitude], {
+        	radius: 2,
+        	weight: 1
+    	})
+    	.bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
+    	.addTo(map);
+	});
+	// END OF STATION LOADING
 
-    stations.forEach(station => {
-        L.circleMarker([station.latitude, station.longitude], {
-            radius: 2,
-            weight: 1
-        })
-        .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
-        .addTo(map);
-    });
+	// ROUTING
+	const routingEdges = routingData.edges;
 	routingData.edges.forEach(edge => {
     	const [from, to, distance, path] = edge;
-
     	if (!railwayRoutingGraph.has(String(from))) railwayRoutingGraph.set(String(from), []);
     	if (!railwayRoutingGraph.has(String(to))) railwayRoutingGraph.set(String(to), []);
-
     	railwayRoutingGraph.get(String(from)).push({
         	node: String(to),
         	distance: distance,
         	path: path
     	});
-
     	railwayRoutingGraph.get(String(to)).push({
         	node: String(from),
         	distance: distance,
@@ -162,8 +151,12 @@ Promise.all([
     	});
 	});
 	console.log('Railway routing graph nodes:', railwayRoutingGraph.size);
+	// END OF ROUTING
+
+	// TRANSFERS
 	stationTransfers = transfersData.transfers || [];
 	console.log('Station transfers loaded:', stationTransfers.length);
+	// END OF TRANSFERS
 }) // END OF: INITIAL LOADING
 .catch(error => console.error('Error loading railway network data:', error));
 
