@@ -422,7 +422,8 @@ function drawPassengerFlows(tree, flowData) {
             }
         }
         //const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
-		const width = 1 + (Math.log10(flow + 1) / 6) * 14;
+		//const width = 1 + (Math.log10(flow + 1) / 6) * 14;
+		const width = (Math.pow(flow, 0.2) * 0.5) + 1,
         L.polyline(coordinates, {
             color: '#3388ff',
             weight: width,
