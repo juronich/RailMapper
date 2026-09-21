@@ -592,7 +592,7 @@ function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
 	const maxFlow = Math.max(...currentPassengerFlows.values());
 	//const width = 1 + (Math.sqrt(destinationJourneys / maxFlow) * 12);
 	//const width = 1 + (Math.log10(destinationJourneys + 1) / 6) * 14;
-	const width = 1 + (Math.pow(flow, 0.2) * 0.6);
+	const width = 1 + (Math.pow(destinationJourneys, 0.2) * 0.6);
     const destinationStation = stations.find(
         station => station.crs === destinationCRS
     );
