@@ -435,7 +435,7 @@ function drawPassengerFlows(tree, flowData) {
             color: '#3388ff',
             weight: width,
             opacity: 1,
-            lineCap: 'butt',
+            lineCap: 'round',
             lineJoin: 'round'
         }).addTo(flowLayer);
     });
