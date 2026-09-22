@@ -122,6 +122,7 @@ export async function loadData(map) {
     
     // JOURNEY DATA
     const journeys = [];
+    let availableYears = []; 
     journeyDataFiles.forEach(data => {
         const years = data.years;
         // Extract years if available
