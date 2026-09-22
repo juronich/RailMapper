@@ -108,3 +108,25 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     fullPathNodes.unshift(curr);
     return { pathNodes: fullPathNodes, totalDistance: minDist };
 }
+
+ // Aggregates passenger volumes across network segment polylines for a given origin and year.
+export function calculatePassengerFlows(routingTree, originCRS, selectedYear, journeys, stationByCRS) {
+    if (!routingTree) return new Map();
+    const edgeFlows = new Map();
+    const activeJourneys = journeys.filter(j => j.OriginCRS === originCRS && j[selectedYear] > 0);
+    activeJourneys.forEach(journey => {
+        const passengerVolume = journey[selectedYear];
+        const destCRS = journey.DestinationCRS;
+        const route = reconstructPath(destCRS, stationByCRS, routingTree);
+        if (!route || !route.pathNodes || route.pathNodes.length < 2) return;
+        const nodes = route.pathNodes;
+        for (let i = 0; i < nodes.length - 1; i++) {
+            const u = String(nodes[i]);
+            const v = String(nodes[i + 1]);
+            const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+            const currentVolume = edgeFlows.get(edgeKey) || 0;
+            edgeFlows.set(edgeKey, currentVolume + passengerVolume);
+        }
+    });
+    return edgeFlows;
+}
