@@ -1,4 +1,4 @@
-console.log('v0.201');
+console.log('v0.2015');
 const map = L.map('map').setView([54.5, -3], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -24,7 +24,7 @@ let currentOriginCRS = null;
 let currentPassengerFlows = null;
 let stationByStopPosition = new Map();
 let stationConnections = new Map();
-//let transfersByCRS = new Map();
+let transfersByCRS = new Map();
 
 // INITIAL LOADING
 Promise.all([
@@ -178,13 +178,13 @@ Promise.all([
 
 	// TRANSFERS
 	stationTransfers = transfersData.transfers || [];
-	/*const transfersByCRS = new Map();
+	const  = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
-        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
-        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
-        transfersByCRS.get(crs1).push(crs2);
-        transfersByCRS.get(crs2).push(crs1);
-    });*/
+        if (!.has(crs1)) .set(crs1, []);
+        if (!.has(crs2)) .set(crs2, []);
+        .get(crs1).push(crs2);
+        .get(crs2).push(crs1);
+    });
 	console.log('Station transfers loaded:', stationTransfers.length);
 	// END OF TRANSFERS
 }) // END OF: INITIAL LOADING
@@ -260,13 +260,13 @@ function buildOriginRoutingTree(originCRS) {
             });
         });
     });*/
-    const transfersByCRS = new Map();
+    /*const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
         if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
         if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
         transfersByCRS.get(crs1).push(crs2);
         transfersByCRS.get(crs2).push(crs1);
-    });
+    });*/
     while (unvisited.size > 0) {
         let currentNode = null;
         let currentDistance = Infinity;
@@ -295,11 +295,11 @@ function buildOriginRoutingTree(originCRS) {
         }
         const currentStation = stationByStopPosition.get(currentNode);
         if (currentStation) {
-			const stationByCRS = new Map(); // NEW
+			//const stationByCRS = new Map(); // NEW
             const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
             for (const targetCRS of connectedCRS) {
-                //const targetStation = stations.find(station => station.crs === targetCRS);
-				const targetStation = stationByCRS.get(targetCRS);
+                const targetStation = stations.find(station => station.crs === targetCRS);
+				//const targetStation = stationByCRS.get(targetCRS); // NEW
                 if (!targetStation) continue;
                 for (const stopPosition of targetStation.stop_positions) {
                     const transferNode = String(stopPosition);
