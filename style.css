@@ -1,10 +1,10 @@
 html, body { margin: 0; padding: 0; height: 100%; }
 #map { width: 100%; height: 100%; }
-/*
+
 .basemap img {
-    filter: saturate(0.7) brightness(1.08) !important;
+    filter: saturate(0.5) brightness(0.9) !important;
 }
-*/
+
 #controls {
     position: absolute;
     top: 10px;
