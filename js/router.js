@@ -85,8 +85,7 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     if (!routingTree) return null;
     const { distances, parents } = routingTree;
     const targetStation = stationByCRS.get(targetCRS);
-    if (!targetStation || !targetStation.stop_positions.length) return null;
-    // Pick closest stop_position for target station
+    if (!targetStation || !targetStation.stop_positions || !targetStation.stop_positions.length) return null;
     let bestStop = null;
     let minDist = Infinity;
     targetStation.stop_positions.forEach(stopId => {
@@ -102,10 +101,23 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     let curr = bestStop;
     while (parents.has(curr)) {
         const edge = parents.get(curr);
-        fullPathNodes.unshift(...edge.path.slice(1).reverse());
-        curr = edge.parent;
+        // Edge path nodes sanitized to strings
+        const segmentNodes = edge.path.map(String);
+        // Ensure segment matches direction from curr to edge.parent
+        if (segmentNodes[segmentNodes.length - 1] === curr) {
+            // Path ends at curr -> insert in forward order (excluding starting curr)
+            for (let i = segmentNodes.length - 2; i >= 0; i--) {
+                fullPathNodes.unshift(segmentNodes[i]);
+            }
+        } else {
+            // Path starts at curr -> insert reversed
+            for (let i = 1; i < segmentNodes.length; i++) {
+                fullPathNodes.unshift(segmentNodes[i]);
+            }
+        }
+        curr = String(edge.parent);
     }
-    fullPathNodes.unshift(curr);
+    fullPathNodes.unshift(String(curr));
     return { pathNodes: fullPathNodes, totalDistance: minDist };
 }
 
