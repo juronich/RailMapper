@@ -1,7 +1,8 @@
 console.log('v0.20175');
 import { loadData } from './dataLoader.js';
+import { computeShortestPathTree, reconstructPath } from './router.js';
 
-class MinPriorityQueue {
+/*class MinPriorityQueue {
     constructor() {
         this.heap = [];
     }
@@ -49,6 +50,7 @@ class MinPriorityQueue {
         }
     }
 } // END OF CLASS
+*/
 
 // MAP
 const map = L.map('map').setView([54.5, -3], 6);
@@ -98,146 +100,6 @@ loadData(map)
         console.log('All data loaded and initialized successfully.');
     })
     .catch(err => console.error('Error during dataset initialization:', err));
-
-/*const networkFiles = [
-    fetch('data/railway-nodes.json').then(res => res.json()),
-    fetch('data/railway-ways.json').then(res => res.json()),
-    fetch('data/railway-ways-data.json').then(res => res.json()),
-    fetch('data/stations.json').then(res => res.json()),
-    fetch('data/railway-routing.json').then(res => res.json()),
-    fetch('data/station-transfers.json').then(res => res.json())
-];
-const journeyFetches = [
-    'data/journeys/ODM_Scotland.json',
-    'data/journeys/ODM_North.json',
-    'data/journeys/ODM_Midlands.json',
-    'data/journeys/ODM_Wales.json',
-    'data/journeys/ODM_South.json',
-    'data/journeys/ODM_London.json'
-].map(file => fetch(file).then(res => res.json()));
-
-// Fetch NETWORK and JOURNEYS in ONE parallel batch
-Promise.all([
-    Promise.all(networkFiles),
-    Promise.all(journeyFetches)
-])
-.then(([[nodesData, waysData, waysMetaData, stationsData, routingData, transfersData], journeyDataFiles]) => {
-    // POPULATE NODES
-    nodesData.nodes.forEach(node => {
-        railwayNodes.set(String(node[0]), {
-            latitude: node[1],
-            longitude: node[2]
-        });
-    }); 
-	// END OF POPULATE NODES
-	
-    //  BUILD WAYS & GRAPH DIRECTLY
-    const waysMetaById = new Map(waysMetaData["ways-data"].map(way => [String(way[0]), way]));
-    const basePolylines = [];
-    waysData.ways.forEach(way => {
-        const wayId = way[0];
-        const nodeIds = way[1];
-        if (!nodeIds || nodeIds.length < 2) return;
-        const coords = [];
-        for (let i = 0; i < nodeIds.length; i++) {
-            const nodeIdStr = String(nodeIds[i]);
-            const node = railwayNodes.get(nodeIdStr);
-            if (node) coords.push([node.latitude, node.longitude]);
-            // Populate adjacency graph
-            if (i < nodeIds.length - 1) {
-                const nextNodeStr = String(nodeIds[i + 1]);
-                if (!railwayGraph.has(nodeIdStr)) railwayGraph.set(nodeIdStr, []);
-                if (!railwayGraph.has(nextNodeStr)) railwayGraph.set(nextNodeStr, []);
-                railwayGraph.get(nodeIdStr).push(nextNodeStr);
-                railwayGraph.get(nextNodeStr).push(nodeIdStr);
-            }
-        }
-        if (coords.length >= 2) {
-            basePolylines.push(L.polyline(coords, {
-                color: '#4EA72E',
-                weight: 1,
-                opacity: 0.7
-            }));
-        }
-    });
-	// Batch draw base railway network
-    L.featureGroup(basePolylines).addTo(map);
-	// END OF BUILD WAYS & GRAPH DIRECTLY
-	
-    // STATIONS & LOOKUP MAPS
-    stations = Object.entries(stationsData).map(([crs, record]) => ({
-        crs: crs,
-        name: record.station?.name,
-        latitude: parseFloat(record.station?.latitude),
-        longitude: parseFloat(record.station?.longitude),
-        stop_positions: record.stop_positions || []
-    })).filter(s => s.name && !isNaN(s.latitude) && !isNaN(s.longitude));
-    stationByCRS = new Map(stations.map(s => [s.crs, s]));
-    stations.forEach(station => {
-        station.stop_positions.forEach(id => {
-            stationByStopPosition.set(String(id), station);
-        });
-        L.circleMarker([station.latitude, station.longitude], { radius: 2, weight: 1 })
-            .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
-            .addTo(map);
-    });
-	// END OF STATIONS & LOOKUP MAPS
-	
-    // ROUTING GRAPH
-    routingData.edges.forEach(([from, to, distance, path]) => {
-        const fromNode = String(from);
-        const toNode = String(to);
-        if (!railwayRoutingGraph.has(fromNode)) railwayRoutingGraph.set(fromNode, []);
-        if (!railwayRoutingGraph.has(toNode)) railwayRoutingGraph.set(toNode, []);
-        railwayRoutingGraph.get(fromNode).push({ node: toNode, distance, path });
-        railwayRoutingGraph.get(toNode).push({ node: fromNode, distance, path: [...path].reverse() });
-    });
-    // Populate stationConnections
-    stations.forEach(station => {
-        station.stop_positions.forEach(id => {
-            const node = String(id);
-            if (!railwayRoutingGraph.has(node)) return;
-            stationConnections.set(node, {
-                stationCRS: station.crs,
-                fromCoordinates: [station.latitude, station.longitude],
-                toCoordinates: [railwayNodes.get(node).latitude, railwayNodes.get(node).longitude]
-            });
-        });
-    });
-	// END OF ROUTING GRAPH
-	
-    // TRANSFERS
-    stationTransfers = transfersData.transfers || [];
-    transfersByCRS = new Map();
-    stationTransfers.forEach(([crs1, crs2]) => {
-        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
-        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
-        transfersByCRS.get(crs1).push(crs2);
-        transfersByCRS.get(crs2).push(crs1);
-    });
-	// END OF TRANSFERS
-	
-    // JOURNEY DATA
-    journeyDataFiles.forEach(data => {
-        const years = data.years;
-        Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
-            Object.entries(destinations).forEach(([secondCRS, values]) => {
-                const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
-                years.forEach((year, idx) => {
-                    journey[year] = values[idx] || 0;
-                });
-                journeys.push(journey);
-            });
-        });
-    });
-	// END OF JOURNEY DATA
-	
-    originInput.disabled = false;
-    console.log('All data loaded and initialized successfully.');
-})
-.catch(err => console.error('Error during dataset initialization:', err));
-// END OF INITIAL LOADING
-*/
 
 // FUNCTION: getTransferNodes() - Used in X to 
 function getTransferNodes(crs) {
@@ -470,6 +332,7 @@ function drawPassengerFlows(tree, flowData) {
     });
 } // END OF FUNCTION: drawPassengerFlows()
 
+/*
 // FUNCTION - findRailwayRoute() - Debug function to find a route between two stations
 function findRailwayRoute(startCRS, endCRS) {
     const startStation = stations.find(station => station.crs === startCRS);
@@ -591,6 +454,7 @@ function findRailwayRoute(startCRS, endCRS) {
     }
     return null;
 } // END OF FUNCTION - findRailwayRoute()
+*/
 
 // FUNCTION: drawRailwayRoute() - Debug function to draw railway route between the two stations in findRailwayRoute()
 function drawRailwayRoute(route) {
