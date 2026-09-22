@@ -1,4 +1,6 @@
-console.log('v0.20170');
+console.log('v0.20175');
+import { loadData } from './dataLoader.js';
+
 class MinPriorityQueue {
     constructor() {
         this.heap = [];
@@ -63,24 +65,41 @@ const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
 
+// Global Application State Variables
 let journeys = [];
 let stations = [];
 let stationTransfers = [];
 let railwayNodes = new Map();
 let railwayGraph = new Map();
 let railwayRoutingGraph = new Map();
-let currentRoutingTree = null;
-let currentOriginCRS = null;
-let currentPassengerFlows = null;
+let stationByCRS = new Map();
 let stationByStopPosition = new Map();
 let stationConnections = new Map();
 let transfersByCRS = new Map();
+let currentRoutingTree = null;
+let currentOriginCRS = null;
+let currentPassengerFlows = null;
 
+// LOAD DATA
+loadData(map)
+    .then(data => {
+        railwayNodes = data.railwayNodes;
+        railwayGraph = data.railwayGraph;
+        railwayRoutingGraph = data.railwayRoutingGraph;
+        stations = data.stations;
+        stationByCRS = data.stationByCRS;
+        stationByStopPosition = data.stationByStopPosition;
+        stationConnections = data.stationConnections;
+        stationTransfers = data.stationTransfers;
+        transfersByCRS = data.transfersByCRS;
+        journeys = data.journeys;
 
-// Build stationByCRS map variable globally
-let stationByCRS = new Map();
+        originInput.disabled = false;
+        console.log('All data loaded and initialized successfully.');
+    })
+    .catch(err => console.error('Error during dataset initialization:', err));
 
-const networkFiles = [
+/*const networkFiles = [
     fetch('data/railway-nodes.json').then(res => res.json()),
     fetch('data/railway-ways.json').then(res => res.json()),
     fetch('data/railway-ways-data.json').then(res => res.json()),
@@ -218,6 +237,7 @@ Promise.all([
 })
 .catch(err => console.error('Error during dataset initialization:', err));
 // END OF INITIAL LOADING
+*/
 
 // FUNCTION: getTransferNodes() - Used in X to 
 function getTransferNodes(crs) {
