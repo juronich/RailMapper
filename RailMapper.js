@@ -1,4 +1,58 @@
-console.log('v0.20162');
+console.log('v0.20163');
+class MinPriorityQueue {
+    constructor() {
+        this.heap = [];
+    }
+
+    push(node, priority) {
+        this.heap.push({ node, priority });
+        this._bubbleUp(this.heap.length - 1);
+    }
+
+    pop() {
+        if (this.isEmpty()) return null;
+        const top = this.heap[0];
+        const bottom = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = bottom;
+            this._sinkDown(0);
+        }
+        return top;
+    }
+
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+
+    _bubbleUp(index) {
+        while (index > 0) {
+            const parentIdx = Math.floor((index - 1) / 2);
+            if (this.heap[index].priority >= this.heap[parentIdx].priority) break;
+            [this.heap[index], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[index]];
+            index = parentIdx;
+        }
+    }
+
+    _sinkDown(index) {
+        const length = this.heap.length;
+        while (true) {
+            let smallest = index;
+            const left = 2 * index + 1;
+            const right = 2 * index + 2;
+
+            if (left < length && this.heap[left].priority < this.heap[smallest].priority) {
+                smallest = left;
+            }
+            if (right < length && this.heap[right].priority < this.heap[smallest].priority) {
+                smallest = right;
+            }
+            if (smallest === index) break;
+            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
+            index = smallest;
+        }
+    }
+}
+
 const map = L.map('map').setView([54.5, -3], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -25,6 +79,7 @@ let currentPassengerFlows = null;
 let stationByStopPosition = new Map();
 let stationConnections = new Map();
 let transfersByCRS = new Map();
+let stationByCRS = new Map();
 
 // INITIAL LOADING
 Promise.all([
@@ -152,6 +207,7 @@ Promise.all([
             });
         });
     });
+	stationByCRS = new Map(stations.map(station => [station.crs, station]));
 	// END OF STATION LOADING
 
 	// ROUTING
@@ -220,6 +276,90 @@ function processSelectedOrigin(selectedCRS) {
 
 // FUNCTION: buildOriginRoutingTree() - Function to build the possible routes from the selected Origin
 function buildOriginRoutingTree(originCRS) {
+    const originStation = stationByCRS.get(originCRS);
+    if (!originStation) {
+        console.error('Could not find origin station:', originCRS);
+        return null;
+    }
+    const startNodes = originStation.stop_positions
+        .map(id => String(id))
+        .filter(id => railwayRoutingGraph.has(id));
+    if (!startNodes.length) {
+        console.error('Origin station has no usable routing nodes:', originCRS);
+        return null;
+    }
+    const distances = new Map();
+    const previous = new Map();
+    const pq = new MinPriorityQueue();
+    // Initialize origin nodes
+    startNodes.forEach(node => {
+        distances.set(node, 0);
+        pq.push(node, 0);
+    });
+    while (!pq.isEmpty()) {
+        const { node: currentNode, priority: currentDistance } = pq.pop();
+        // Skip stale queue entries
+        if (currentDistance > (distances.get(currentNode) ?? Infinity)) continue;
+        // 1. Traverse standard network edges
+        const edges = railwayRoutingGraph.get(currentNode) || [];
+        for (let i = 0; i < edges.length; i++) {
+            const edge = edges[i];
+            const newDistance = currentDistance + edge.distance;
+
+            if (newDistance < (distances.get(edge.node) ?? Infinity)) {
+                distances.set(edge.node, newDistance);
+                previous.set(edge.node, {
+                    node: currentNode,
+                    edge: edge
+                });
+                pq.push(edge.node, newDistance);
+            }
+        }
+        // 2. Traverse station transfers
+        const currentStation = stationByStopPosition.get(currentNode);
+        if (currentStation) {
+            const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
+            for (let i = 0; i < connectedCRS.length; i++) {
+                const targetCRS = connectedCRS[i];
+                const targetStation = stationByCRS.get(targetCRS);
+                if (!targetStation) continue;
+                for (let j = 0; j < targetStation.stop_positions.length; j++) {
+                    const transferNode = String(targetStation.stop_positions[j]);
+                    if (!railwayRoutingGraph.has(transferNode)) continue;
+                    const newDistance = currentDistance; // 0-distance transfer
+                    if (newDistance < (distances.get(transferNode) ?? Infinity)) {
+                        distances.set(transferNode, newDistance);
+                        previous.set(transferNode, {
+                            node: currentNode,
+                            edge: {
+                                node: transferNode,
+                                distance: 0,
+                                path: [],
+                                transfer: true,
+                                fromCoordinates: [
+                                    currentStation.latitude,
+                                    currentStation.longitude
+                                ],
+                                toCoordinates: [
+                                    targetStation.latitude,
+                                    targetStation.longitude
+                                ]
+                            }
+                        });
+                        pq.push(transferNode, newDistance);
+                    }
+                }
+            }
+        }
+    }
+    return {
+        originCRS: originCRS,
+        stationConnections: stationConnections,
+        distances: distances,
+        previous: previous
+    };
+}
+/*function buildOriginRoutingTree(originCRS) {
     const originStation = stations.find(station => station.crs === originCRS);
     if (!originStation) {
         console.error('Could not find origin station:', originCRS);
@@ -242,31 +382,6 @@ function buildOriginRoutingTree(originCRS) {
     startNodes.forEach(node => {
         distances.set(node, 0);
     });
-    //const stationConnections = new Map();
-    /*stations.forEach(station => {
-        station.stop_positions.forEach(id => {
-            const node = String(id);
-            if (!railwayRoutingGraph.has(node)) return;
-            stationConnections.set(node, {
-                stationCRS: station.crs,
-                fromCoordinates: [
-                    station.latitude,
-                    station.longitude
-                ],
-                toCoordinates: [
-                    railwayNodes.get(node).latitude,
-                    railwayNodes.get(node).longitude
-                ]
-            });
-        });
-    });*/
-    /*const transfersByCRS = new Map();
-    stationTransfers.forEach(([crs1, crs2]) => {
-        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
-        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
-        transfersByCRS.get(crs1).push(crs2);
-        transfersByCRS.get(crs2).push(crs1);
-    });*/
     while (unvisited.size > 0) {
         let currentNode = null;
         let currentDistance = Infinity;
@@ -336,7 +451,9 @@ function buildOriginRoutingTree(originCRS) {
         distances: distances,
         previous: previous
     };
-} // END OF FUNCTION: buildOriginRoutingTree()
+}
+*/
+// END OF FUNCTION: buildOriginRoutingTree()
 
 // FUNCTION: calculatePassengerFlows() - Calculate the journeys from the selected Origin station
 function calculatePassengerFlows(tree, originCRS, year) {
