@@ -295,11 +295,11 @@ function buildOriginRoutingTree(originCRS) {
         }
         const currentStation = stationByStopPosition.get(currentNode);
         if (currentStation) {
-			const stationByCRS = new Map(); // NEW
+			//const stationByCRS = new Map(); // NEW
             const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
             for (const targetCRS of connectedCRS) {
-                //const targetStation = stations.find(station => station.crs === targetCRS);
-				const targetStation = stationByCRS.get(targetCRS); // NEW
+                const targetStation = stations.find(station => station.crs === targetCRS);
+				//const targetStation = stationByCRS.get(targetCRS); // NEW
                 if (!targetStation) continue;
                 for (const stopPosition of targetStation.stop_positions) {
                     const transferNode = String(stopPosition);
