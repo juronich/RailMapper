@@ -1,56 +1,8 @@
 console.log('v0.20175');
 import { loadData } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath } from './router.js';
+import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, clearAllMapLayers } from './renderer.js';
 
-/*class MinPriorityQueue {
-    constructor() {
-        this.heap = [];
-    }
-    push(node, priority) {
-        this.heap.push({ node, priority });
-        this._bubbleUp(this.heap.length - 1);
-    }
-    pop() {
-        if (this.isEmpty()) return null;
-        const top = this.heap[0];
-        const bottom = this.heap.pop();
-        if (this.heap.length > 0) {
-            this.heap[0] = bottom;
-            this._sinkDown(0);
-        }
-        return top;
-    }
-    isEmpty() {
-        return this.heap.length === 0;
-    }
-    _bubbleUp(index) {
-        while (index > 0) {
-            const parentIdx = Math.floor((index - 1) / 2);
-            if (this.heap[index].priority >= this.heap[parentIdx].priority) break;
-            [this.heap[index], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[index]];
-            index = parentIdx;
-        }
-    }
-    _sinkDown(index) {
-        const length = this.heap.length;
-        while (true) {
-            let smallest = index;
-            const left = 2 * index + 1;
-            const right = 2 * index + 2;
-
-            if (left < length && this.heap[left].priority < this.heap[smallest].priority) {
-                smallest = left;
-            }
-            if (right < length && this.heap[right].priority < this.heap[smallest].priority) {
-                smallest = right;
-            }
-            if (smallest === index) break;
-            [this.heap[index], this.heap[smallest]] = [this.heap[smallest], this.heap[index]];
-            index = smallest;
-        }
-    }
-} // END OF CLASS
-*/
 
 // MAP
 const map = L.map('map').setView([54.5, -3], 6);
@@ -100,6 +52,24 @@ loadData(map)
         console.log('All data loaded and initialized successfully.');
     })
     .catch(err => console.error('Error during dataset initialization:', err));
+
+/**
+ * Example handler showing how router + renderer work together when selecting a route:
+ */
+function displayRouteToStation(destinationCRS) {
+    if (!currentRoutingTree) return;
+    // 1. Calculate path geometry (router.js)
+    const route = reconstructPath(destinationCRS, stationByCRS, currentRoutingTree);
+    if (route && route.pathNodes.length > 0) {
+        // 2. Render path on map (renderer.js)
+        drawRailwayRoute(routeLayer, route.pathNodes, railwayNodes, {
+            color: '#e67e22',
+            weight: 5
+        });
+    }
+}
+
+
 
 // FUNCTION: getTransferNodes() - Used in X to 
 function getTransferNodes(crs) {
@@ -280,281 +250,9 @@ function calculatePassengerFlows(tree, originCRS, year) {
     };
 } // END OF FUNCTION: calculatePassengerFlows()
 
-// FUNCTION: drawPassengerFlows() - Draw the passenger flows from the origin station to all its journey destinations
-function drawPassengerFlows(tree, flowData) {
-    flowLayer.clearLayers();
-    if (!tree || !flowData || !flowData.edgeFlows || !flowData.edgeFlows.size) return;
-    const flows = flowData.edgeFlows;
-    const destinationNodes = flowData.destinationNodes || new Map();
-    const maxFlow = Math.max(...flows.values());
-    flows.forEach((flow, edgeKey) => {
-        const [fromNode, toNode] = edgeKey.split('->');
-        const previous = tree.previous.get(toNode);
-        if (!previous || previous.node !== fromNode) return;
-        const edge = previous.edge;
-        let coordinates = [];
-        if (edge.transfer) {
-            coordinates = [
-                edge.fromCoordinates,
-                edge.toCoordinates
-            ];
-        } else {
-            coordinates = edge.path
-                .map(nodeId => railwayNodes.get(String(nodeId)))
-                .filter(node => node)
-                .map(node => [
-                    node.latitude,
-                    node.longitude
-                ]);
-        }
-        if (coordinates.length < 2) return;
-        const stationConnection = tree.stationConnections?.get(fromNode);
-        if (stationConnection && stationConnection.stationCRS === tree.originCRS) {
-            coordinates.unshift(stationConnection.fromCoordinates);
-        }
-        // Extend the final destination segment to the station coordinates.
-        if (destinationNodes.has(toNode)) {
-            const destinationConnection = tree.stationConnections?.get(toNode);
-            if (destinationConnection) {
-                coordinates.push(destinationConnection.fromCoordinates);
-            }
-        }
-        //const width = 1 + (Math.sqrt(flow / maxFlow) * 12);
-		//const width = 1 + (Math.log10(flow + 1) / 6) * 14;
-		const width = 1 + (Math.pow(flow, 0.2) * 0.65);
-        L.polyline(coordinates, {
-            color: '#3388ff',
-            weight: width,
-            opacity: 1,
-            lineCap: 'round',
-            lineJoin: 'round'
-        }).addTo(flowLayer);
-    });
-} // END OF FUNCTION: drawPassengerFlows()
 
-/*
-// FUNCTION - findRailwayRoute() - Debug function to find a route between two stations
-function findRailwayRoute(startCRS, endCRS) {
-    const startStation = stations.find(station => station.crs === startCRS);
-    const endStation = stations.find(station => station.crs === endCRS);
-    if (!startStation || !endStation) {
-        console.error('Could not find start or end station');
-        return null;
-    }
-    const startNodes = startStation.stop_positions
-        .map(id => String(id))
-        .filter(id => railwayRoutingGraph.has(id));
-    const endNodes = new Set(
-        endStation.stop_positions
-            .map(id => String(id))
-            .filter(id => railwayRoutingGraph.has(id))
-    );
-    if (!startNodes.length || !endNodes.size) {
-        console.error('One or both stations have no usable routing nodes');
-        return null;
-    }
-    const distances = new Map();
-    const previous = new Map();
-    const unvisited = new Set();
-    railwayRoutingGraph.forEach((edges, node) => {
-        distances.set(node, Infinity);
-        unvisited.add(node);
-    });
-    startNodes.forEach(node =>{distances.set(node, 0)});
-    while (unvisited.size > 0) {
-        let currentNode = null;
-        let currentDistance = Infinity;
-        for (const node of unvisited) {
-            const distance = distances.get(node);
-            if (distance < currentDistance) {
-                currentNode = node;
-                currentDistance = distance;
-            }
-        }
-        if (currentNode === null || currentDistance === Infinity) {
-            break;
-        }
-        if (endNodes.has(currentNode)) {
-            const routingEdges = [];
-            let node = currentNode;
-            while (previous.has(node)) {
-                const previousStep = previous.get(node);
-                routingEdges.unshift(previousStep.edge);
-                node = previousStep.node;
-            }
-            const physicalNodes = [];
-            routingEdges.forEach((edge, index) => {
-    			if (edge.transfer) {
-        			physicalNodes.push({
-            			transfer: true,
-            			fromCoordinates: edge.fromCoordinates,
-            			toCoordinates: edge.toCoordinates
-        			});
-        			return;
-    			}
-    			if (index === 0) {
-        			physicalNodes.push(...edge.path);
-    			} else {
-        			physicalNodes.push(...edge.path.slice(1));
-    			}
-			});
-            return {
-                nodes: physicalNodes,
-                distance: currentDistance
-            };
-        }
-        unvisited.delete(currentNode);
-        for (const edge of railwayRoutingGraph.get(currentNode) || []) {
-    		if (!unvisited.has(edge.node)) continue;
-    		const newDistance = currentDistance + edge.distance;
-    		if (newDistance < distances.get(edge.node)) {
-        		distances.set(edge.node, newDistance);
-        		previous.set(edge.node, {
-            		node: currentNode,
-            		edge: edge
-        		});
-    		}
-		}
-		const currentStation = stations.find(station =>
-    		station.stop_positions.map(id => String(id)).includes(currentNode)
-		);
-		if (currentStation) {
-    		for (const [fromCRS, toCRS] of stationTransfers) {
-        		let targetCRS = null;
-        		if (fromCRS === currentStation.crs) {
-            		targetCRS = toCRS;
-        		} else if (toCRS === currentStation.crs) {
-            		targetCRS = fromCRS;
-        		}
-        		if (!targetCRS) continue;
-        		const transferNodes = getTransferNodes(targetCRS);
-        		for (const transferNode of transferNodes) {
-            		if (!unvisited.has(transferNode)) continue;
-            		const newDistance = currentDistance;
-            		if (newDistance < distances.get(transferNode)) {
-                		distances.set(transferNode, newDistance);
-                		previous.set(transferNode, {
-                    		node: currentNode,
-                    		edge: {
-    							node: transferNode,
-    							distance: 0,
-    							path: [],
-    							transfer: true,
-    							fromCoordinates: [currentStation.latitude, currentStation.longitude],
-    							toCoordinates: [
-									stations.find(station => station.crs === targetCRS).latitude, 
-									stations.find(station => station.crs === targetCRS).longitude
-								]
-							}
-                		});
-            		}
-        		}
-    		}
-		}
-    }
-    return null;
-} // END OF FUNCTION - findRailwayRoute()
-*/
 
-// FUNCTION: drawRailwayRoute() - Debug function to draw railway route between the two stations in findRailwayRoute()
-function drawRailwayRoute(route) {
-    routeLayer.clearLayers();
-    if (!route) {
-        console.error('No route found');
-        return;
-    }
-    const coordinates = [];
-	route.nodes.forEach(node => {
-    	if (typeof node === 'object' && node.transfer) {
-        	coordinates.push(node.fromCoordinates);
-        	coordinates.push(node.toCoordinates);
-        	return;
-    	}
-    	const railwayNode = railwayNodes.get(String(node));
-    	if (railwayNode) {
-        	coordinates.push([railwayNode.latitude, railwayNode.longitude]);
-    	}
-	});
-    L.polyline(coordinates, {
-        color: 'blue',
-        weight: 5,
-        opacity: 0.9
-    }).addTo(routeLayer);
-    console.log('Route nodes:', route.nodes.length);
-    console.log('Route distance:', (route.distance / 1000).toFixed(2), 'km');
-    map.fitBounds(coordinates);
-} // END OF FUNCTION: drawRailwayRoute()
 
-// FUNCTION: drawDestinationRoute() - Function to draw the route from the Origin station to a selected destination station
-function drawDestinationRoute(tree, destinationCRS, destinationJourneys) {
-    routeLayer.clearLayers();
-	if (!tree || !currentOriginCRS) return;
-	const maxFlow = Math.max(...currentPassengerFlows.values());
-	//const width = 1 + (Math.sqrt(destinationJourneys / maxFlow) * 12);
-	//const width = 1 + (Math.log10(destinationJourneys + 1) / 6) * 14;
-	const width = 1 + (Math.pow(destinationJourneys, 0.2) * 0.65);
-    const destinationStation = stations.find(
-        station => station.crs === destinationCRS
-    );
-    if (!destinationStation) return;
-    const destinationNodes = destinationStation.stop_positions
-        .map(id => String(id))
-        .filter(id => tree.distances.get(id) !== Infinity);
-    if (!destinationNodes.length) return;
-    const destinationNode = destinationNodes.reduce((closest, node) => {
-        if (!closest) return node;
-        return tree.distances.get(node) < tree.distances.get(closest)
-            ? node
-            : closest;
-    }, null);
-    const routingEdges = [];
-    let node = destinationNode;
-    while (tree.previous.has(node)) {
-        const previous = tree.previous.get(node);
-        routingEdges.unshift(previous.edge);
-        node = previous.node;
-    }
-    const coordinates = [];
-	routingEdges.forEach(edge => {
-    	if (edge.transfer) {
-        	coordinates.push(edge.fromCoordinates);
-        	coordinates.push(edge.toCoordinates);
-        	return;
-    	}
-    	const edgeCoordinates = edge.path
-        	.map(nodeId => railwayNodes.get(String(nodeId)))
-        	.filter(node => node)
-        	.map(node => [
-            	node.latitude,
-            	node.longitude
-        	]);
-    	if (coordinates.length === 0) {
-        	coordinates.push(...edgeCoordinates);
-    	} else {
-        	coordinates.push(...edgeCoordinates.slice(1));
-    	}
-	});
-	// Add the destination stop-position → station connection
-	const destinationConnection = tree.stationConnections?.get(destinationNode);
-	if (destinationConnection) {
-    	coordinates.push(destinationConnection.fromCoordinates);
-	}
-    if (coordinates.length < 2) return;
-    L.polyline(coordinates, {
-        color: '#000000',
-        weight: width + 3,
-        opacity: 0.9,
-        lineCap: 'round',
-        lineJoin: 'round'
-    }).addTo(routeLayer);
-	L.polyline(coordinates, {
-        color: '#ff6600',
-        weight: width,
-        opacity: 0.9,
-        lineCap: 'round',
-        lineJoin: 'round'
-    }).addTo(routeLayer);
-} // END OF  FUNCTION: drawDestinationRoute()
 
 // FUNCTION: updateDestinationBubbles()
 function updateDestinationBubbles(selectedCRS) {
