@@ -1,6 +1,6 @@
 console.log('v0.20175');
 import { loadData } from './dataLoader.js';
-import { computeShortestPathTree, reconstructPath } from './router.js';
+import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, clearAllMapLayers } from './renderer.js';
 import { initializeYearSelector, setupStationAutocomplete } from './ui.js';
 
