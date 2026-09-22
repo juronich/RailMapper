@@ -1,5 +1,3 @@
-// dataLoader.js
-
 const networkFiles = [
     fetch('data/railway-nodes.json').then(res => res.json()),
     fetch('data/railway-ways.json').then(res => res.json()),
@@ -24,7 +22,6 @@ export async function loadData(map) {
             Promise.all(networkFiles),
             Promise.all(journeyFetches)
         ]);
-
     // Data structures to populate
     const railwayNodes = new Map();
     const railwayGraph = new Map();
@@ -32,15 +29,15 @@ export async function loadData(map) {
     const stationByStopPosition = new Map();
     const stationConnections = new Map();
 
-    // 1. POPULATE NODES
+    // POPULATE NODES
     nodesData.nodes.forEach(node => {
         railwayNodes.set(String(node[0]), {
             latitude: node[1],
             longitude: node[2]
         });
-    });
+    }); // END OF POPULATE NODES
 
-    // 2. BUILD WAYS & GRAPH
+    // BUILD WAYS & GRAPH
     const basePolylines = [];
     waysData.ways.forEach(way => {
         const nodeIds = way[1];
@@ -50,7 +47,6 @@ export async function loadData(map) {
             const nodeIdStr = String(nodeIds[i]);
             const node = railwayNodes.get(nodeIdStr);
             if (node) coords.push([node.latitude, node.longitude]);
-
             if (i < nodeIds.length - 1) {
                 const nextNodeStr = String(nodeIds[i + 1]);
                 if (!railwayGraph.has(nodeIdStr)) railwayGraph.set(nodeIdStr, []);
@@ -67,11 +63,11 @@ export async function loadData(map) {
             }));
         }
     });
-
     // Batch draw base railway network on map
     L.featureGroup(basePolylines).addTo(map);
-
-    // 3. STATIONS & LOOKUP MAPS
+    // END OF BUILD WAYS & GRAPH
+    
+    // STATIONS & LOOKUP MAPS
     const stations = Object.entries(stationsData).map(([crs, record]) => ({
         crs: crs,
         name: record.station?.name,
@@ -79,9 +75,7 @@ export async function loadData(map) {
         longitude: parseFloat(record.station?.longitude),
         stop_positions: record.stop_positions || []
     })).filter(s => s.name && !isNaN(s.latitude) && !isNaN(s.longitude));
-
     const stationByCRS = new Map(stations.map(s => [s.crs, s]));
-
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
             stationByStopPosition.set(String(id), station);
@@ -90,8 +84,9 @@ export async function loadData(map) {
             .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
             .addTo(map);
     });
-
-    // 4. ROUTING GRAPH
+    // END OF STATIONS & LOOKUP MAPS
+    
+    // ROUTING GRAPH
     routingData.edges.forEach(([from, to, distance, path]) => {
         const fromNode = String(from);
         const toNode = String(to);
@@ -100,7 +95,6 @@ export async function loadData(map) {
         railwayRoutingGraph.get(fromNode).push({ node: toNode, distance, path });
         railwayRoutingGraph.get(toNode).push({ node: fromNode, distance, path: [...path].reverse() });
     });
-
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
             const node = String(id);
@@ -112,8 +106,9 @@ export async function loadData(map) {
             });
         });
     });
-
-    // 5. TRANSFERS
+    // END OF ROUTING GRAPH
+    
+    // TRANSFERS
     const stationTransfers = transfersData.transfers || [];
     const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
@@ -122,8 +117,9 @@ export async function loadData(map) {
         transfersByCRS.get(crs1).push(crs2);
         transfersByCRS.get(crs2).push(crs1);
     });
-
-    // 6. JOURNEY DATA
+    // END OF TRANSFERS
+    
+    // JOURNEY DATA
     const journeys = [];
     journeyDataFiles.forEach(data => {
         const years = data.years;
@@ -137,7 +133,8 @@ export async function loadData(map) {
             });
         });
     });
-
+    // END OF JOURNEY DATA
+    
     return {
         railwayNodes,
         railwayGraph,
