@@ -24,6 +24,7 @@ let currentOriginCRS = null;
 let currentPassengerFlows = null;
 let stationByStopPosition = new Map();
 let stationConnections = new Map();
+let transfersByCRS = new Map();
 
 // INITIAL LOADING
 Promise.all([
@@ -177,6 +178,13 @@ Promise.all([
 
 	// TRANSFERS
 	stationTransfers = transfersData.transfers || [];
+	const transfersByCRS = new Map();
+    stationTransfers.forEach(([crs1, crs2]) => {
+        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
+        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
+        transfersByCRS.get(crs1).push(crs2);
+        transfersByCRS.get(crs2).push(crs1);
+    });
 	console.log('Station transfers loaded:', stationTransfers.length);
 	// END OF TRANSFERS
 }) // END OF: INITIAL LOADING
@@ -252,13 +260,13 @@ function buildOriginRoutingTree(originCRS) {
             });
         });
     });*/
-    const transfersByCRS = new Map();
+    /*const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
         if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
         if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
         transfersByCRS.get(crs1).push(crs2);
         transfersByCRS.get(crs2).push(crs1);
-    });
+    });*/
     while (unvisited.size > 0) {
         let currentNode = null;
         let currentDistance = Infinity;
