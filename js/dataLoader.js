@@ -35,7 +35,8 @@ export async function loadData(map) {
             latitude: node[1],
             longitude: node[2]
         });
-    }); // END OF POPULATE NODES
+    }); 
+    // END OF POPULATE NODES
 
     // BUILD WAYS & GRAPH
     const basePolylines = [];
