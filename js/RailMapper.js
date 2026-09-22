@@ -1,4 +1,4 @@
-console.log('v0.20175');
+console.log('v0.20176');
 import { loadData } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, clearAllMapLayers } from './renderer.js';
@@ -54,7 +54,12 @@ function updateVisualization() {
         appState.journeys, 
         appState.stationByCRS
     );
-    const maxFlowVolume = Math.max(...edgeFlows.values(), 1);
+    let maxFlowVolume = 1;
+	for (const volume of edgeFlows.values()) {
+    	if (volume > maxFlowVolume) {
+        	maxFlowVolume = volume;
+    	}
+	}
     // 3. Render flow polylines onto flowLayer
     drawPassengerFlows(
         flowLayer, 
