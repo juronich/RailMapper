@@ -1,4 +1,4 @@
-console.log('v0.2016');
+console.log('v0.20161');
 const map = L.map('map').setView([54.5, -3], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -178,7 +178,7 @@ Promise.all([
 
 	// TRANSFERS
 	stationTransfers = transfersData.transfers || [];
-	const transfersByCRS = new Map();
+	transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
         if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
         if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
