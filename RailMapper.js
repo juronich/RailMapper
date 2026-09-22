@@ -1,4 +1,4 @@
-console.log('v0.2015');
+console.log('v0.2016');
 const map = L.map('map').setView([54.5, -3], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -178,12 +178,12 @@ Promise.all([
 
 	// TRANSFERS
 	stationTransfers = transfersData.transfers || [];
-	const  = new Map();
+	const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
-        if (!.has(crs1)) .set(crs1, []);
-        if (!.has(crs2)) .set(crs2, []);
-        .get(crs1).push(crs2);
-        .get(crs2).push(crs1);
+        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
+        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
+        transfersByCRS.get(crs1).push(crs2);
+        transfersByCRS.get(crs2).push(crs1);
     });
 	console.log('Station transfers loaded:', stationTransfers.length);
 	// END OF TRANSFERS
