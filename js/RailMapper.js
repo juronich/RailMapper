@@ -107,12 +107,16 @@ async function init() {
         appState.stationByCRS = data.stationByCRS;
         appState.railwayRoutingGraph = data.railwayRoutingGraph;
         appState.journeys = data.journeys;
-        appState.availableYears = data.availableYears;
-        // Set default active year
-        selectedYear = appState.availableYears[appState.availableYears.length - 1] || '2024-25';
+        appState.availableYears = data.availableYears || [];
+// Set default active year
+		 if (appState.availableYears.length > 0) {
+            selectedYear = appState.availableYears[appState.availableYears.length - 1];
+        } else {
+            selectedYear = '2024-25';
+        }
         // Initialize UI components
         initializeYearSelector(
-            document.getElementById('year-select'), 
+            document.getElementById('year'), 
             appState.availableYears, 
             (newYear) => {
                 selectedYear = newYear;
@@ -120,11 +124,11 @@ async function init() {
             }
         );
         setupStationAutocomplete({
-            inputElement: document.getElementById('origin-input'),
+            inputElement: document.getElementById('origin'),
             resultsElement: document.getElementById('origin-results'),
             stations: appState.stations,
-            onSelectStation: (station) => {
-                selectedOriginCRS = station.crs;
+            onSelectStation: (crs) => {
+                selectedOriginCRS = crs;
                 updateVisualization();
             },
             onClear: () => {
@@ -133,6 +137,7 @@ async function init() {
                 clearAllMapLayers(routeLayer, destinationLayer, flowLayer);
             }
         });
+		console.log('RailMapper initialized successfully.');
     } catch (error) {
         console.error('Failed to initialize railway application:', error);
     }
