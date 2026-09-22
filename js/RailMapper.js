@@ -2,7 +2,7 @@ console.log('v0.20175');
 import { loadData } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, clearAllMapLayers } from './renderer.js';
-
+import { initializeYearSelector, setupStationAutocomplete } from './ui.js';
 
 // MAP
 const map = L.map('map').setView([54.5, -3], 6);
@@ -12,9 +12,12 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 }).addTo(map);
 // END OF MAP
 
+// Layers
 const destinationLayer = L.layerGroup().addTo(map);
 const routeLayer = L.layerGroup().addTo(map);
 const flowLayer = L.layerGroup().addTo(map);
+
+// DOM Elements
 const originInput = document.getElementById('origin');
 const yearInput = document.getElementById('year');
 const originResults = document.getElementById('origin-results');
@@ -48,10 +51,47 @@ loadData(map)
         transfersByCRS = data.transfersByCRS;
         journeys = data.journeys;
 
+		// Setup Year Selector
+        const availableYears = Object.keys(journeys[0] || {}).filter(k => k.includes('-'));
+        currentSelectedYear = availableYears[0] || '2017-18';
+        initializeYearSelector(yearSelect, availableYears, (selectedYear) => {
+            currentSelectedYear = selectedYear;
+            if (currentOriginCRS) {
+                processOriginChange(currentOriginCRS);
+            }
+        });
+
+		// Setup Station Autocomplete
+        setupStationAutocomplete({
+            inputElement: originInput,
+            resultsElement: originResults,
+            stations: stations,
+            onSelectStation: (crs) => processOriginChange(crs),
+            onClear: () => clearAllMapLayers(routeLayer, destinationLayer, flowLayer)
+        });
+		
         originInput.disabled = false;
         console.log('All data loaded and initialized successfully.');
     })
     .catch(err => console.error('Error during dataset initialization:', err));
+
+/**
+ * Handles workflow when user changes origin station.
+ */
+function processOriginChange(originCRS) {
+    currentOriginCRS = originCRS;
+    clearAllMapLayers(routeLayer, destinationLayer, flowLayer);
+    // 1. Compute Shortest Path Tree (router.js)
+    currentRoutingTree = computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph);
+    // 2. Filter journey data for selected origin & year
+    const activeJourneys = journeys.filter(j => j.OriginCRS === originCRS && j[currentSelectedYear] > 0);
+    const destinationData = activeJourneys.map(j => ({
+        crs: j.DestinationCRS,
+        passengerCount: j[currentSelectedYear]
+    }));
+    // 3. Render Destination Markers (renderer.js)
+    drawDestinationMarkers(destinationLayer, destinationData, stationByCRS);
+}
 
 /**
  * Example handler showing how router + renderer work together when selecting a route:
@@ -99,92 +139,7 @@ function processSelectedOrigin(selectedCRS) {
     console.log('Year: ', selectedYear);
 } // END OF FUNCTION: processSelectedOrigin()
 
-// FUNCTION: buildOriginRoutingTree() - Function to build the possible routes from the selected Origin
-function buildOriginRoutingTree(originCRS) {
-    const originStation = stationByCRS.get(originCRS);
-    if (!originStation) {
-        console.error('Could not find origin station:', originCRS);
-        return null;
-    }
-    const startNodes = originStation.stop_positions
-        .map(id => String(id))
-        .filter(id => railwayRoutingGraph.has(id));
-    if (!startNodes.length) {
-        console.error('Origin station has no usable routing nodes:', originCRS);
-        return null;
-    }
-    const distances = new Map();
-    const previous = new Map();
-    const pq = new MinPriorityQueue();
-    // Initialize origin nodes
-    startNodes.forEach(node => {
-        distances.set(node, 0);
-        pq.push(node, 0);
-    });
-    while (!pq.isEmpty()) {
-        const { node: currentNode, priority: currentDistance } = pq.pop();
-        // Skip stale queue entries
-        if (currentDistance > (distances.get(currentNode) ?? Infinity)) continue;
-        // 1. Traverse standard network edges
-        const edges = railwayRoutingGraph.get(currentNode) || [];
-        for (let i = 0; i < edges.length; i++) {
-            const edge = edges[i];
-            const newDistance = currentDistance + edge.distance;
 
-            if (newDistance < (distances.get(edge.node) ?? Infinity)) {
-                distances.set(edge.node, newDistance);
-                previous.set(edge.node, {
-                    node: currentNode,
-                    edge: edge
-                });
-                pq.push(edge.node, newDistance);
-            }
-        }
-        // 2. Traverse station transfers
-        const currentStation = stationByStopPosition.get(currentNode);
-        if (currentStation) {
-            const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
-            for (let i = 0; i < connectedCRS.length; i++) {
-                const targetCRS = connectedCRS[i];
-                const targetStation = stationByCRS.get(targetCRS);
-                if (!targetStation) continue;
-                for (let j = 0; j < targetStation.stop_positions.length; j++) {
-                    const transferNode = String(targetStation.stop_positions[j]);
-                    if (!railwayRoutingGraph.has(transferNode)) continue;
-                    const newDistance = currentDistance; // 0-distance transfer
-                    if (newDistance < (distances.get(transferNode) ?? Infinity)) {
-                        distances.set(transferNode, newDistance);
-                        previous.set(transferNode, {
-                            node: currentNode,
-                            edge: {
-                                node: transferNode,
-                                distance: 0,
-                                path: [],
-                                transfer: true,
-                                fromCoordinates: [
-                                    currentStation.latitude,
-                                    currentStation.longitude
-                                ],
-                                toCoordinates: [
-                                    targetStation.latitude,
-                                    targetStation.longitude
-                                ]
-                            }
-                        });
-                        pq.push(transferNode, newDistance);
-                    }
-                }
-            }
-        }
-    }
-    return {
-        originCRS: originCRS,
-        stationConnections: stationConnections,
-        distances: distances,
-        previous: previous
-    };
-}
-// END OF FUNCTION: buildOriginRoutingTree()
 
 // FUNCTION: calculatePassengerFlows() - Calculate the journeys from the selected Origin station
 function calculatePassengerFlows(tree, originCRS, year) {
