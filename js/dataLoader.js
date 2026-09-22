@@ -124,6 +124,10 @@ export async function loadData(map) {
     const journeys = [];
     journeyDataFiles.forEach(data => {
         const years = data.years;
+        // Extract years if available
+        if (years && availableYears.length === 0) {
+            availableYears = years;
+        }
         Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
             Object.entries(destinations).forEach(([secondCRS, values]) => {
                 const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
@@ -146,6 +150,7 @@ export async function loadData(map) {
         stationConnections,
         stationTransfers,
         transfersByCRS,
-        journeys
+        journeys,
+        availableYears
     };
 }
