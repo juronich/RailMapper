@@ -1,4 +1,4 @@
-console.log('v0.20161');
+console.log('v0.20162');
 const map = L.map('map').setView([54.5, -3], 6);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -295,11 +295,11 @@ function buildOriginRoutingTree(originCRS) {
         }
         const currentStation = stationByStopPosition.get(currentNode);
         if (currentStation) {
-			//const stationByCRS = new Map(); // NEW
+			const stationByCRS = new Map(); // NEW
             const connectedCRS = transfersByCRS.get(currentStation.crs) || [];
             for (const targetCRS of connectedCRS) {
-                const targetStation = stations.find(station => station.crs === targetCRS);
-				//const targetStation = stationByCRS.get(targetCRS); // NEW
+                //const targetStation = stations.find(station => station.crs === targetCRS);
+				const targetStation = stationByCRS.get(targetCRS); // NEW
                 if (!targetStation) continue;
                 for (const stopPosition of targetStation.stop_positions) {
                     const transferNode = String(stopPosition);
