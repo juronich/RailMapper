@@ -76,7 +76,6 @@ function updateVisualization() {
         const targetCRS = (j.OriginCRS === selectedOriginCRS) 
             ? j.DestinationCRS 
             : j.OriginCRS;
-
         return {
             crs: targetCRS,
             passengerCount: j[selectedYear]
@@ -86,7 +85,11 @@ function updateVisualization() {
         destinationLayer, 
         destinationData, 
         appState.stationByCRS, 
-        (destinationCRS) => handleDestinationClick(destinationCRS)
+		appState.availableYears,
+		selectedYear,
+		appState.journeys,
+		selectedOriginCRS,
+        (destinationCRS) => handleDestinationClick(destinationCRS) // Triggers handleDestinationClick
     );
 }
 
