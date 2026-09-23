@@ -29,7 +29,56 @@ export function drawRailwayRoute(routeLayer, pathNodes, railwayNodes, options = 
 }
 
 // Highlights destination stations on the destination layer with scaled markers/popups.
-export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS) {
+export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS, availableYears, selectedYear, journeys, selectedOriginCRS, onMarkerClick) {
+    destinationLayer.clearLayers();
+    destinationData.forEach(({ crs }) => {
+        const station = stationByCRS.get(crs);
+        if (!station || isNaN(station.latitude) || isNaN(station.longitude)) return;
+        // Find the bi-directional journey record for this station pair
+        const journeyRecord = journeys.find(j => 
+            (j.OriginCRS === selectedOriginCRS && j.DestinationCRS === crs) ||
+            (j.OriginCRS === crs && j.DestinationCRS === selectedOriginCRS)
+        );
+        const currentPassengerCount = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0; 
+        const radius = Math.max(3, Math.min(25, Math.sqrt(currentPassengerCount) * 0.05)); // Scale marker size based on active year volume
+        let popupHtml = `<div style="font-family: sans-serif; min-width: 160px;">`; // Build popup HTML listing all available years
+        popupHtml += `<strong style="font-size: 14px;">${station.name} (${crs})</strong><hr style="margin: 4px 0;">`;
+        popupHtml += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
+        availableYears.forEach(year => {
+            const val = journeyRecord && journeyRecord[year] ? journeyRecord[year].toLocaleString() : '0';
+            if (year === selectedYear) {
+                popupHtml += `<tr style="background-color: #f0f4f8;">
+                    <td style="padding: 2px 4px;"><strong>${year}</strong></td>
+                    <td style="text-align: right; padding: 2px 4px;"><strong>${val}</strong></td>
+                </tr>`;
+            } else {
+                popupHtml += `<tr>
+                    <td style="padding: 2px 4px; color: #555;">${year}</td>
+                    <td style="text-align: right; padding: 2px 4px; color: #555;">${val}</td>
+                </tr>`;
+            }
+        });
+        popupHtml += `</table></div>`;
+        // Create Leaflet circle marker
+        const marker = L.circleMarker([station.latitude, station.longitude], {
+            radius: radius,
+            color: '#e63946',
+            fillColor: '#e63946',
+            fillOpacity: 0.6,
+            weight: 1.5
+        }).bindPopup(popupHtml);
+        // Attach click callback to draw the individual route polyline
+        marker.on('click', () => {
+            if (typeof onMarkerClick === 'function') {
+                onMarkerClick(crs);
+            }
+        });
+
+        marker.addTo(destinationLayer);
+    });
+}
+        
+/*export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS) {
     destinationLayer.clearLayers();
     destinationData.forEach(({ crs, passengerCount }) => {
         const station = stationByCRS.get(crs);
@@ -50,7 +99,7 @@ export function drawDestinationMarkers(destinationLayer, destinationData, statio
         `);
         circle.addTo(destinationLayer);
     });
-}
+}*/
 
 // Draws aggregated passenger flows across segment polylines.
 export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue = 1) {
