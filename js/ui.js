@@ -1,5 +1,5 @@
  // Populates the year dropdown selector with available years from journey data.
-export function initializeYearSelector(yearSelectElement, availableYears, onYearChange) {
+/*export function initializeYearSelector(yearSelectElement, availableYears, onYearChange) {
     yearSelectElement.innerHTML = '';
     availableYears.forEach(year => {
         const option = document.createElement('option');
@@ -11,21 +11,18 @@ export function initializeYearSelector(yearSelectElement, availableYears, onYear
         onYearChange(e.target.value);
     });
 }
+*/
 
-/*
 // Dynamically creates and injects a year select element into the DOM.
-export function createYearSelector(containerId, availableYears, initialYear, onYearChange) {
+export function initializeYearSelector(containerId, availableYears, initialYear, onYearChange) {
     const container = document.getElementById(containerId);
     if (!container) return null;
-    // Clear any existing contents in container
-    container.innerHTML = '';
-    // Create label
-    const label = document.createElement('label');
+    container.innerHTML = ''; // Clear any existing contents in container   
+    const label = document.createElement('label'); // Create label
     label.htmlFor = 'year-select';
     label.textContent = 'Year: ';
-    label.style.marginRight = '8px';
-    // Create select element
-    const select = document.createElement('select');
+    label.style.marginRight = '8px';    
+    const select = document.createElement('select'); // Create select element
     select.id = 'year-select';
     // Populate option elements from availableYears array
     availableYears.forEach(year => {
@@ -48,7 +45,6 @@ export function createYearSelector(containerId, availableYears, initialYear, onY
     container.appendChild(select);
     return select;
 }
- */
 
 // Initializes auto-complete station search for origin/destination input fields.
 export function setupStationAutocomplete(config) {
