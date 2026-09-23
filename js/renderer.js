@@ -1,15 +1,22 @@
 // Default and selected style configurations
+const ORIGIN_STYLE = {
+    radius: 8,
+    color: '#000',       // Teal/Green outline
+    fillColor: '#2a9d8f',   // Teal/Green fill
+    fillOpacity: 0.9,
+    weight: 2
+};
 const DEFAULT_STYLE = {
-    color: '#e63946',
-    fillColor: '#e63946',
-    fillOpacity: 0.6,
-    weight: 1.5
+    color: '#000',
+    fillColor: '#3388ff',
+    fillOpacity: 0.7,
+    weight: 1
 };
 const SELECTED_STYLE = {
     color: '#1d3557',     // Dark blue outline
     fillColor: '#457b9d', // Steel blue fill
     fillOpacity: 0.9,
-    weight: 3
+    weight: 2
 };
 let activeSelectedMarker = null;
 
@@ -42,6 +49,18 @@ export function drawRailwayRoute(routeLayer, pathNodes, railwayNodes, options = 
     const polyline = L.polyline(coords, { ...defaultOptions, ...options });
     polyline.addTo(routeLayer);
     return polyline;
+}
+
+//* Draws or updates the origin station marker on a dedicated layer.
+export function drawOriginMarker(originLayer, selectedOriginCRS, stationByCRS) {
+    originLayer.clearLayers();
+    if (!selectedOriginCRS) return;
+    const station = stationByCRS.get(selectedOriginCRS);
+    if (!station || isNaN(station.latitude) || isNaN(station.longitude)) return;
+    const marker = L.circleMarker([station.latitude, station.longitude], ORIGIN_STYLE)
+        .bindPopup(`<strong>Origin: ${station.name} (${station.crs})</strong>`);
+    marker.addTo(originLayer);
+    marker.bringToFront();
 }
 
 // Highlights destination stations on the destination layer with scaled markers/popups.
