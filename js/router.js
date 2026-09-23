@@ -122,14 +122,21 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
 }
 
  // Aggregates passenger volumes across network segment polylines for a given origin and year.
-export function calculatePassengerFlows(routingTree, originCRS, selectedYear, journeys, stationByCRS) {
+export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeys, stationByCRS) {
     if (!routingTree) return new Map();
     const edgeFlows = new Map();
-    const activeJourneys = journeys.filter(j => j.OriginCRS === originCRS && j[selectedYear] > 0);
+    // Match journeys where selectedCRS is EITHER Origin OR Destination
+    const activeJourneys = journeys.filter(j => 
+        (j.OriginCRS === selectedCRS || j.DestinationCRS === selectedCRS) && 
+        j[selectedYear] > 0
+    );
     activeJourneys.forEach(journey => {
         const passengerVolume = journey[selectedYear];
-        const destCRS = journey.DestinationCRS;
-        const route = reconstructPath(destCRS, stationByCRS, routingTree);
+        // Find whichever station is opposite to the selected active station
+        const targetCRS = (journey.OriginCRS === selectedCRS) 
+            ? journey.DestinationCRS 
+            : journey.OriginCRS;
+        const route = reconstructPath(targetCRS, stationByCRS, routingTree);
         if (!route || !route.pathNodes || route.pathNodes.length < 2) return;
         const nodes = route.pathNodes;
         for (let i = 0; i < nodes.length - 1; i++) {
