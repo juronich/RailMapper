@@ -126,7 +126,7 @@ async function init() {
         appState.railwayRoutingGraph = data.railwayRoutingGraph;
         appState.journeys = data.journeys;
         appState.availableYears = data.availableYears || [];
-// Set default active year
+		// Set default active year
 		 if (appState.availableYears.length > 0) {
             selectedYear = appState.availableYears[appState.availableYears.length - 1];
         } else {
@@ -134,8 +134,9 @@ async function init() {
         }
         // Initialize UI components
         initializeYearSelector(
-            document.getElementById('year'), 
+            'year', 
             appState.availableYears, 
+			selectedYear,
             (newYear) => {
                 selectedYear = newYear;
                 updateVisualization();
