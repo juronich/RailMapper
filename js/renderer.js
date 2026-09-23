@@ -148,8 +148,9 @@ export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue 
 }
 
  // Clears all dynamic overlay layers from the map.
-export function clearAllMapLayers(routeLayer, destinationLayer, flowLayer) {
+export function clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer) {
     if (routeLayer) routeLayer.clearLayers();
     if (destinationLayer) destinationLayer.clearLayers();
     if (flowLayer) flowLayer.clearLayers();
+    if (originLayer) originLayer.clearLayers();
 }
