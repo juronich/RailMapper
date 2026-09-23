@@ -1,6 +1,6 @@
 // Default and selected style configurations
 const ORIGIN_STYLE = {
-    radius: 16,
+    radius: 21,
     color: '#000',       // Teal/Green outline
     fillColor: '#2a9d8f',   // Teal/Green fill
     fillOpacity: 0.9,
