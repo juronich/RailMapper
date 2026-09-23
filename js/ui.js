@@ -12,18 +12,13 @@ export function initializeYearSelector(yearSelectElement, availableYears, onYear
     });
 }
 
-// ui.js
-
-/**
- * Dynamically creates and injects a year select element into the DOM.
- */
+/*
+// Dynamically creates and injects a year select element into the DOM.
 export function createYearSelector(containerId, availableYears, initialYear, onYearChange) {
     const container = document.getElementById(containerId);
     if (!container) return null;
-
     // Clear any existing contents in container
     container.innerHTML = '';
-
     // Create label
     const label = document.createElement('label');
     label.htmlFor = 'year-select';
@@ -53,6 +48,7 @@ export function createYearSelector(containerId, availableYears, initialYear, onY
     container.appendChild(select);
     return select;
 }
+ */
 
 // Initializes auto-complete station search for origin/destination input fields.
 export function setupStationAutocomplete(config) {
