@@ -54,6 +54,7 @@ export function drawDestinationMarkers(destinationLayer, destinationData, statio
 
 // Draws aggregated passenger flows across segment polylines.
 export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue = 1) {
+    // THINK I CAN REMOVE maxFlowValue from this
     flowLayer.clearLayers();
     flows.forEach((flowVolume, edgeKey) => {
         const [nodeA, nodeB] = edgeKey.split('-');
@@ -61,8 +62,9 @@ export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue 
         const posB = railwayNodes.get(nodeB);
         if (!posA || !posB) return;
         // Calculate relative weight/opacity based on volume ratio
-        const ratio = Math.min(1, flowVolume / maxFlowValue);
-        const weight = 1 + ratio * 8;
+        //const ratio = Math.min(1, flowVolume / maxFlowValue);
+        //const weight = 1 + ratio * 8;
+        const weight = 1 + (Math.pow(flowVolume, 0.2) * 0.65);
         const opacity = 0.3 + ratio * 0.6;
         L.polyline(
             [[posA.latitude, posA.longitude], [posB.latitude, posB.longitude]],
