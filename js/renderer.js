@@ -2,8 +2,9 @@
 export function getCoordinatesForPath(pathNodes, railwayNodes) {
     const coords = [];
     pathNodes.forEach(nodeId => {
-        const node = railwayNodes.get(String(nodeId));
-        if (node) {
+        const nodeKey = String(nodeId);
+        const node = railwayNodes.get(nodeKey);
+        if (node && !isNaN(node.latitude) && !isNaN(node.longitude)) {
             coords.push([node.latitude, node.longitude]);
         }
     });
