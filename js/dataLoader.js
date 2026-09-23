@@ -91,10 +91,21 @@ export async function loadData(map) {
     routingData.edges.forEach(([from, to, distance, path]) => {
         const fromNode = String(from);
         const toNode = String(to);
+        const pathStrings = path.map(String);
         if (!railwayRoutingGraph.has(fromNode)) railwayRoutingGraph.set(fromNode, []);
         if (!railwayRoutingGraph.has(toNode)) railwayRoutingGraph.set(toNode, []);
-        railwayRoutingGraph.get(fromNode).push({ node: toNode, distance, path });
-        railwayRoutingGraph.get(toNode).push({ node: fromNode, distance, path: [...path].reverse() });
+        // Forward edge
+        railwayRoutingGraph.get(fromNode).push({ 
+            node: toNode, 
+            distance: Number(distance), 
+            path: pathStrings 
+        });
+        // Reverse edge (store reversed node path array)
+        railwayRoutingGraph.get(toNode).push({ 
+            node: fromNode, 
+            distance: Number(distance), 
+            path: [...pathStrings].reverse() 
+        });
     });
     stations.forEach(station => {
         station.stop_positions.forEach(id => {
