@@ -134,7 +134,7 @@ async function init() {
         }
         // Initialize UI components
         initializeYearSelector(
-            'year', 
+            'year-container', 
             appState.availableYears, 
 			selectedYear,
             (newYear) => {
