@@ -37,7 +37,6 @@ export function initializeYearSelector(containerId, availableYears, initialYear,
         }
     });
     // Append label and select to container
-    container.appendChild(label);
     container.appendChild(select);
     return select;
 }
