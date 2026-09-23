@@ -62,7 +62,7 @@ export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue 
         const posB = railwayNodes.get(nodeB);
         if (!posA || !posB) return;
         // Calculate relative weight/opacity based on volume ratio
-        //const ratio = Math.min(1, flowVolume / maxFlowValue);
+        const ratio = Math.min(1, flowVolume / maxFlowValue);
         //const weight = 1 + ratio * 8;
         const weight = 1 + (Math.pow(flowVolume, 0.2) * 0.65);
         const opacity = 0.3 + ratio * 0.6;
