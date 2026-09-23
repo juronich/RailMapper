@@ -1,3 +1,19 @@
+// Default and selected style configurations
+const DEFAULT_STYLE = {
+    color: '#e63946',
+    fillColor: '#e63946',
+    fillOpacity: 0.6,
+    weight: 1.5
+};
+const SELECTED_STYLE = {
+    color: '#1d3557',     // Dark blue outline
+    fillColor: '#457b9d', // Steel blue fill
+    fillOpacity: 0.9,
+    weight: 3
+};
+let activeSelectedMarker = null;
+
+
 // Converts an array of node IDs into Leaflet lat/lng coordinate pairs.
 export function getCoordinatesForPath(pathNodes, railwayNodes) {
     const coords = [];
@@ -69,11 +85,19 @@ export function drawDestinationMarkers(destinationLayer, destinationData, statio
         }).bindPopup(popupHtml);
         // Attach click callback to draw the individual route polyline
         marker.on('click', () => {
+            // 1. Reset previous selection back to default style
+            if (activeSelectedMarker && activeSelectedMarker !== marker) {
+                activeSelectedMarker.setStyle(DEFAULT_STYLE);
+            }
+            // 2. Highlight current clicked marker
+            marker.setStyle(SELECTED_STYLE);
+            marker.bringToFront(); // Keeps highlighted bubble above others
+            activeSelectedMarker = marker;
+            // 3. Trigger route draw callback
             if (typeof onMarkerClick === 'function') {
                 onMarkerClick(crs);
             }
         });
-
         marker.addTo(destinationLayer);
     });
 }
