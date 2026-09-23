@@ -62,10 +62,10 @@ export function drawDestinationMarkers(destinationLayer, destinationData, statio
         // Create Leaflet circle marker
         const marker = L.circleMarker([station.latitude, station.longitude], {
             radius: radius,
-            color: '#e63946',
-            fillColor: '#e63946',
-            fillOpacity: 0.6,
-            weight: 1.5
+            color: '#000',
+            fillColor: '#3388ff',
+            fillOpacity: 0.7,
+            weight: 1
         }).bindPopup(popupHtml);
         // Attach click callback to draw the individual route polyline
         marker.on('click', () => {
@@ -78,29 +78,6 @@ export function drawDestinationMarkers(destinationLayer, destinationData, statio
     });
 }
         
-/*export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS) {
-    destinationLayer.clearLayers();
-    destinationData.forEach(({ crs, passengerCount }) => {
-        const station = stationByCRS.get(crs);
-        if (!station) return;
-        // Scale marker radius based on passenger volume
-        const radius = Math.max(4, Math.min(18, Math.sqrt(passengerCount) / 10));
-        const circle = L.circleMarker([station.latitude, station.longitude], {
-            radius: radius,
-            fillColor: '#3388ff',
-            color: '#000',
-            weight: 1,
-            opacity: 1,
-            fillOpacity: 0.7
-        });
-        circle.bindPopup(`
-            <strong>${station.name} (${crs})</strong><br/>
-            Passengers: <strong>${passengerCount.toLocaleString()}</strong>
-        `);
-        circle.addTo(destinationLayer);
-    });
-}*/
-
 // Draws aggregated passenger flows across segment polylines.
 export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue = 1) {
     // THINK I CAN REMOVE maxFlowValue from this
