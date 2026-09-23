@@ -1,7 +1,7 @@
 console.log('v0.20176');
 import { loadData } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
-import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, clearAllMapLayers } from './renderer.js';
+import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
 import { initializeYearSelector, setupStationAutocomplete } from './ui.js';
 
 // MAP
@@ -16,6 +16,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 const routeLayer = L.layerGroup().addTo(map);
 const destinationLayer = L.layerGroup().addTo(map);
 const flowLayer = L.layerGroup().addTo(map);
+const originLayer = L.layerGroup().addTo(map);
 
 // Global dataset storage (populated on load)
 let appState = {
@@ -34,8 +35,10 @@ let currentRoutingTree = null;
 
 // Core Rendering Orchestration
 function updateVisualization() {
-    clearAllMapLayers(routeLayer, destinationLayer, flowLayer);
+    clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
     if (!selectedOriginCRS) return;
+	// Draw Marker for Origin station
+	drawOriginMarker(originLayer, selectedOriginCRS, appState.stationByCRS);
     // 1. Calculate Dijkstra shortest path tree from selected origin station
     currentRoutingTree = computeShortestPathTree(
         selectedOriginCRS, 
@@ -149,7 +152,7 @@ async function init() {
             onClear: () => {
                 selectedOriginCRS = null;
                 currentRoutingTree = null;
-                clearAllMapLayers(routeLayer, destinationLayer, flowLayer);
+                clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
             }
         });
 		console.log('RailMapper initialized successfully.');
