@@ -18,12 +18,8 @@ export function initializeYearSelector(containerId, availableYears, initialYear,
     const container = document.getElementById(containerId);
     if (!container) return null;
     container.innerHTML = ''; // Clear any existing contents in container   
-    const label = document.createElement('label'); // Create label
-    label.htmlFor = 'year-select';
-    label.textContent = 'Year: ';
-    label.style.marginRight = '8px';    
     const select = document.createElement('select'); // Create select element
-    select.id = 'year-select';
+    select.id = 'year';
     // Populate option elements from availableYears array
     availableYears.forEach(year => {
         const option = document.createElement('option');
