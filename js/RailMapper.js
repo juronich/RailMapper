@@ -67,14 +67,21 @@ function updateVisualization() {
         appState.railwayNodes, 
         maxFlowVolume
     );
-    // 4. Render destination circle markers
-    const originJourneys = appState.journeys.filter(
-        j => j.OriginCRS === selectedOriginCRS && j[selectedYear] > 0
+	// 4. Render destination circle markers
+	const activeJourneys = appState.journeys.filter(j => 
+        (j.OriginCRS === selectedOriginCRS || j.DestinationCRS === selectedOriginCRS) && 
+        j[selectedYear] > 0
     );
-    const destinationData = originJourneys.map(j => ({
-        crs: j.DestinationCRS,
-        passengerCount: j[selectedYear]
-    }));
+    const destinationData = activeJourneys.map(j => {
+        const targetCRS = (j.OriginCRS === selectedOriginCRS) 
+            ? j.DestinationCRS 
+            : j.OriginCRS;
+
+        return {
+            crs: targetCRS,
+            passengerCount: j[selectedYear]
+        };
+    });
     drawDestinationMarkers(
         destinationLayer, 
         destinationData, 
