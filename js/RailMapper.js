@@ -193,7 +193,8 @@ async function init() {
         });
         console.log('Phase A UI initialized successfully.');
         console.timeEnd('App Ready Time');
-        initRoutingWorker(appState.stations, appState.railwayNodes); // PHASE B: Spawn Web Worker for Routing Data
+       // initRoutingWorker(appState.stations, appState.railwayNodes);
+		// PHASE B: Spawn Web Worker for Routing Data
 		loadRoutingDataAsync(initData.stations, initData.railwayNodes)
         	.then(routingData => {
             	Object.assign(appState, routingData);
