@@ -5,7 +5,9 @@ self.onmessage = async (event) => {
     if (action === 'BUILD_ROUTING_GRAPH') {
         try {
             const { stations, railwayNodes } = payload;
-            const result = await loadRoutingData(stations, railwayNodes);
+            // Re-hydrate array back into a Map
+            const nodesMap = new Map(railwayNodes);
+            const result = await loadRoutingData(stations,  nodesMap);
             self.postMessage({ action: 'ROUTING_COMPLETE', payload: result });
         } catch (error) {
             self.postMessage({ action: 'ERROR', error: error.message });
