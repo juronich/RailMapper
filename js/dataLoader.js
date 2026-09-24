@@ -166,7 +166,7 @@ export async function loadRoutingData(stations, railwayNodes) {
         railwayRoutingGraph.get(toNode).push({ 
             node: fromNode, 
             distance: Number(distance), 
-            path: [...pathStrings].reverse() 
+            path: pathStrings.slice().reverse() // [...pathStrings].reverse()
         });
     });
     stations.forEach(station => {
