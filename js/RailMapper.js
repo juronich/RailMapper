@@ -1,5 +1,5 @@
 console.time('App Ready Time');
-console.log('v0.20178');
+console.log('v0.201785');
 import { loadInitData, loadRoutingDataAsync } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
@@ -159,7 +159,6 @@ function handleDestinationClick(destinationCRS) {
 
 async function init() {
     try {
-        console.time('App Ready Time');
         const data = await loadInitData(map);
         appState.railwayNodes = data.railwayNodes;
         appState.stations = data.stations;
