@@ -1,13 +1,15 @@
-const networkFiles = [
-    fetch('data/railway-nodes.json').then(res => res.json()),
-    fetch('data/railway-ways.json').then(res => res.json()),
-    fetch('data/railway-ways-data.json').then(res => res.json()),
-    fetch('data/stations.json').then(res => res.json()),
+const routingFiles = [
     fetch('data/railway-routing.json').then(res => res.json()),
     fetch('data/station-transfers.json').then(res => res.json())
 ];
 
-const journeyFetches = [
+const initFiles = [
+    fetch('data/stations.json').then(res => res.json()),
+    fetch('data/railway-nodes.json').then(res => res.json()),
+    fetch('data/railway-ways.json').then(res => res.json()),
+    fetch('data/railway-ways-data.json').then(res => res.json()),
+];
+const journeyFiles = [
     'data/journeys/ODM_Scotland.json',
     'data/journeys/ODM_North.json',
     'data/journeys/ODM_Midlands.json',
@@ -15,6 +17,133 @@ const journeyFetches = [
     'data/journeys/ODM_South.json',
     'data/journeys/ODM_London.json'
 ].map(file => fetch(file).then(res => res.json()));
+
+/**
+ * Phase A: Load base map geometry, stations, and regional journey files.
+ * Extracts availableYears immediately.
+ */
+export async function loadInitData() {
+    console.time('1. Fetch Initial JSONs');
+    const [[stationsData, nodesData, waysData, waysMetaData, journeyDataFiles] = 
+        await Promise.all([
+            Promise.all(initFiles),
+            Promise.all(journeyFiles)
+        ]);
+    // Data structures to populate
+    const [
+        stations, nodes, ways, waysData,
+        j1, j2, j3, j4, j5, j6
+    ] = await Promise.all([
+    ]);
+    const railwayNodes = new Map();
+    const railwayGraph = new Map();
+    const stationByStopPosition = new Map();
+    // POPULATE NODES
+    console.time('2. Populate Nodes');
+    nodesData.nodes.forEach(node => {
+        railwayNodes.set(String(node[0]), {
+            latitude: node[1],
+            longitude: node[2]
+        });
+    }); 
+    // END OF POPULATE NODES
+    console.timeEnd('2. Populate Nodes');
+    // BUILD WAYS & GRAPH
+    console.time('3. Build Ways & Graph');
+    const basePolylines = [];
+    waysData.ways.forEach(way => {
+        const nodeIds = way[1];
+        if (!nodeIds || nodeIds.length < 2) return;
+        const coords = [];
+        for (let i = 0; i < nodeIds.length; i++) {
+            const nodeIdStr = String(nodeIds[i]);
+            const node = railwayNodes.get(nodeIdStr);
+            if (node) coords.push([node.latitude, node.longitude]);
+            if (i < nodeIds.length - 1) {
+                const nextNodeStr = String(nodeIds[i + 1]);
+                if (!railwayGraph.has(nodeIdStr)) railwayGraph.set(nodeIdStr, []);
+                if (!railwayGraph.has(nextNodeStr)) railwayGraph.set(nextNodeStr, []);
+                railwayGraph.get(nodeIdStr).push(nextNodeStr);
+                railwayGraph.get(nextNodeStr).push(nodeIdStr);
+            }
+        }
+        if (coords.length >= 2) {
+            basePolylines.push(L.polyline(coords, {
+                color: '#4EA72E',
+                weight: 1,
+                opacity: 0.7
+            }));
+        }
+    });
+    // Batch draw base railway network on map
+    L.featureGroup(basePolylines).addTo(map);
+    console.timeEnd('3. Build Ways & Graph');
+    // END OF BUILD WAYS & GRAPH
+
+    // STATIONS & LOOKUP MAPS
+    console.time('4. Stations & Lookup Maps');
+    const stations = Object.entries(stationsData).map(([crs, record]) => ({
+        crs: crs,
+        name: record.station?.name,
+        latitude: parseFloat(record.station?.latitude),
+        longitude: parseFloat(record.station?.longitude),
+        stop_positions: record.stop_positions || []
+    })).filter(s => s.name && !isNaN(s.latitude) && !isNaN(s.longitude));
+    const stationByCRS = new Map(stations.map(s => [s.crs, s]));
+    stations.forEach(station => {
+        station.stop_positions.forEach(id => {
+            stationByStopPosition.set(String(id), station);
+        });
+        L.circleMarker([station.latitude, station.longitude], { radius: 2, weight: 1 })
+            .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
+            .addTo(map);
+    });
+    console.timeEnd('4. Stations & Lookup Maps');
+    // END OF STATIONS & LOOKUP MAPS
+    
+    // JOURNEY DATA
+    console.time('7. Journey Data');
+    const journeys = [];
+    let availableYears = []; 
+    journeyDataFiles.forEach(data => {
+        const years = data.years;
+        // Extract years if available
+        if (years && availableYears.length === 0) {
+            availableYears = years;
+        }
+        Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
+            Object.entries(destinations).forEach(([secondCRS, values]) => {
+                const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
+                years.forEach((year, idx) => {
+                    journey[year] = values[idx] || 0;
+                });
+                journeys.push(journey);
+            });
+        });
+    });
+    console.timeEnd('7. Journey Data');
+    availableYears.sort((a, b) => b.localeCompare(a));
+    // END OF JOURNEY DATA
+    return {
+        railwayNodes,
+        railwayGraph,
+        stations,
+        stationByCRS,
+        stationByStopPosition,
+        journeys,
+        availableYears
+    };
+}
+
+/**
+ * Phase B: Load heavy routing and transfer data needed for graph building
+ */
+
+
+
+
+
+
 
 export async function loadData(map) {
     console.time('1. Fetch JSONs');
