@@ -70,7 +70,6 @@ export async function loadInitData(map) {
     // Batch draw base railway network on map
     L.featureGroup(basePolylines).addTo(map);
     */
-    console.time('3. Build Ways & Graph');
 
     // 1. Force Canvas renderer for Leaflet rendering performance
     const canvasRenderer = L.canvas({ padding: 0.5 });
