@@ -36,7 +36,7 @@ let currentRoutingTree = null;
 let pendingOriginCRS = null;
 let isDataReady = false;
 
-const worker = new Worker('worker.js');
+/*const worker = new Worker('worker.js');
 worker.postMessage({ stations, ways });
 worker.onmessage = (e) => {
     appState.graph = e.data.graph;
@@ -63,6 +63,7 @@ function startBackgroundWorker(stations) {
     // Trigger calculation in background thread
     worker.postMessage({ stations });
 }
+*/
 
 
 // Core Rendering Orchestration
