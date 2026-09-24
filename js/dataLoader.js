@@ -199,21 +199,32 @@ export async function loadRoutingData(stations, railwayNodes) {
 // Helper to spawn worker and return Phase B data via Promise
 export function loadRoutingDataAsync(stations, railwayNodes) {
     return new Promise((resolve, reject) => {
-        const worker = new Worker('./worker.js', { type: 'module' });
+        const workerUrl = new URL('./worker.js', import.meta.url);
+        const worker = new Worker(workerUrl, { type: 'module' });
+        // Convert railwayNodes Map to an Array of entries for safe cloning across threads
+        const serializedNodes = Array.from(railwayNodes.entries());
         worker.postMessage({
             action: 'BUILD_ROUTING_GRAPH',
-            payload: { stations, railwayNodes }
+            payload: { 
+                stations, 
+                railwayNodes: serializedNodes
+            }
         });
         worker.onmessage = (event) => {
             const { action, payload, error } = event.data;
             if (error) {
+                worker.terminate();
                 reject(new Error(error));
             } else if (action === 'ROUTING_COMPLETE') {
                 worker.terminate(); // Clean up worker if only needed once
                 resolve(payload);
             }
         };
-        worker.onerror = (err) => reject(err);
+        worker.onerror = (err) => {
+            console.error('Worker startup error:', err);
+            worker.terminate();
+            reject(err);
+        }
     });
 }
 
