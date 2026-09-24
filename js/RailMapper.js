@@ -1,4 +1,5 @@
-console.log('v0.20177');
+console.time('App Ready Time');
+console.log('v0.20178');
 import { loadData } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
@@ -157,6 +158,9 @@ async function init() {
             }
         });
 		console.log('RailMapper initialized successfully.');
+		console.timeEnd('App Ready Time')
+		const loadTimeS = (performance.now()/1000).toFixed(2);
+    	console.log(`🚀 Application fully initialized in ${loadTimeMs} s`);
     } catch (error) {
         console.error('Failed to initialize railway application:', error);
     }
