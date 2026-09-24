@@ -133,11 +133,11 @@ export async function loadInitData(map) {
 export async function loadRoutingData(stations, railwayNodes) {
     console.time('Fetch Routing Data');
     const [routingData, transfersData] = await Promise.all([
-        fetch('/data/railway-routing.json').then(res => {
+        fetch('data/railway-routing.json').then(res => {
             if (!res.ok) throw new Error(`HTTP ${res.status} loading routing data`);
             return res.json();
         }),
-        fetch('/data/station-transfers.json').then(res => {
+        fetch('data/station-transfers.json').then(res => {
             if (!res.ok) throw new Error(`HTTP ${res.status} loading transfers data`);
             return res.json();
         })
