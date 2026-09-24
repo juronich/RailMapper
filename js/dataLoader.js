@@ -206,7 +206,6 @@ export async function loadRoutingData(stations, railwayNodes) {
 export function loadRoutingDataAsync(stations, railwayNodes) {
     return new Promise((resolve, reject) => {
         const workerUrl = new URL('./worker.js', import.meta.url);
-        console.log(workerUrl)
         const worker = new Worker(workerUrl, { type: 'module' });
         // Convert railwayNodes Map to an Array of entries for safe cloning across threads
         const serializedNodes = Array.from(railwayNodes.entries());
