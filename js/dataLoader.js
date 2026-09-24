@@ -150,6 +150,7 @@ export async function loadData(map) {
             });
         });
     });
+    availableYears.sort((a, b) => b.localeCompare(a));
     // END OF JOURNEY DATA
     
     return {
