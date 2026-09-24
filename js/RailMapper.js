@@ -195,11 +195,15 @@ async function init() {
         console.timeEnd('App Ready Time');
        // initRoutingWorker(appState.stations, appState.railwayNodes);
 		// PHASE B: Spawn Web Worker for Routing Data
-		loadRoutingDataAsync(initData.stations, initData.railwayNodes)
+		loadRoutingDataAsync(appState.stations, appState.railwayNodes)
         	.then(routingData => {
             	Object.assign(appState, routingData);
             	appState.isRoutingReady = true;
             	console.log('🚀 Routing graph loaded in background via Worker');
+				// If user selected a station while worker was processing, trigger visualization now
+                if (selectedOriginCRS) {
+                    updateVisualization();
+                }
 	        })
         	.catch(err => console.error('Worker Phase B failed:', err));
     } catch (error) {
