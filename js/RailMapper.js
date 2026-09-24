@@ -36,6 +36,35 @@ let currentRoutingTree = null;
 let pendingOriginCRS = null;
 let isDataReady = false;
 
+const worker = new Worker('worker.js');
+worker.postMessage({ stations, ways });
+worker.onmessage = (e) => {
+    appState.graph = e.data.graph;
+    isDataReady = true;
+    hideLoadingSpinner();
+};
+
+function startBackgroundWorker(stations) {
+    // Instantiate worker inside background routine
+    worker = new Worker('./worker.js', { type: 'module' });
+    // Listen for calculated graph from worker thread
+    worker.onmessage = (e) => {
+        const { graph, journeys } = e.data;
+        appState.graph = graph;
+        appState.journeys = journeys;
+        isDataReady = true;
+        console.log('⚡ Graph & Journey data ready from Web Worker');
+        // Execute queued station selection if user picked one while loading
+        if (pendingOriginCRS) {
+            updateVisualizationForOrigin(pendingOriginCRS);
+            pendingOriginCRS = null;
+        }
+    };
+    // Trigger calculation in background thread
+    worker.postMessage({ stations });
+}
+
+
 // Core Rendering Orchestration
 function updateVisualization() {
     clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
@@ -141,6 +170,7 @@ async function init() {
     });
     console.timeEnd('UI Interactive Time'); // ~200ms - user can now interact!
     // 2. PHASE B: Background processing (Non-blocking)
+	startBackgroundWorker(stations);
     loadBackgroundRoutingData();
 }
 async function loadBackgroundRoutingData() {
