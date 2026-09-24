@@ -196,6 +196,29 @@ export async function loadRoutingData(stations, railwayNodes) {
     };
 }
 
+// Helper to spawn worker and return Phase B data via Promise
+export function loadRoutingDataAsync(stations, railwayNodes) {
+    return new Promise((resolve, reject) => {
+        const worker = new Worker('./worker.js', { type: 'module' });
+        worker.postMessage({
+            action: 'BUILD_ROUTING_GRAPH',
+            payload: { stations, railwayNodes }
+        });
+        worker.onmessage = (event) => {
+            const { action, payload, error } = event.data;
+            if (error) {
+                reject(new Error(error));
+            } else if (action === 'ROUTING_COMPLETE') {
+                worker.terminate(); // Clean up worker if only needed once
+                resolve(payload);
+            }
+        };
+        worker.onerror = (err) => reject(err);
+    });
+}
+
+
+
 /*export async function loadData(map) {
     console.time('1. Fetch JSONs');
     const [[nodesData, waysData, waysMetaData, stationsData, routingData, transfersData], journeyDataFiles] = 
