@@ -133,8 +133,8 @@ export async function loadInitData(map) {
 export async function loadRoutingData(stations, railwayNodes) {
     console.time('Fetch Routing Data');
     const [routingData, transfersData] = await Promise.all([
-        fetch('data/railway-routing.json').then(res => res.json()),
-        fetch('data/station-transfers.json').then(res => res.json())
+        fetch('/data/railway-routing.json').then(res => res.json()),
+        fetch('/data/station-transfers.json').then(res => res.json())
     ]);
     const railwayRoutingGraph = new Map();
     const stationConnections = new Map();
@@ -199,7 +199,7 @@ export async function loadRoutingData(stations, railwayNodes) {
 // Helper to spawn worker and return Phase B data via Promise
 export function loadRoutingDataAsync(stations, railwayNodes) {
     return new Promise((resolve, reject) => {
-        const workerUrl = new URL('/js/worker.js', import.meta.url);
+        const workerUrl = new URL('./worker.js', import.meta.url);
         const worker = new Worker(workerUrl, { type: 'module' });
         // Convert railwayNodes Map to an Array of entries for safe cloning across threads
         const serializedNodes = Array.from(railwayNodes.entries());
