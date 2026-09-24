@@ -1,6 +1,6 @@
 console.time('App Ready Time');
 console.log('v0.20178');
-import { loadData } from './dataLoader.js';
+import { loadInitData, loadRoutingData } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
 import { initializeYearSelector, setupStationAutocomplete } from './ui.js';
@@ -156,6 +156,95 @@ function handleOriginSelection(crs) {
     }
     updateVisualizationForOrigin(crs);
 }
+
+
+
+import { loadInitData } from './dataLoader.js';
+let worker = null;
+
+async function init() {
+    try {
+        console.time('App Ready Time');
+        const data = await loadInitData(map);
+        appState.railwayNodes = data.railwayNodes;
+        appState.stations = data.stations;
+        appState.stationByCRS = data.stationByCRS;
+        appState.journeys = data.journeys;
+        appState.availableYears = data.availableYears || [];
+        selectedYear = appState.availableYears.length > 0 ? appState.availableYears[0] : '2024-25'; // Set default active year
+        // Initialize UI components immediately
+        initializeYearSelector(
+            'year-container', 
+            appState.availableYears, 
+            selectedYear,
+            (newYear) => {
+                selectedYear = newYear;
+                updateVisualization();
+            }
+        );
+        setupStationAutocomplete({
+            inputElement: document.getElementById('origin'),
+            resultsElement: document.getElementById('origin-results'),
+            stations: appState.stations,
+            onSelectStation: (crs) => {
+                selectedOriginCRS = crs;
+                updateVisualization();
+            },
+            onClear: () => {
+                selectedOriginCRS = null;
+                currentRoutingTree = null;
+                clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
+            }
+        });
+        console.log('Phase A UI initialized successfully.');
+        console.timeEnd('App Ready Time');
+        initRoutingWorker(appState.stations, appState.railwayNodes); // PHASE B: Spawn Web Worker for Routing Data
+    } catch (error) {
+        console.error('Failed to initialize railway application:', error);
+    }
+}
+
+// Initializes Worker for Phase B background processing
+function initRoutingWorker(stations, railwayNodes) {
+    worker = new Worker('.js/worker.js', { type: 'module' });
+    // Send payload needed for graph building to worker
+    worker.postMessage({
+        action: 'INIT_ROUTING',
+        payload: {
+            stations,
+            railwayNodes
+        }
+    });
+    worker.onmessage = (event) => {
+        const { action, payload, error } = event.data;
+
+        if (error) {
+            console.error('Worker error:', error);
+            return;
+        }
+
+        if (action === 'ROUTING_DATA_READY') {
+            // Re-hydrate Map structures returned from worker
+            appState.railwayRoutingGraph = payload.railwayRoutingGraph;
+            appState.stationConnections = payload.stationConnections;
+            appState.stationTransfers = payload.stationTransfers;
+            appState.transfersByCRS = payload.transfersByCRS;
+
+            appState.isRoutingReady = true;
+            console.log('🚀 Phase B Routing Data ready in background.');
+
+            // If user selected an origin before worker finished, calculate route now
+            if (selectedOriginCRS) {
+                updateVisualization();
+            }
+        }
+    };
+}
+
+
+
+
+/*
 // NEW App Init
 async function init() {
     console.time('UI Interactive Time');
@@ -191,9 +280,9 @@ async function loadBackgroundRoutingData() {
         pendingOriginCRS = null;
     }
 }
-
+*/
 // Application Initialization
-/*async function init() {
+async function init() {
     try {
         // Load datasets and draw base railway polylines
         const data = await loadData(map);
