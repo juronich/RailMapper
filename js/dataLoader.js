@@ -1,40 +1,32 @@
-const routingFiles = [
-    fetch('data/railway-routing.json').then(res => res.json()),
-    fetch('data/station-transfers.json').then(res => res.json())
-];
 
-const initFiles = [
-    fetch('data/stations.json').then(res => res.json()),
-    fetch('data/railway-nodes.json').then(res => res.json()),
-    fetch('data/railway-ways.json').then(res => res.json()),
-    fetch('data/railway-ways-data.json').then(res => res.json()),
-];
-const journeyFiles = [
-    'data/journeys/ODM_Scotland.json',
-    'data/journeys/ODM_North.json',
-    'data/journeys/ODM_Midlands.json',
-    'data/journeys/ODM_Wales.json',
-    'data/journeys/ODM_South.json',
-    'data/journeys/ODM_London.json'
-].map(file => fetch(file).then(res => res.json()));
+
 
 /**
  * Phase A: Load base map geometry, stations, and regional journey files.
  * Extracts availableYears immediately.
  */
-export async function loadInitData() {
+export async function loadInitData(map) {
     console.time('1. Fetch Initial JSONs');
-    const [[stationsData, nodesData, waysData, waysMetaData, journeyDataFiles] = 
-        await Promise.all([
-            Promise.all(initFiles),
-            Promise.all(journeyFiles)
-        ]);
-    // Data structures to populate
-    const [
-        stations, nodes, ways, waysData,
-        j1, j2, j3, j4, j5, j6
-    ] = await Promise.all([
+    const initFiles = [
+        fetch('data/stations.json').then(res => res.json()),
+        fetch('data/railway-nodes.json').then(res => res.json()),
+        fetch('data/railway-ways.json').then(res => res.json()),
+        fetch('data/railway-ways-data.json').then(res => res.json()),
+    ];
+    const journeyFiles = [
+        'data/journeys/ODM_Scotland.json',
+        'data/journeys/ODM_North.json',
+        'data/journeys/ODM_Midlands.json',
+        'data/journeys/ODM_Wales.json',
+        'data/journeys/ODM_South.json',
+        'data/journeys/ODM_London.json'
+    ].map(file => fetch(file).then(res => res.json()));
+    const [initResults, journeyDataFiles] = await Promise.all([
+        Promise.all(initFiles),
+        Promise.all(journeyFiles)
     ]);
+    const [stationsData, nodesData, waysData, waysMetaData] = initResults;
+    // Data structures to populate
     const railwayNodes = new Map();
     const railwayGraph = new Map();
     const stationByStopPosition = new Map();
@@ -138,14 +130,73 @@ export async function loadInitData() {
 /**
  * Phase B: Load heavy routing and transfer data needed for graph building
  */
+export async function loadRoutingData(stations, railwayNodes) {
+    console.time('Fetch Routing Data');
+    const [routingData, transfersData] = await Promise.all([
+        fetch('data/railway-routing.json').then(res => res.json()),
+        fetch('data/station-transfers.json').then(res => res.json())
+    ]);
+    const railwayRoutingGraph = new Map();
+    const stationConnections = new Map();
+    console.timeEnd('Fetch Routing Data');
+    // ROUTING GRAPH
+    console.time('5. Routing Graph');
+    routingData.edges.forEach(([from, to, distance, path]) => {
+        const fromNode = String(from);
+        const toNode = String(to);
+        const pathStrings = path.map(String);
+        if (!railwayRoutingGraph.has(fromNode)) railwayRoutingGraph.set(fromNode, []);
+        if (!railwayRoutingGraph.has(toNode)) railwayRoutingGraph.set(toNode, []);
+        // Forward edge
+        railwayRoutingGraph.get(fromNode).push({ 
+            node: toNode, 
+            distance: Number(distance), 
+            path: pathStrings 
+        });
+        // Reverse edge (store reversed node path array)
+        railwayRoutingGraph.get(toNode).push({ 
+            node: fromNode, 
+            distance: Number(distance), 
+            path: [...pathStrings].reverse() 
+        });
+    });
+    stations.forEach(station => {
+        station.stop_positions.forEach(id => {
+            const node = String(id);
+            if (!railwayRoutingGraph.has(node)) return;
+            const nodeData = railwayNodes.get(node);
+            if (!nodeData) return;
+            stationConnections.set(node, {
+                stationCRS: station.crs,
+                fromCoordinates: [station.latitude, station.longitude],
+                toCoordinates: [nodeData.latitude, nodeData.longitude]
+            });
+        });
+    });
+    console.timeEnd('5. Routing Graph');
+    // END OF ROUTING GRAPH
+    
+    // TRANSFERS
+    console.time('6. Transfers');
+    const stationTransfers = transfersData.transfers || [];
+    const transfersByCRS = new Map();
+    stationTransfers.forEach(([crs1, crs2]) => {
+        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
+        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
+        transfersByCRS.get(crs1).push(crs2);
+        transfersByCRS.get(crs2).push(crs1);
+    });
+    console.timeEnd('6. Transfers');
+    // END OF TRANSFERS
+    return { 
+        railwayRoutingGraph,
+        stationConnections,
+        stationTransfers,
+        transfersByCRS
+    };
+}
 
-
-
-
-
-
-
-export async function loadData(map) {
+/*export async function loadData(map) {
     console.time('1. Fetch JSONs');
     const [[nodesData, waysData, waysMetaData, stationsData, routingData, transfersData], journeyDataFiles] = 
         await Promise.all([
@@ -308,3 +359,4 @@ export async function loadData(map) {
         availableYears
     };
 }
+*/
