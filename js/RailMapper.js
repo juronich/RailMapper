@@ -128,7 +128,7 @@ async function init() {
         appState.availableYears = data.availableYears || [];
 		// Set default active year
 		 if (appState.availableYears.length > 0) {
-            selectedYear = appState.availableYears[appState.availableYears.length - 1];
+            selectedYear = appState.availableYears[0];
         } else {
             selectedYear = '2024-25';
         }
