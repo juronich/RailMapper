@@ -33,6 +33,8 @@ let appState = {
 let selectedOriginCRS = null;
 let selectedYear = null;
 let currentRoutingTree = null;
+let pendingOriginCRS = null;
+let isDataReady = false;
 
 // Core Rendering Orchestration
 function updateVisualization() {
@@ -116,8 +118,52 @@ function handleDestinationClick(destinationCRS) {
     }
 }
 
-// Application Initialization
+function handleOriginSelection(crs) {
+    if (!isDataReady) {
+        // Queue user choice while background loading finishes
+        pendingOriginCRS = crs;
+        showLoadingIndicatorOnMap("Building network routing graph...");
+        return;
+    }
+    updateVisualizationForOrigin(crs);
+}
+// NEW App Init
 async function init() {
+    console.time('UI Interactive Time');
+    // 1. PHASE A: Fetch metadata only & unlock UI controls immediately
+    const stations = await fetch('./data/stations.json').then(r => r.json());
+    appState.stations = stations;
+    // Initialize UI elements right away
+    setupMap();
+    createYearSelector('year-selector-container', AVAILABLE_YEARS, DEFAULT_YEAR, onYearChange);
+    initializeStationSearch(stations, (selectedStation) => {
+        handleOriginSelection(selectedStation.crs);
+    });
+    console.timeEnd('UI Interactive Time'); // ~200ms - user can now interact!
+    // 2. PHASE B: Background processing (Non-blocking)
+    loadBackgroundRoutingData();
+}
+async function loadBackgroundRoutingData() {
+    console.time('Background Data & Graph');
+    // Fetch regional journeys & ways asynchronously
+    const [journeys, ways] = await Promise.all([
+        fetchJourneysByRegion(),
+        fetch('./data/ways.json').then(r => r.json())
+    ]);
+    // Build routing graph
+    appState.graph = buildAdjacencyGraph(appState.stations, ways);
+    appState.journeys = journeys;
+    isDataReady = true;
+    console.timeEnd('Background Data & Graph');
+    // If user selected an origin station while data was loading, execute now
+    if (pendingOriginCRS) {
+        updateVisualizationForOrigin(pendingOriginCRS);
+        pendingOriginCRS = null;
+    }
+}
+
+// Application Initialization
+/*async function init() {
     try {
         // Load datasets and draw base railway polylines
         const data = await loadData(map);
@@ -165,6 +211,7 @@ async function init() {
         console.error('Failed to initialize railway application:', error);
     }
 }
+*/
 
 // Start application after DOM is ready
 document.addEventListener('DOMContentLoaded', init);
