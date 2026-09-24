@@ -1,18 +1,3 @@
- // Populates the year dropdown selector with available years from journey data.
-/*export function initializeYearSelector(yearSelectElement, availableYears, onYearChange) {
-    yearSelectElement.innerHTML = '';
-    availableYears.forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        yearSelectElement.appendChild(option);
-    });
-    yearSelectElement.addEventListener('change', (e) => {
-        onYearChange(e.target.value);
-    });
-}
-*/
-
 // Dynamically creates and injects a year select element into the DOM.
 export function initializeYearSelector(containerId, availableYears, initialYear, onYearChange) {
     const container = document.getElementById(containerId);
