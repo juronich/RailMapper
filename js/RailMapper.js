@@ -160,7 +160,7 @@ async function init() {
 		console.log('RailMapper initialized successfully.');
 		console.timeEnd('App Ready Time')
 		const loadTimeS = (performance.now()/1000).toFixed(2);
-    	console.log(`🚀 Application fully initialized in ${loadTimeMs} s`);
+    	console.log(`🚀 Application fully initialized in ${loadTimeS} s`);
     } catch (error) {
         console.error('Failed to initialize railway application:', error);
     }
