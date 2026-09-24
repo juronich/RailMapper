@@ -132,13 +132,16 @@ export async function loadInitData(map) {
  */
 export async function loadRoutingData(stations, railwayNodes) {
     console.time('Fetch Routing Data');
+    // Dynamically resolve data URLs relative to the location of dataLoader.js
+    const routingUrl = new URL('../data/railway-routing.json', import.meta.url);
+    const transfersUrl = new URL('../data/station-transfers.json', import.meta.url);
     const [routingData, transfersData] = await Promise.all([
-        fetch('data/railway-routing.json').then(res => {
-            if (!res.ok) throw new Error(`HTTP ${res.status} loading routing data`);
+      fetch(routingUrl).then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status} loading routing data (${routingUrl.pathname})`);
             return res.json();
         }),
-        fetch('data/station-transfers.json').then(res => {
-            if (!res.ok) throw new Error(`HTTP ${res.status} loading transfers data`);
+        fetch(transfersUrl).then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status} loading transfers data (${transfersUrl.pathname})`);
             return res.json();
         })
     ]);
