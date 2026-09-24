@@ -145,12 +145,37 @@ export async function loadRoutingData(stations, railwayNodes) {
             return res.json();
         })
     ]);
+    console.timeEnd('Fetch Routing Data');
+    console.time('5. Routing Graph');
     const railwayRoutingGraph = new Map();
     const stationConnections = new Map();
-    console.timeEnd('Fetch Routing Data');
+    const edges = routingData.edges;
+    const len = edges.length;
+    
     // ROUTING GRAPH
-    console.time('5. Routing Graph');
-    routingData.edges.forEach(([from, to, distance, path]) => {
+    for (let i = 0; i < len; i++) {
+        const [from, to, distance, path] = edges[i];
+        const distNum = Number(distance);
+        const fwdPath = path.map(String);
+        const revPath = fwdPath.slice().reverse();
+
+        // Forward lookup
+        let fromList = railwayRoutingGraph.get(from);
+        if (!fromList) {
+            fromList = [];
+            railwayRoutingGraph.set(from, fromList);
+        }
+        fromList.push({ node: to, distance: distNum, path: fwdPath });
+
+        // Reverse lookup
+        let toList = railwayRoutingGraph.get(to);
+        if (!toList) {
+            toList = [];
+            railwayRoutingGraph.set(to, toList);
+        }
+        toList.push({ node: from, distance: distNum, path: revPath });
+    }
+    /*routingData.edges.forEach(([from, to, distance, path]) => {
         const fromNode = String(from);
         const toNode = String(to);
         const pathStrings = path.map(String);
@@ -168,8 +193,26 @@ export async function loadRoutingData(stations, railwayNodes) {
             distance: Number(distance), 
             path: pathStrings.slice().reverse() // [...pathStrings].reverse()
         });
-    });
-    stations.forEach(station => {
+    });*/
+    // Station Connections
+    for (let i = 0; i < stations.length; i++) {
+        const station = stations[i];
+        const stops = station.stop_positions;
+        for (let j = 0; j < stops.length; j++) {
+            const node = stops[j];
+            if (!railwayRoutingGraph.has(node)) continue;
+
+            const nodeData = railwayNodes.get(node);
+            if (!nodeData) continue;
+
+            stationConnections.set(node, {
+                stationCRS: station.crs,
+                fromCoordinates: [station.latitude, station.longitude],
+                toCoordinates: [nodeData.latitude, nodeData.longitude]
+            });
+        }
+    }
+    /*stations.forEach(station => {
         station.stop_positions.forEach(id => {
             const node = String(id);
             if (!railwayRoutingGraph.has(node)) return;
@@ -181,12 +224,13 @@ export async function loadRoutingData(stations, railwayNodes) {
                 toCoordinates: [nodeData.latitude, nodeData.longitude]
             });
         });
-    });
+    });*/
     console.timeEnd('5. Routing Graph');
     // END OF ROUTING GRAPH
     
     // TRANSFERS
     console.time('6. Transfers');
+    /*
     const stationTransfers = transfersData.transfers || [];
     const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
@@ -195,6 +239,18 @@ export async function loadRoutingData(stations, railwayNodes) {
         transfersByCRS.get(crs1).push(crs2);
         transfersByCRS.get(crs2).push(crs1);
     });
+    */
+    const stationTransfers = transfersData.transfers || [];
+    const transfersByCRS = new Map();
+    for (let i = 0; i < stationTransfers.length; i++) {
+        const [crs1, crs2] = stationTransfers[i];
+        let t1 = transfersByCRS.get(crs1);
+        if (!t1) { t1 = []; transfersByCRS.set(crs1, t1); }
+        t1.push(crs2);
+        let t2 = transfersByCRS.get(crs2);
+        if (!t2) { t2 = []; transfersByCRS.set(crs2, t2); }
+        t2.push(crs1);
+    }
     console.timeEnd('6. Transfers');
     // END OF TRANSFERS
     return { 
