@@ -1,4 +1,4 @@
-import { loadRoutingData } from './dataLoader.js';
+import { loadRoutingData } from '/js/dataLoader.js';
 
 self.onmessage = async (event) => {
     const { action, payload } = event.data;
