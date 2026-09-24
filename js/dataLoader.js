@@ -17,6 +17,7 @@ const journeyFetches = [
 ].map(file => fetch(file).then(res => res.json()));
 
 export async function loadData(map) {
+    console.time('1. Fetch JSONs');
     const [[nodesData, waysData, waysMetaData, stationsData, routingData, transfersData], journeyDataFiles] = 
         await Promise.all([
             Promise.all(networkFiles),
@@ -28,8 +29,9 @@ export async function loadData(map) {
     const railwayRoutingGraph = new Map();
     const stationByStopPosition = new Map();
     const stationConnections = new Map();
-
+    console.timeEnd('1. Fetch JSONs');
     // POPULATE NODES
+    console.time('2. Populate Nodes');
     nodesData.nodes.forEach(node => {
         railwayNodes.set(String(node[0]), {
             latitude: node[1],
@@ -37,8 +39,9 @@ export async function loadData(map) {
         });
     }); 
     // END OF POPULATE NODES
-
+    console.timeEnd('2. Populate Nodes');
     // BUILD WAYS & GRAPH
+    console.time('3. Build Ways & Graph');
     const basePolylines = [];
     waysData.ways.forEach(way => {
         const nodeIds = way[1];
@@ -66,9 +69,11 @@ export async function loadData(map) {
     });
     // Batch draw base railway network on map
     L.featureGroup(basePolylines).addTo(map);
+    console.timeEnd('3. Build Ways & Graph');
     // END OF BUILD WAYS & GRAPH
     
     // STATIONS & LOOKUP MAPS
+    console.time('4. Stations & Lookup Maps');
     const stations = Object.entries(stationsData).map(([crs, record]) => ({
         crs: crs,
         name: record.station?.name,
@@ -85,9 +90,11 @@ export async function loadData(map) {
             .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
             .addTo(map);
     });
+    console.timeEnd('4. Stations & Lookup Maps');
     // END OF STATIONS & LOOKUP MAPS
     
     // ROUTING GRAPH
+    console.time('5. Routing Graph');
     routingData.edges.forEach(([from, to, distance, path]) => {
         const fromNode = String(from);
         const toNode = String(to);
@@ -118,9 +125,11 @@ export async function loadData(map) {
             });
         });
     });
+    console.timeEnd('5. Routing Graph');
     // END OF ROUTING GRAPH
     
     // TRANSFERS
+    console.time('6. Transfers');
     const stationTransfers = transfersData.transfers || [];
     const transfersByCRS = new Map();
     stationTransfers.forEach(([crs1, crs2]) => {
@@ -129,9 +138,11 @@ export async function loadData(map) {
         transfersByCRS.get(crs1).push(crs2);
         transfersByCRS.get(crs2).push(crs1);
     });
+    console.timeEnd('6. Transfers');
     // END OF TRANSFERS
     
     // JOURNEY DATA
+    console.time('7. Journey Data');
     const journeys = [];
     let availableYears = []; 
     journeyDataFiles.forEach(data => {
@@ -150,6 +161,7 @@ export async function loadData(map) {
             });
         });
     });
+    console.timeEnd('7. Journey Data');
     availableYears.sort((a, b) => b.localeCompare(a));
     // END OF JOURNEY DATA
     
