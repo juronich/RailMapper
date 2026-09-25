@@ -41,7 +41,7 @@ export async function loadInitData(map) {
     // END OF POPULATE NODES
     console.timeEnd('2. Populate Nodes');
     // BUILD WAYS & GRAPH
-    console.time('3. Build Ways & Graph');
+  //  console.time('3. Build Ways & Graph');
     /*const basePolylines = [];
     waysData.ways.forEach(way => {
         const nodeIds = way[1];
@@ -70,7 +70,7 @@ export async function loadInitData(map) {
     // Batch draw base railway network on map
     L.featureGroup(basePolylines).addTo(map);
     */
-
+/*
     // 1. Force Canvas renderer for Leaflet rendering performance
     const canvasRenderer = L.canvas({ padding: 0.5 });
     const allCoords = [];
@@ -122,7 +122,7 @@ export async function loadInitData(map) {
     
     console.timeEnd('3. Build Ways & Graph');
     // END OF BUILD WAYS & GRAPH
-
+*/
     // STATIONS & LOOKUP MAPS
     console.time('4. Stations & Lookup Maps');
     const stations = Object.entries(stationsData).map(([crs, record]) => ({
