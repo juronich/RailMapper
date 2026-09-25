@@ -1,5 +1,5 @@
 console.time('App Ready Time');
-console.log('v0.201786');
+console.log('v0.201787');
 import { loadInitData, loadRoutingDataAsync } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
@@ -195,7 +195,7 @@ async function init() {
         		}
                 setTimeout(() => {
 					updateVisualization();
-				}, 10);
+				}, 0);
             },
             onClear: () => {
                 selectedOriginCRS = null;
