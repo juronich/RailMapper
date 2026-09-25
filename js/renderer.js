@@ -63,19 +63,87 @@ export function drawOriginMarker(originLayer, selectedOriginCRS, stationByCRS) {
     marker.bringToFront();
 }
 
-// Highlights destination stations on the destination layer with scaled markers/popups.
+
+
 export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS, availableYears, selectedYear, journeys, selectedOriginCRS, onMarkerClick) {
     destinationLayer.clearLayers();
     destinationData.forEach(({ crs }) => {
         const station = stationByCRS.get(crs);
         if (!station || isNaN(station.latitude) || isNaN(station.longitude)) return;
-        // Find the bi-directional journey record for this station pair
+        // Find journey record for marker radius calculation
         const journeyRecord = journeys.find(j => 
             (j.OriginCRS === selectedOriginCRS && j.DestinationCRS === crs) ||
             (j.OriginCRS === crs && j.DestinationCRS === selectedOriginCRS)
         );
         const currentPassengerCount = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0; 
-        const radius = Math.max(3, Math.min(25, Math.sqrt(currentPassengerCount) * 0.05)); // Scale marker size based on active year volume
+        const radius = Math.max(3, Math.min(25, Math.sqrt(currentPassengerCount) * 0.05));
+        // Create Leaflet circle marker without pre-building HTML string
+        const marker = L.circleMarker([station.latitude, station.longitude], {
+            radius: radius,
+            color: '#000',
+            fillColor: '#3388ff',
+            fillOpacity: 0.7,
+            weight: 1
+        });
+        // Lazy-load popup HTML only when requested by Leaflet
+        marker.bindPopup(() => {
+            let popupHtml = `<div style="font-family: sans-serif; min-width: 160px;">`;
+            popupHtml += `<strong style="font-size: 14px;">${station.name} (${crs})</strong><hr style="margin: 4px 0;">`;
+            popupHtml += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
+        
+            availableYears.forEach(year => {
+                const val = journeyRecord && journeyRecord[year] ? journeyRecord[year].toLocaleString() : '0';
+                if (year === selectedYear) {
+                    popupHtml += `<tr style="background-color: #f0f4f8;">
+                        <td style="padding: 2px 4px;"><strong>${year}</strong></td>
+                        <td style="text-align: right; padding: 2px 4px;"><strong>${val}</strong></td>
+                    </tr>`;
+                } else {
+                    popupHtml += `<tr>
+                        <td style="padding: 2px 4px; color: #555;">${year}</td>
+                        <td style="text-align: right; padding: 2px 4px; color: #555;">${val}</td>
+                    </tr>`;
+                }
+            });
+            popupHtml += `</table></div>`;
+            return popupHtml;
+        });
+        // Attach click callback to highlight marker and draw route
+        marker.on('click', () => {
+            if (activeSelectedMarker && activeSelectedMarker !== marker) {
+                activeSelectedMarker.setStyle(DEFAULT_STYLE);
+            }
+            marker.setStyle(SELECTED_STYLE);
+            marker.bringToFront();
+            activeSelectedMarker = marker;
+            if (typeof onMarkerClick === 'function') {
+                onMarkerClick(crs);
+            }
+        });
+        marker.addTo(destinationLayer);
+    });
+}
+
+
+
+
+
+/*
+
+// Highlights destination stations on the destination layer with scaled markers/popups.
+
+//export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS, availableYears, selectedYear, journeys, selectedOriginCRS, onMarkerClick) {
+//    destinationLayer.clearLayers();
+//    destinationData.forEach(({ crs }) => {
+//        const station = stationByCRS.get(crs);
+//        if (!station || isNaN(station.latitude) || isNaN(station.longitude)) return;
+//        // Find the bi-directional journey record for this station pair
+//        const journeyRecord = journeys.find(j => 
+//            (j.OriginCRS === selectedOriginCRS && j.DestinationCRS === crs) ||
+//            (j.OriginCRS === crs && j.DestinationCRS === selectedOriginCRS)
+//        );
+//        const currentPassengerCount = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0; 
+//        const radius = Math.max(3, Math.min(25, Math.sqrt(currentPassengerCount) * 0.05)); // Scale marker size based on active year volume
         let popupHtml = `<div style="font-family: sans-serif; min-width: 160px;">`; // Build popup HTML listing all available years
         popupHtml += `<strong style="font-size: 14px;">${station.name} (${crs})</strong><hr style="margin: 4px 0;">`;
         popupHtml += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
@@ -120,7 +188,7 @@ export function drawDestinationMarkers(destinationLayer, destinationData, statio
         marker.addTo(destinationLayer);
     });
 }
-        
+        */
 // Draws aggregated passenger flows across segment polylines.
 export function drawPassengerFlows(flowLayer, flows, railwayNodes, maxFlowValue = 1) {
     // THINK I CAN REMOVE maxFlowValue from this
