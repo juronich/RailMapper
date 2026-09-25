@@ -84,7 +84,6 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
 
 // Reconstructs standard node-by-node path between origin and target station.
 export function reconstructPath(targetCRS, stationByCRS, routingTree) {
-    console.time('Function: reconstructPath');
     if (!routingTree) return null;
     const { distances, parents } = routingTree;
     const targetStation = stationByCRS.get(targetCRS);
@@ -120,7 +119,6 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
         }
         curr = String(edge.parent);
     }
-    console.timeEnd('Function: reconstructPath');
     fullPathNodes.unshift(String(curr));
     return { pathNodes: fullPathNodes, totalDistance: minDist };
 }
