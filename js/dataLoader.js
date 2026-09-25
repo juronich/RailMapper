@@ -344,6 +344,55 @@ export function loadRoutingDataAsync(stations, railwayNodes) {
     });
 }
 
+// dataLoader.js
+export async function loadWaysAndGraph(railwayNodes) {
+    console.time('Worker: Build Ways & Graph');
+    const waysUrl = new URL('../data/railway-ways.json', import.meta.url);
+    const waysData = await fetch(waysUrl).then(res => {
+        if (!res.ok) throw new Error(`HTTP ${res.status} fetching ways data`);
+        return res.json();
+    });
+    const allCoords = [];
+    const railwayGraph = new Map();
+    const ways = waysData.ways;
+    const waysLen = ways.length;
+    for (let w = 0; w < waysLen; w++) {
+        const nodeIds = ways[w][1];
+        if (!nodeIds || nodeIds.length < 2) continue;
+        const coords = [];
+        const nodeCount = nodeIds.length;
+        for (let i = 0; i < nodeCount; i++) {
+            const nodeIdStr = nodeIds[i];
+            const node = railwayNodes.get(nodeIdStr);
+            if (node) {
+                coords.push([node.latitude, node.longitude]);
+            }
+            if (i < nodeCount - 1) {
+                const nextNodeStr = nodeIds[i + 1];
+                let graphList = railwayGraph.get(nodeIdStr);
+                if (!graphList) {
+                    graphList = [];
+                    railwayGraph.set(nodeIdStr, graphList);
+                }
+                graphList.push(nextNodeStr);
+                let nextGraphList = railwayGraph.get(nextNodeStr);
+                if (!nextGraphList) {
+                    nextGraphList = [];
+                    railwayGraph.set(nextNodeStr, nextGraphList);
+                }
+                nextGraphList.push(nodeIdStr);
+            }
+        }
+        if (coords.length >= 2) {
+            allCoords.push(coords);
+        }
+    }
+    console.timeEnd('Worker: Build Ways & Graph');
+    return {
+        allCoords,
+        railwayGraph
+    };
+}
 
 
 /*export async function loadData(map) {
