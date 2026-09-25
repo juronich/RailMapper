@@ -183,9 +183,19 @@ async function init() {
             inputElement: document.getElementById('origin'),
             resultsElement: document.getElementById('origin-results'),
             stations: appState.stations,
-            onSelectStation: (crs) => {
+            onSelectStation: (crs, stationName) => {
                 selectedOriginCRS = crs;
-                updateVisualization();
+				const inputEl = document.getElementById('origin');
+        		if (inputEl) {
+            		inputEl.value = stationName || crs;
+        		}
+        		const resultsEl = document.getElementById('origin-results');
+        		if (resultsEl) {
+            		resultsEl.style.display = 'none';
+        		}
+                setTimeout(() => {
+					updateVisualization();
+				}, 10);
             },
             onClear: () => {
                 selectedOriginCRS = null;
