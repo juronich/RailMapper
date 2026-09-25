@@ -50,6 +50,7 @@ export class MinPriorityQueue {
 
 // Computes shortest path tree from an origin station using Dijkstra's algorithm.
 export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
+    console.time('Function: computeShortestPathTree');
     const originStation = stationByCRS.get(originCRS);
     if (!originStation || !originStation.stop_positions.length) return null;
     const distances = new Map();
@@ -77,11 +78,13 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
             }
         }
     }
+    console.timeEnd('Function: computeShortestPathTree');
     return { distances, parents, originStation };
 }
 
 // Reconstructs standard node-by-node path between origin and target station.
 export function reconstructPath(targetCRS, stationByCRS, routingTree) {
+    console.time('Function: reconstructPath');
     if (!routingTree) return null;
     const { distances, parents } = routingTree;
     const targetStation = stationByCRS.get(targetCRS);
@@ -117,12 +120,14 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
         }
         curr = String(edge.parent);
     }
+    console.timeEnd('Function: reconstructPath');
     fullPathNodes.unshift(String(curr));
     return { pathNodes: fullPathNodes, totalDistance: minDist };
 }
 
  // Aggregates passenger volumes across network segment polylines for a given origin and year.
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeys, stationByCRS) {
+    console.time('Function: calculatePassengerFlows');
     if (!routingTree) return new Map();
     const edgeFlows = new Map();
     // Match journeys where selectedCRS is EITHER Origin OR Destination
@@ -147,5 +152,6 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
             edgeFlows.set(edgeKey, currentVolume + passengerVolume);
         }
     });
+    console.timeEnd('Function: calculatePassengerFlows');
     return edgeFlows;
 }
