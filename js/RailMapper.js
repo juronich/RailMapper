@@ -183,16 +183,8 @@ async function init() {
             inputElement: document.getElementById('origin'),
             resultsElement: document.getElementById('origin-results'),
             stations: appState.stations,
-            onSelectStation: (crs, stationName) => {
+            onSelectStation: (crs) => {
                 selectedOriginCRS = crs;
-				const inputEl = document.getElementById('origin');
-        		if (inputEl) {
-            		inputEl.value = stationName || crs;
-        		}
-        		const resultsEl = document.getElementById('origin-results');
-        		if (resultsEl) {
-            		resultsEl.style.display = 'none';
-        		}
                 setTimeout(() => {
 					updateVisualization();
 				}, 0);
