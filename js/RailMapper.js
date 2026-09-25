@@ -72,8 +72,11 @@ function updateVisualization() {
     clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
     if (!selectedOriginCRS) return;
 	// Draw Marker for Origin station
+	console.time('Function: Update Visualization (drawOriginMarker)');
 	drawOriginMarker(originLayer, selectedOriginCRS, appState.stationByCRS);
+	console.timeEnd('Function: Update Visualization (drawOriginMarker)');
     // 1. Calculate Dijkstra shortest path tree from selected origin station
+	console.time('Function: Update Visualization (currentRoutingTree)');
     currentRoutingTree = computeShortestPathTree(
         selectedOriginCRS, 
         appState.stationByCRS, 
@@ -83,7 +86,9 @@ function updateVisualization() {
         console.warn(`No valid routing paths found starting from ${selectedOriginCRS}`);
         return;
     }
+	console.timeEnd('Function: Update Visualization (currentRoutingTree)');
     // 2. Calculate edge-by-edge passenger flows across the network
+	console.time('Function: Update Visualization (calculatePassengerFlows)');
     const edgeFlows = calculatePassengerFlows(
         currentRoutingTree, 
         selectedOriginCRS, 
@@ -91,20 +96,26 @@ function updateVisualization() {
         appState.journeys, 
         appState.stationByCRS
     );
+	console.timeEnd('Function: Update Visualization (calculatePassengerFlows)');
+	console.time('Function: Update Visualization (const volume of edgeFlows.values loop)');
     let maxFlowVolume = 1;
 	for (const volume of edgeFlows.values()) {
     	if (volume > maxFlowVolume) {
         	maxFlowVolume = volume;
     	}
 	}
+	console.timeEnd('Function: Update Visualization (const volume of edgeFlows.values loop)');
     // 3. Render flow polylines onto flowLayer
+	console.time('Function: Update Visualization (drawPassengerFlows)');
     drawPassengerFlows(
         flowLayer, 
         edgeFlows, 
         appState.railwayNodes, 
         maxFlowVolume
     );
+	console.timeEnd('Function: Update Visualization (drawPassengerFlows)');
 	// 4. Render destination circle markers
+	console.time('Function: Update Visualization (const activeJourneys/destinationDate)');
 	const activeJourneys = appState.journeys.filter(j => 
         (j.OriginCRS === selectedOriginCRS || j.DestinationCRS === selectedOriginCRS) && 
         j[selectedYear] > 0
@@ -118,6 +129,8 @@ function updateVisualization() {
             passengerCount: j[selectedYear]
         };
     });
+	console.timeEnd('Function: Update Visualization (const activeJourneys/destinationDate)');
+	console.time('Function: Update Visualization (drawDestinationMarkers)');
     drawDestinationMarkers(
         destinationLayer, 
         destinationData, 
@@ -128,6 +141,7 @@ function updateVisualization() {
 		selectedOriginCRS,
         (destinationCRS) => handleDestinationClick(destinationCRS) // Triggers handleDestinationClick
     );
+	console.timeEnd('Function: Update Visualization (drawDestinationMarkers)');
 	console.timeEnd('Function: Update Visualization');
 }
 
