@@ -68,6 +68,7 @@ function startBackgroundWorker(stations) {
 
 // Core Rendering Orchestration
 function updateVisualization() {
+	Console.time('Function: Update Visualization')
     clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
     if (!selectedOriginCRS) return;
 	// Draw Marker for Origin station
@@ -127,6 +128,7 @@ function updateVisualization() {
 		selectedOriginCRS,
         (destinationCRS) => handleDestinationClick(destinationCRS) // Triggers handleDestinationClick
     );
+	Console.timeEnd('Function: Update Visualization')
 }
 
 // Triggered when a destination station marker or search item is clicked
