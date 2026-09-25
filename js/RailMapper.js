@@ -197,8 +197,23 @@ async function init() {
 		// PHASE B: Spawn Web Worker for Routing Data
 		loadRoutingDataAsync(appState.stations, appState.railwayNodes)
         	.then(routingData => {
-            	Object.assign(appState, routingData);
+				appState.railwayRoutingGraph = routingData.railwayRoutingGraph;
+        		appState.stationConnections = routingData.stationConnections;
+        		appState.stationTransfers = routingData.stationTransfers;
+        		appState.transfersByCRS = routingData.transfersByCRS;
+        		appState.railwayGraph = routingData.railwayGraph;
+            	//Object.assign(appState, routingData);
             	appState.isRoutingReady = true;
+				// Render base network polylines using Canvas renderer
+        		if (routingData.allCoords && routingData.allCoords.length > 0) {
+            		const canvasRenderer = L.canvas({ padding: 0.5 });
+            		L.polyline(routingData.allCoords, {
+                		color: '#4EA72E',
+                		weight: 1,
+                		opacity: 0.7,
+                		renderer: canvasRenderer
+            		}).addTo(map);
+        		}
             	console.log('🚀 Routing graph loaded in background via Worker');
 				// If user selected a station while worker was processing, trigger visualization now
                 if (selectedOriginCRS) {
