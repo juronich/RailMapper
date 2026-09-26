@@ -122,8 +122,40 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     fullPathNodes.unshift(String(curr));
     return { pathNodes: fullPathNodes, totalDistance: minDist };
 }
-
  // Aggregates passenger volumes across network segment polylines for a given origin and year.
+export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeysMap, stationByCRS) {
+    console.time('Function: calculatePassengerFlows');
+    if (!routingTree) return new Map();
+    const edgeFlows = new Map();
+    stationByCRS.forEach((station, targetCRS) => {
+        if (targetCRS === selectedCRS) return;
+        // 1. Fast O(1) lookup in journeysMap using sorted CRS key
+        const key = selectedCRS < targetCRS 
+            ? `${selectedCRS}-${targetCRS}` 
+            : `${targetCRS}-${selectedCRS}`;
+        const journeyRecord = journeysMap.get(key);
+        const passengerVolume = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0;
+        if (passengerVolume <= 0) return;
+        // 2. Direct parent traversal up the Dijkstra tree without reconstructPath overhead
+        let currentCRS = targetCRS;
+        while (currentCRS && currentCRS !== selectedCRS) {
+            const nodeData = routingTree.get(currentCRS);
+            if (!nodeData || !nodeData.parent) break;
+            const parentCRS = nodeData.parent;
+            const u = String(currentCRS);
+            const v = String(parentCRS);
+            const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+            const currentVolume = edgeFlows.get(edgeKey) || 0;
+            edgeFlows.set(edgeKey, currentVolume + passengerVolume);
+            currentCRS = parentCRS;
+        }
+    });
+    console.timeEnd('Function: calculatePassengerFlows');
+    return edgeFlows;
+}
+
+
+/*
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeys, stationByCRS) {
     console.time('Function: calculatePassengerFlows');
     if (!routingTree) return new Map();
@@ -153,3 +185,4 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
     console.timeEnd('Function: calculatePassengerFlows');
     return edgeFlows;
 }
+*/
