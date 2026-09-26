@@ -19,9 +19,6 @@ const destinationLayer = L.layerGroup().addTo(map);
 const flowLayer = L.layerGroup().addTo(map);
 const originLayer = L.layerGroup().addTo(map);
 
-const { journeys, journeysMap, availableYears } = await loadData();
-appState.journeysMap = journeysMap;
-
 // Global dataset storage (populated on load)
 let appState = {
     railwayNodes: null,
@@ -29,6 +26,7 @@ let appState = {
     stationByCRS: new Map(),
     railwayRoutingGraph: new Map(),
     journeys: [],
+	journeysMap: new Map(),
     availableYears: []
 };
 
@@ -186,6 +184,7 @@ async function init() {
         appState.stations = data.stations;
         appState.stationByCRS = data.stationByCRS;
         appState.journeys = data.journeys;
+		appState.journeysMap = data.journeysMap;
         appState.availableYears = data.availableYears || [];
         selectedYear = appState.availableYears.length > 0 ? appState.availableYears[0] : '2024-25'; // Set default active year
         // Initialize UI components immediately
