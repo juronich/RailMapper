@@ -19,6 +19,9 @@ const destinationLayer = L.layerGroup().addTo(map);
 const flowLayer = L.layerGroup().addTo(map);
 const originLayer = L.layerGroup().addTo(map);
 
+const { journeys, journeysMap, availableYears } = await loadData();
+appState.journeysMap = journeysMap;
+
 // Global dataset storage (populated on load)
 let appState = {
     railwayNodes: null,
