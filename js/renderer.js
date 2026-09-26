@@ -63,18 +63,16 @@ export function drawOriginMarker(originLayer, selectedOriginCRS, stationByCRS) {
     marker.bringToFront();
 }
 
-
-
-export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS, availableYears, selectedYear, journeys, selectedOriginCRS, onMarkerClick) {
+export function drawDestinationMarkers(destinationLayer, destinationData, stationByCRS, availableYears, selectedYear, journeysMap, selectedOriginCRS, onMarkerClick) {
     destinationLayer.clearLayers();
     destinationData.forEach(({ crs }) => {
         const station = stationByCRS.get(crs);
         if (!station || isNaN(station.latitude) || isNaN(station.longitude)) return;
         // Find journey record for marker radius calculation
-        const journeyRecord = journeys.find(j => 
-            (j.OriginCRS === selectedOriginCRS && j.DestinationCRS === crs) ||
-            (j.OriginCRS === crs && j.DestinationCRS === selectedOriginCRS)
-        );
+        const key = selectedOriginCRS < crs 
+            ? `${selectedOriginCRS}-${crs}` 
+            : `${crs}-${selectedOriginCRS}`;
+        const journeyRecord = journeysMap.get(key);
         const currentPassengerCount = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0; 
         const radius = Math.max(3, Math.min(25, Math.sqrt(currentPassengerCount) * 0.05));
         // Create Leaflet circle marker without pre-building HTML string
