@@ -143,10 +143,11 @@ export async function loadInitData(map) {
     });
     console.timeEnd('4. Stations & Lookup Maps');
     // END OF STATIONS & LOOKUP MAPS
-    
+
     // JOURNEY DATA
     console.time('7. Journey Data');
     const journeys = [];
+    const journeysMap = new Map(); // Fast O(1) lookup Map
     let availableYears = []; 
     journeyDataFiles.forEach(data => {
         const years = data.years;
@@ -161,6 +162,11 @@ export async function loadInitData(map) {
                     journey[year] = values[idx] || 0;
                 });
                 journeys.push(journey);
+                // Build consistent bi-directional key (alphabetical)
+                const key = firstCRS < secondCRS 
+                    ? `${firstCRS}-${secondCRS}` 
+                    : `${secondCRS}-${firstCRS}`;
+                journeysMap.set(key, journey);
             });
         });
     });
