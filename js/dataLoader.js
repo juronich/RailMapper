@@ -180,6 +180,7 @@ export async function loadInitData(map) {
         stationByCRS,
         stationByStopPosition,
         journeys,
+        journeysMap,
         availableYears
     };
 }
