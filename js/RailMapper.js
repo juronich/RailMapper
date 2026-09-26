@@ -135,9 +135,6 @@ function updateVisualization() {
 	console.timeEnd('Function: Update Visualization (const activeJourneys/destinationDate)');
 	console.time('Function: Update Visualization (drawDestinationMarkers)');
 
-	/*drawDestinationMarkers(layer, data, stations, years, selectedYear, appState.journeysMap, origin, onClick);*'
-
-
 	
     drawDestinationMarkers(
         destinationLayer, 
@@ -145,7 +142,7 @@ function updateVisualization() {
         appState.stationByCRS, 
 		appState.availableYears,
 		selectedYear,
-		appState.journeys,
+		appState.journeysMap,
 		selectedOriginCRS,
         (destinationCRS) => handleDestinationClick(destinationCRS) // Triggers handleDestinationClick
     );
