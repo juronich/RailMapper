@@ -94,7 +94,7 @@ function updateVisualization() {
         currentRoutingTree, 
         selectedOriginCRS, 
         selectedYear, 
-        appState.journeys, 
+        appState.journeysMap, 
         appState.stationByCRS
     );
 	console.timeEnd('Function: Update Visualization (calculatePassengerFlows)');
@@ -184,7 +184,7 @@ async function init() {
         appState.stations = data.stations;
         appState.stationByCRS = data.stationByCRS;
         appState.journeys = data.journeys;
-		appState.journeysMap = data.journeysMap;
+		appState.journeysMap = data.journeysMap || new Map();;
         appState.availableYears = data.availableYears || [];
         selectedYear = appState.availableYears.length > 0 ? appState.availableYears[0] : '2024-25'; // Set default active year
         // Initialize UI components immediately
