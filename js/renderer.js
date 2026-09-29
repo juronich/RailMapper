@@ -40,10 +40,15 @@ export function drawRailwayRoute(routeLayer, pathNodes, railwayNodes, options = 
     const coords = getCoordinatesForPath(pathNodes, railwayNodes);
     if (coords.length < 2) return null;
     // Snap line end directly to destination marker center if provided
-    if (destinationCoords) {
+    if (
+        destinationCoords && 
+        Array.isArray(destinationCoords) && 
+        Number.isFinite(destinationCoords[0]) && 
+        Number.isFinite(destinationCoords[1])
+    ) {
         const lastPt = coords[coords.length - 1];
         if (lastPt[0] !== destinationCoords[0] || lastPt[1] !== destinationCoords[1]) {
-            coords.push(destinationCoords);
+            coords.push([destinationCoords[0], destinationCoords[1]]);
         }
     }
     const defaultOptions = {
