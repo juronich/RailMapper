@@ -162,7 +162,7 @@ function handleDestinationClick(destinationCRS) {
             routeLayer, 
             route.pathNodes, 
             appState.railwayNodes, 
-            { color: '#e63946', weight: 5, opacity: 0.9 }
+            { color: '#8ED973', weight: 5, opacity: 0.9 }
         );
     }
 }
