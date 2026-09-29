@@ -35,10 +35,17 @@ export function getCoordinatesForPath(pathNodes, railwayNodes) {
 }
 
 // Draws the selected point-to-point route onto the route layer.
-export function drawRailwayRoute(routeLayer, pathNodes, railwayNodes, options = {}) {
-    routeLayer.clearLayers();
+export function drawRailwayRoute(routeLayer, pathNodes, railwayNodes, options = {}, destinationCoords = null) {
+   // routeLayer.clearLayers();
     const coords = getCoordinatesForPath(pathNodes, railwayNodes);
     if (coords.length < 2) return null;
+    // Snap line end directly to destination marker center if provided
+    if (destinationCoords) {
+        const lastPt = coords[coords.length - 1];
+        if (lastPt[0] !== destinationCoords[0] || lastPt[1] !== destinationCoords[1]) {
+            coords.push(destinationCoords);
+        }
+    }
     const defaultOptions = {
         color: '#ff3300',
         weight: 4,
