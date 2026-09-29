@@ -159,7 +159,7 @@ function handleDestinationClick(destinationCRS) {
     );
     if (route && route.pathNodes) {
 		const targetStation = appState.stationByCRS.get(destinationCRS);
-        const targetCoords = targetStation ? [targetStation.lat, targetStation.lon] : null;
+        const targetCoords = targetStation ? [targetStation.latitude, targetStation.longitude] : null;
         drawRailwayRoute(
             routeLayer, 
             route.pathNodes, 
