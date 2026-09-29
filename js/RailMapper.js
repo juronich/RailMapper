@@ -158,11 +158,14 @@ function handleDestinationClick(destinationCRS) {
         currentRoutingTree
     );
     if (route && route.pathNodes) {
+		const targetStation = appState.stationByCRS.get(destinationCRS);
+        const targetCoords = targetStation ? [targetStation.lat, targetStation.lon] : null;
         drawRailwayRoute(
             routeLayer, 
             route.pathNodes, 
             appState.railwayNodes, 
-            { color: '#8ED973', weight: 5, opacity: 0.9 }
+            { color: '#8ED973'},
+			targetCoords
         );
     }
 }
