@@ -1,5 +1,5 @@
 console.time('App Ready Time');
-console.log('v0.201787');
+console.log('v0.201788');
 import { loadInitData, loadRoutingDataAsync } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
@@ -79,24 +79,24 @@ function updateVisualization() {
     // 1. Calculate Dijkstra shortest path tree from selected origin station
 	console.time('Function: Update Visualization (currentRoutingTree)');
     currentRoutingTree = computeShortestPathTree(
-        selectedOriginCRS, 
-        appState.stationByCRS, 
-        appState.railwayRoutingGraph
-    );
-    if (!currentRoutingTree) {
-        console.warn(`No valid routing paths found starting from ${selectedOriginCRS}`);
-        return;
-    }
+    	selectedOriginCRS, 
+    	appState.stationByCRS, 
+    	appState.railwayRoutingGraph
+	);
+	if (!currentRoutingTree) {
+    	console.warn(`No valid routing paths found starting from ${selectedOriginCRS}`);
+    	return;
+	}
 	console.timeEnd('Function: Update Visualization (currentRoutingTree)');
     // 2. Calculate edge-by-edge passenger flows across the network
 	console.time('Function: Update Visualization (calculatePassengerFlows)');
     const edgeFlows = calculatePassengerFlows(
-        currentRoutingTree, 
-        selectedOriginCRS, 
-        selectedYear, 
-        appState.journeysMap, 
-        appState.stationByCRS
-    );
+    	currentRoutingTree, 
+    	selectedOriginCRS, 
+    	selectedYear, 
+    	appState.journeysMap, 
+    	appState.stationByCRS
+	);
 	console.timeEnd('Function: Update Visualization (calculatePassengerFlows)');
 	console.time('Function: Update Visualization (const volume of edgeFlows.values loop)');
     let maxFlowVolume = 1;
