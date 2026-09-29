@@ -122,6 +122,69 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     fullPathNodes.unshift(String(curr));
     return { pathNodes: fullPathNodes, totalDistance: minDist };
 }
+
+// Aggregates passenger volumes across network segment polylines for a given origin and year.
+export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeysMap, stationByCRS) {
+    console.time('Function: calculatePassengerFlows');
+    if (!routingTree || !routingTree.parents) return new Map();
+
+    const { distances, parents } = routingTree;
+    const edgeFlows = new Map();
+
+    stationByCRS.forEach((station, targetCRS) => {
+        if (targetCRS === selectedCRS) return;
+
+        // 1. O(1) key lookup in journeysMap
+        const key = selectedCRS < targetCRS 
+            ? `${selectedCRS}-${targetCRS}` 
+            : `${targetCRS}-${selectedCRS}`;
+            
+        const journeyRecord = journeysMap.get(key);
+        const passengerVolume = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0;
+        if (passengerVolume <= 0) return;
+
+        // 2. Find closest reached stop node for target CRS
+        let bestStop = null;
+        let minDist = Infinity;
+        if (station.stop_positions) {
+            station.stop_positions.forEach(stopId => {
+                const nodeStr = String(stopId);
+                const d = distances.get(nodeStr);
+                if (d !== undefined && d < minDist) {
+                    minDist = d;
+                    bestStop = nodeStr;
+                }
+            });
+        }
+
+        if (!bestStop || minDist === Infinity) return;
+
+        // 3. Traverse parent tree along physical node edges
+        let curr = bestStop;
+        while (parents.has(curr)) {
+            const edge = parents.get(curr);
+            const parentNode = String(edge.parent);
+
+            // Accumulate flow across all sub-segments in path
+            const segmentNodes = edge.path.map(String);
+            for (let i = 0; i < segmentNodes.length - 1; i++) {
+                const u = segmentNodes[i];
+                const v = segmentNodes[i + 1];
+                const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+                
+                const currentVol = edgeFlows.get(edgeKey) || 0;
+                edgeFlows.set(edgeKey, currentVol + passengerVolume);
+            }
+
+            curr = parentNode;
+        }
+    });
+
+    console.timeEnd('Function: calculatePassengerFlows');
+    return edgeFlows;
+}
+
+/*
  // Aggregates passenger volumes across network segment polylines for a given origin and year.
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeysMap, stationByCRS) {
     console.time('Function: calculatePassengerFlows');
@@ -154,7 +217,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
     return edgeFlows;
 }
 
-
+*/
 /*
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeys, stationByCRS) {
     console.time('Function: calculatePassengerFlows');
