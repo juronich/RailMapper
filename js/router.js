@@ -120,7 +120,11 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
         curr = String(edge.parent);
     }
     fullPathNodes.unshift(String(curr));
-    return { pathNodes: fullPathNodes, totalDistance: minDist };
+    return { 
+        pathNodes: fullPathNodes, 
+        targetStationCoords: [targetStation.lat, targetStation.lon],
+        totalDistance: minDist 
+    };
 }
 
 // Aggregates passenger volumes across network segment polylines for a given origin and year.
