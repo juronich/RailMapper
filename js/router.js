@@ -48,6 +48,185 @@ export class MinPriorityQueue {
 }
 
 
+// Computes shortest path tree directly from originCRS using Dijkstra's algorithm.
+export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
+    console.time('Function: computeShortestPathTree');
+    const originStation = stationByCRS.get(originCRS);
+    if (!originStation || !railwayRoutingGraph.has(originCRS)) return null;
+
+    const distances = new Map();
+    const parents = new Map();
+    const pq = new MinPriorityQueue();
+
+    // 1. Initialize source directly with the station CRS string
+    const startNode = String(originCRS);
+    distances.set(startNode, 0);
+    pq.push(startNode, 0);
+
+    // 2. Standard Dijkstra loop across track & virtual connector edges
+    while (!pq.isEmpty()) {
+        const current = pq.pop();
+        if (!current) continue;
+        const { val: u, priority: distU } = current;
+
+        if (distU > distances.get(u)) continue;
+
+        const neighbors = railwayRoutingGraph.get(u) || [];
+        for (const edge of neighbors) {
+            const v = edge.node;
+            const newDist = distU + edge.distance;
+            if (!distances.has(v) || newDist < distances.get(v)) {
+                distances.set(v, newDist);
+                parents.set(v, { parent: u, path: edge.path });
+                pq.push(v, newDist);
+            }
+        }
+    }
+    console.timeEnd('Function: computeShortestPathTree');
+    return { distances, parents, originStation };
+}
+
+// Reconstructs standard node-by-node path between origin and target station directly.
+export function reconstructPath(targetCRS, stationByCRS, routingTree) {
+    if (!routingTree) return null;
+    const { distances, parents } = routingTree;
+    const targetStation = stationByCRS.get(targetCRS);
+    if (!targetStation) return null;
+
+    const targetNode = String(targetCRS);
+    const minDist = distances.get(targetNode);
+
+    // Target CRS wasn't reached by the tree search
+    if (minDist === undefined || minDist === Infinity) return null;
+
+    const fullPathNodes = [];
+    let curr = targetNode;
+
+    // Trace parent tree backwards from targetCRS to originCRS
+    while (parents.has(curr)) {
+        const edge = parents.get(curr);
+        const segmentNodes = edge.path.map(String);
+
+        // Ensure segment matches direction from curr to edge.parent
+        if (segmentNodes[segmentNodes.length - 1] === curr) {
+            for (let i = segmentNodes.length - 2; i >= 0; i--) {
+                fullPathNodes.unshift(segmentNodes[i]);
+            }
+        } else {
+            for (let i = 1; i < segmentNodes.length; i++) {
+                fullPathNodes.unshift(segmentNodes[i]);
+            }
+        }
+        curr = String(edge.parent);
+    }
+    fullPathNodes.unshift(String(curr));
+
+    return { 
+        pathNodes: fullPathNodes, 
+        targetStationCoords: [targetStation.latitude || targetStation.lat, targetStation.longitude || targetStation.lon],
+        totalDistance: minDist 
+    };
+}
+
+// Aggregates passenger volumes across network segment polylines for a given origin and year.
+export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeysMap, stationByCRS) {
+    console.time('Function: calculatePassengerFlows');
+    if (!routingTree || !routingTree.parents) return new Map();
+
+    const { parents } = routingTree;
+    const edgeFlows = new Map();
+
+    stationByCRS.forEach((station, targetCRS) => {
+        if (targetCRS === selectedCRS) return;
+
+        // 1. O(1) key lookup in journeysMap
+        const key = selectedCRS < targetCRS 
+            ? `${selectedCRS}-${targetCRS}` 
+            : `${targetCRS}-${selectedCRS}`;
+            
+        const journeyRecord = journeysMap.get(key);
+        const passengerVolume = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0;
+        if (passengerVolume <= 0) return;
+
+        const targetNode = String(targetCRS);
+        if (!parents.has(targetNode)) return;
+
+        // 2. Traverse parent tree along physical node edges
+        let curr = targetNode;
+        while (parents.has(curr)) {
+            const edge = parents.get(curr);
+
+            // Accumulate flow across all sub-segments in path
+            const segmentNodes = edge.path.map(String);
+            for (let i = 0; i < segmentNodes.length - 1; i++) {
+                const u = segmentNodes[i];
+                const v = segmentNodes[i + 1];
+
+                // Skip virtual connector edges (sub-segments involving CRS codes)
+                if (stationByCRS.has(u) || stationByCRS.has(v)) continue;
+
+                const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+                const currentVol = edgeFlows.get(edgeKey) || 0;
+                edgeFlows.set(edgeKey, currentVol + passengerVolume);
+            }
+
+            curr = String(edge.parent);
+        }
+    });
+
+    console.timeEnd('Function: calculatePassengerFlows');
+    return edgeFlows;
+}
+/*export class MinPriorityQueue {
+    constructor() {
+        this.heap = [];
+    }
+    push(val, priority) {
+        this.heap.push({ val, priority });
+        this._bubbleUp(this.heap.length - 1);
+    }
+    pop() {
+        if (this.heap.length === 0) return null;
+        const top = this.heap[0];
+        const bottom = this.heap.pop();
+        if (this.heap.length > 0) {
+            this.heap[0] = bottom;
+            this._sinkDown(0);
+        }
+        return top;
+    }
+    isEmpty() {
+        return this.heap.length === 0;
+    }
+    _bubbleUp(idx) {
+        while (idx > 0) {
+            const parentIdx = Math.floor((idx - 1) / 2);
+            if (this.heap[idx].priority >= this.heap[parentIdx].priority) break;
+            [this.heap[idx], this.heap[parentIdx]] = [this.heap[parentIdx], this.heap[idx]];
+            idx = parentIdx;
+        }
+    }
+    _sinkDown(idx) {
+        const length = this.heap.length;
+        while (true) {
+            let left = 2 * idx + 1;
+            let right = 2 * idx + 2;
+            let smallest = idx;
+            if (left < length && this.heap[left].priority < this.heap[smallest].priority) {
+                smallest = left;
+            }
+            if (right < length && this.heap[right].priority < this.heap[smallest].priority) {
+                smallest = right;
+            }
+            if (smallest === idx) break;
+
+            [this.heap[idx], this.heap[smallest]] = [this.heap[smallest], this.heap[idx]];
+            idx = smallest;
+        }
+    }
+}
+
+
 // Computes shortest path tree from an origin station using Dijkstra's algorithm.
 export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
     console.time('Function: computeShortestPathTree');
@@ -220,7 +399,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
     console.timeEnd('Function: calculatePassengerFlows');
     return edgeFlows;
 }
-
+*/
 */
 /*
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeys, stationByCRS) {
