@@ -431,7 +431,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
     return edgeFlows;
 }
 */
-*/
+
 /*
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeys, stationByCRS) {
     console.time('Function: calculatePassengerFlows');
