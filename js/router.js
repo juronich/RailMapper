@@ -52,14 +52,18 @@ export class MinPriorityQueue {
 export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
     console.time('Function: computeShortestPathTree');
     const originStation = stationByCRS.get(originCRS);
-    if (!originStation || !railwayRoutingGraph.has(originCRS)) return null;
+    const startNode = String(originCRS);
+    if (!originStation || !railwayRoutingGraph.has(startNode)) {
+        console.timeEnd('Function: computeShortestPathTree');
+        return null;
+    }
 
     const distances = new Map();
     const parents = new Map();
     const pq = new MinPriorityQueue();
 
     // 1. Initialize source directly with the station CRS string
-    const startNode = String(originCRS);
+    
     distances.set(startNode, 0);
     pq.push(startNode, 0);
 
@@ -73,7 +77,7 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
 
         const neighbors = railwayRoutingGraph.get(u) || [];
         for (const edge of neighbors) {
-            const v = edge.node;
+            const v = String(edge.node);
             const newDist = distU + edge.distance;
             if (!distances.has(v) || newDist < distances.get(v)) {
                 distances.set(v, newDist);
