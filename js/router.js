@@ -86,6 +86,26 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
     return { distances, parents, originStation };
 }
 
+export function getCoordinatesForPath(pathNodes, stationByCRS, railwayNodes) {
+    const coordinates = [];
+    for (let i = 0; i < pathNodes.length; i++) {
+        const nodeId = pathNodes[i];
+        // 1. Resolve Station CRS terminal nodes
+        if (stationByCRS.has(nodeId)) {
+            const station = stationByCRS.get(nodeId);
+            const lat = station.latitude || station.lat;
+            const lon = station.longitude || station.lon;
+            if (lat && lon) coordinates.push([lat, lon]);
+            continue;
+        }
+        // 2. Resolve Track nodes from railwayNodes
+        const node = railwayNodes.get(nodeId);
+        if (node) {
+            coordinates.push([node.latitude, node.longitude]);
+        }
+    }
+    return coordinates;
+}
 // Reconstructs standard node-by-node path between origin and target station directly.
 export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     if (!routingTree) return null;
@@ -121,8 +141,19 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     }
     fullPathNodes.unshift(String(curr));
 
+    const pathCoordinates = fullPathNodes.map(nodeId => {
+        // A) If it's a Station CRS code, grab station coordinates
+        if (stationByCRS.has(nodeId)) {
+            const st = stationByCRS.get(nodeId);
+            return [st.latitude || st.lat, st.longitude || st.lon];
+        }
+        // B) Otherwise, look up track node in railwayNodes
+        const trackNode = railwayNodes.get(nodeId);
+        return trackNode ? [trackNode.latitude, trackNode.longitude] : null;
+    }).filter(Boolean); // Drop any missing lookups cleanly
     return { 
         pathNodes: fullPathNodes, 
+        coordinates: pathCoordinates,
         targetStationCoords: [targetStation.latitude || targetStation.lat, targetStation.longitude || targetStation.lon],
         totalDistance: minDist 
     };
