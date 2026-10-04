@@ -54,6 +54,10 @@ export async function loadInitData(map) {
     })).filter(s => s.name && !isNaN(s.latitude) && !isNaN(s.longitude));
     const stationByCRS = new Map(stations.map(s => [s.crs, s]));
     stations.forEach(station => {
+		 railwayNodes.set(String(station.id), {
+            latitude: station.latitude,
+            longitude: station.longitude
+        });
         station.stop_positions.forEach(id => {
             stationByStopPosition.set(String(id), station);
         });
