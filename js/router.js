@@ -107,7 +107,10 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
 
     const fullPathNodes = [];
     let curr = bestStop;
-
+    if (bestStop !== String(station.id)) {
+        const key = bestStop < station.id ? `${bestStop}-${station.id}` : `${station.id}-${bestStop}`;
+        edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
+    }
     while (parents.has(curr)) {
         const edgeInfo = parents.get(curr);
         const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
@@ -123,6 +126,11 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
             }
         }
         curr = String(edgeInfo.parent);
+    }
+    const originId = String(originStation.id); // looked up outside the forEach via selectedCRS
+    if (curr !== originId) {
+        const key = curr < originId ? `${curr}-${originId}` : `${originId}-${curr}`;
+        edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
     }
     fullPathNodes.unshift(String(curr));
 
