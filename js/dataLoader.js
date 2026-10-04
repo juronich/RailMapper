@@ -41,88 +41,8 @@ export async function loadInitData(map) {
     // END OF POPULATE NODES
     console.timeEnd('2. Populate Nodes');
     // BUILD WAYS & GRAPH
-  //  console.time('3. Build Ways & Graph');
-    /*const basePolylines = [];
-    waysData.ways.forEach(way => {
-        const nodeIds = way[1];
-        if (!nodeIds || nodeIds.length < 2) return;
-        const coords = [];
-        for (let i = 0; i < nodeIds.length; i++) {
-            const nodeIdStr = String(nodeIds[i]);
-            const node = railwayNodes.get(nodeIdStr);
-            if (node) coords.push([node.latitude, node.longitude]);
-            if (i < nodeIds.length - 1) {
-                const nextNodeStr = String(nodeIds[i + 1]);
-                if (!railwayGraph.has(nodeIdStr)) railwayGraph.set(nodeIdStr, []);
-                if (!railwayGraph.has(nextNodeStr)) railwayGraph.set(nextNodeStr, []);
-                railwayGraph.get(nodeIdStr).push(nextNodeStr);
-                railwayGraph.get(nextNodeStr).push(nodeIdStr);
-            }
-        }
-        if (coords.length >= 2) {
-            basePolylines.push(L.polyline(coords, {
-                color: '#4EA72E',
-                weight: 1,
-                opacity: 0.7
-            }));
-        }
-    });
-    // Batch draw base railway network on map
-    L.featureGroup(basePolylines).addTo(map);
-    */
-/*
-    // 1. Force Canvas renderer for Leaflet rendering performance
-    const canvasRenderer = L.canvas({ padding: 0.5 });
-    const allCoords = [];
-    const ways = waysData.ways;
-    const waysLen = ways.length;
-    for (let w = 0; w < waysLen; w++) {
-        const nodeIds = ways[w][1];
-        if (!nodeIds || nodeIds.length < 2) continue;
-        const coords = [];
-        const nodeCount = nodeIds.length;
-        for (let i = 0; i < nodeCount; i++) {
-            // Assume node IDs are consistent types (strings or numbers)
-            const nodeIdStr = nodeIds[i]; 
-            const node = railwayNodes.get(nodeIdStr);
-            if (node) {
-                coords.push([node.latitude, node.longitude]);
-            }
-            if (i < nodeCount - 1) {
-                const nextNodeStr = nodeIds[i + 1];
-                // Single hash lookup for railwayGraph
-                let graphList = railwayGraph.get(nodeIdStr);
-                if (!graphList) {
-                    graphList = [];
-                    railwayGraph.set(nodeIdStr, graphList);
-                }
-                graphList.push(nextNodeStr);
-                let nextGraphList = railwayGraph.get(nextNodeStr);
-                if (!nextGraphList) {
-                    nextGraphList = [];
-                    railwayGraph.set(nextNodeStr, nextGraphList);
-                }
-                nextGraphList.push(nodeIdStr);
-            }
-        }
-        if (coords.length >= 2) {
-            allCoords.push(coords);
-        }
-    }
-    // 2. Draw ALL ways in a single L.polyline call using Canvas
-    if (allCoords.length > 0) {
-        L.polyline(allCoords, {
-            color: '#4EA72E',
-            weight: 1,
-            opacity: 0.7,
-            renderer: canvasRenderer
-        }).addTo(map);
-    }
-
+  	//  console.time('3. Build Ways & Graph');
     
-    console.timeEnd('3. Build Ways & Graph');
-    // END OF BUILD WAYS & GRAPH
-*/
     // STATIONS & LOOKUP MAPS
     console.time('4. Stations & Lookup Maps');
     const stations = Object.entries(stationsData).map(([crs, record]) => ({
@@ -193,7 +113,6 @@ export async function loadRoutingData(stations, railwayNodes) {
 																			  
     const routingUrl = new URL('../data/railway-routing.json', import.meta.url);
     const transfersUrl = new URL('../data/station-transfers.json', import.meta.url);
-    const connectorsUrl = new URL('../data/station-connectors.json', import.meta.url);
 
     const [routingData, transfersData, connectorsData] = await Promise.all([
         fetch(routingUrl).then(res => {
@@ -202,10 +121,6 @@ export async function loadRoutingData(stations, railwayNodes) {
         }),
         fetch(transfersUrl).then(res => {
             if (!res.ok) throw new Error(`HTTP ${res.status} loading transfers data`);
-            return res.json();
-        }),
-        fetch(connectorsUrl).then(res => {
-            if (!res.ok) throw new Error(`HTTP ${res.status} loading connectors data`);
             return res.json();
         })
     ]);
@@ -240,7 +155,7 @@ export async function loadRoutingData(stations, railwayNodes) {
         }
         toList.push({ node: from, distance: distNum, path: revPath });
     }
-
+	/*
     // 2. Inject Station Connector Virtual Edges (Zero Distance)
     // Connects stop_position node ID <-> station CRS code
     const connLen = connectorsData.length;
@@ -266,6 +181,7 @@ export async function loadRoutingData(stations, railwayNodes) {
         }
         crsList.push({ node: stopStr, distance: distNum, path: [crsStr, stopStr] });
     }
+	*/
     // Station Connections
     for (let i = 0; i < stations.length; i++) {
         const station = stations[i];
