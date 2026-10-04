@@ -46,6 +46,7 @@ export class MinPriorityQueue {
         }
     }
 }
+
 // 1. Dijkstra seeds strictly from origin physical stop_positions
 export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
     const originStation = stationByCRS.get(originCRS);
@@ -84,14 +85,14 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
     return { distances, parents, originStation };
 }
 
-// 2. Reconstructs physical path and snaps terminal endpoints to station pins
-export function reconstructPath(targetCRS, stationByCRS, railwayNodes, routingTree) {
+// 2. Reconstructs physical path (Fixed argument order: accepts 3 arguments as called by RailMapper)
+export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     if (!routingTree) return null;
-    const { distances, parents, originStation } = routingTree;
+    const { distances, parents } = routingTree;
     const targetStation = stationByCRS.get(targetCRS);
     if (!targetStation || !targetStation.stop_positions || !targetStation.stop_positions.length) return null;
 
-    // Find best stop_position reached for target station
+    // Find closest reached stop_position for target station
     let bestStop = null;
     let minDist = Infinity;
     targetStation.stop_positions.forEach(stopId => {
@@ -109,44 +110,24 @@ export function reconstructPath(targetCRS, stationByCRS, railwayNodes, routingTr
     const fullPathNodes = [];
     let curr = bestStop;
     while (parents.has(curr)) {
-        const edge = parents.get(curr);
-        const segmentNodes = edge.path.map(String);
+        const edgeInfo = parents.get(curr);
+        const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
 
         if (segmentNodes[segmentNodes.length - 1] === curr) {
-            for (let i = segmentNodes.length - 2; i >= 0; i--) {
+            for (let i = segmentNodes.length - 1; i > 0; i--) {
                 fullPathNodes.unshift(segmentNodes[i]);
             }
         } else {
-            for (let i = 1; i < segmentNodes.length; i++) {
+            for (let i = 0; i < segmentNodes.length - 1; i++) {
                 fullPathNodes.unshift(segmentNodes[i]);
             }
         }
-        curr = String(edge.parent);
+        curr = String(edgeInfo.parent);
     }
     fullPathNodes.unshift(String(curr));
 
-    // Convert node IDs to track coordinates
-    const trackCoordinates = fullPathNodes.map(nodeId => {
-        const node = railwayNodes.get(nodeId);
-        return node ? [node.latitude, node.longitude] : null;
-    }).filter(Boolean);
-
-    // Snap origin and target ends to exact station marker pins
-    const coordinates = [];
-    
-    const origLat = originStation.latitude || originStation.lat;
-    const origLon = originStation.longitude || originStation.lon;
-    if (origLat && origLon) coordinates.push([origLat, origLon]);
-
-    coordinates.push(...trackCoordinates);
-
-    const targetLat = targetStation.latitude || targetStation.lat;
-    const targetLon = targetStation.longitude || targetStation.lon;
-    if (targetLat && targetLon) coordinates.push([targetLat, targetLon]);
-
     return { 
         pathNodes: fullPathNodes,
-        coordinates,
         totalDistance: minDist 
     };
 }
@@ -186,22 +167,20 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
 
         let curr = bestStop;
         while (parents.has(curr)) {
-            const edge = parents.get(curr);
-            const segmentNodes = edge.path.map(String);
+            const edgeInfo = parents.get(curr);
+            const parentNode = String(edgeInfo.parent);
 
-            for (let i = 0; i < segmentNodes.length - 1; i++) {
-                const u = segmentNodes[i];
-                const v = segmentNodes[i + 1];
-                const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
-                
-                const currentVol = edgeFlows.get(edgeKey) || 0;
-                edgeFlows.set(edgeKey, currentVol + passengerVolume);
-            }
+            // Directly accumulate flow on the edge between parentNode and curr
+            const u = parentNode;
+            const v = curr;
+            const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+            
+            const currentVol = edgeFlows.get(edgeKey) || 0;
+            edgeFlows.set(edgeKey, currentVol + passengerVolume);
 
-            curr = String(edge.parent);
+            curr = parentNode;
         }
     });
 
     return edgeFlows;
 }
-
