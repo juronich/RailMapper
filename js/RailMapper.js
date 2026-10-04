@@ -240,6 +240,11 @@ async function init() {
                 		renderer: canvasRenderer
             		}).addTo(map);
         		}
+				const graphKeys = Array.from(routingData.railwayRoutingGraph.keys());
+				const hasCRS = graphKeys.some(k => isNaN(Number(k)));
+
+				console.log("Are non-numeric/CRS codes in the graph?", hasCRS);
+				console.log("Sample graph keys:", graphKeys.slice(0, 10));
             	console.log('🚀 Routing graph loaded in background via Worker');
 				// If user selected a station while worker was processing, trigger visualization now
                 if (selectedOriginCRS) {
