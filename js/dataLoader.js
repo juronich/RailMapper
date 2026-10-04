@@ -357,14 +357,14 @@ export async function loadWaysAndGraph(railwayNodes) {
     for (let w = 0; w < waysLen; w++) {
         const nodeIds = ways[w][1];
         if (!nodeIds || nodeIds.length < 2) continue;
-       // Change lines 17-19:
-		const nodeId = nodeIds[i];
-		// Try direct lookup first, fallback to Number/String conversion if missing
-		const node = railwayNodes.get(nodeId) ?? railwayNodes.get(String(nodeId)) ?? railwayNodes.get(Number(nodeId));
+      	const coords = [];
+        const nodeCount = nodeIds.length;
 		
         for (let i = 0; i < nodeCount; i++) {
-            const nodeIdStr = nodeIds[i];
-            const node = railwayNodes.get(nodeIdStr);
+            // Change lines 17-19:
+			const nodeId = nodeIds[i];
+			// Try direct lookup first, fallback to Number/String conversion if missing
+			const node = railwayNodes.get(nodeId) ?? railwayNodes.get(String(nodeId)) ?? railwayNodes.get(Number(nodeId));
             if (node) {
                 coords.push([node.latitude, node.longitude]);
             }
