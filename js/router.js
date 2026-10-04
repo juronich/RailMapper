@@ -185,11 +185,11 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
 
             curr = String(edgeInfo.parent);
         }
-        const originId = originStation ? String(originStation.id) : null;
+        /*const originId = originStation ? String(originStation.id) : null;
         if (curr !== originId) {
             const key = curr < originId ? `${curr}-${originId}` : `${originId}-${curr}`;
             edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
-        }
+        }*/
     });
 
     return edgeFlows;
