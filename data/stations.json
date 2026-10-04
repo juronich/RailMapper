@@ -52837,8 +52837,8 @@
         "station": {
             "id": 22256300,
             "name": "IBM",
-            "latitude": 55.932815,
-            "longitude": -4.79374,
+            "latitude": 55.9395936,
+            "longitude": -4.7905167,
             "Network": [
                 "National Rail"
             ],
@@ -52872,8 +52872,8 @@
         "station": {
             "id": 3711820550,
             "name": "Redcar British Steal",
-            "latitude": 54.609888,
-            "longitude": -1.1126612,
+            "latitude": 54.6097662,
+            "longitude": -1.1125913,
             "Network": [
                 "National Rail"
             ],
@@ -52890,8 +52890,8 @@
         "station": {
             "id": 4805969597,
             "name": "Teesside Airport",
-            "latitude": 54.5185307,
-            "longitude": -1.4253339,
+            "latitude": 54.5185435,
+            "longitude": -1.4254019,
             "Network": [
                 "National Rail"
             ],
@@ -52907,8 +52907,8 @@
         "station": {
             "id": 32037804,
             "name": "Sampford Courtenay",
-            "latitude": 50.7901245,
-            "longitude": -3.9400112,
+            "latitude": 50.7823167,
+            "longitude": -3.9326103,
             "Network": [
                 "National Rail"
             ],
