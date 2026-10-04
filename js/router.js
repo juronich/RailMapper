@@ -166,22 +166,22 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
         if (!bestStop || minDist === Infinity) return null;
 
         let curr = bestStop;
-        while (parents.has(curr)) {
-            const edgeInfo = parents.get(curr);
-            const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
+        // --- OLD / WORKING VERSION ---
+while (parents.has(curr)) {
+    const edgeInfo = parents.get(curr);
+    const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
 
-            // Walk individual sub-segments to maintain track alignment
-            for (let i = 0; i < segmentNodes.length - 1; i++) {
-                const u = segmentNodes[i];
-                const v = segmentNodes[i + 1];
-                const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
-                
-                const currentVol = edgeFlows.get(edgeKey) || 0;
-                edgeFlows.set(edgeKey, currentVol + passengerVolume);
-            }
+    for (let i = 0; i < segmentNodes.length - 1; i++) {
+        const u = segmentNodes[i];
+        const v = segmentNodes[i + 1];
+        const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+        
+        const currentVol = edgeFlows.get(edgeKey) || 0;
+        edgeFlows.set(edgeKey, currentVol + passengerVolume);
+    }
 
-            curr = String(edgeInfo.parent);
-        }
+    curr = String(edgeInfo.parent);
+}
     });
 
     return edgeFlows;
