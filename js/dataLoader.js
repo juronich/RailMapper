@@ -353,11 +353,15 @@ export async function loadWaysAndGraph(railwayNodes) {
     const railwayGraph = new Map();
     const ways = waysData.ways;
     const waysLen = ways.length;
+	console.log('Sample node lookup:', railwayNodes.keys().next().value, typeof railwayNodes.keys().next().value);
     for (let w = 0; w < waysLen; w++) {
         const nodeIds = ways[w][1];
         if (!nodeIds || nodeIds.length < 2) continue;
-        const coords = [];
-        const nodeCount = nodeIds.length;
+       // Change lines 17-19:
+		const nodeId = nodeIds[i];
+		// Try direct lookup first, fallback to Number/String conversion if missing
+		const node = railwayNodes.get(nodeId) ?? railwayNodes.get(String(nodeId)) ?? railwayNodes.get(Number(nodeId));
+		
         for (let i = 0; i < nodeCount; i++) {
             const nodeIdStr = nodeIds[i];
             const node = railwayNodes.get(nodeIdStr);
