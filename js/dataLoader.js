@@ -365,6 +365,7 @@ export async function loadWaysAndGraph(railwayNodes) {
 			const nodeId = nodeIds[i];
 			// Try direct lookup first, fallback to Number/String conversion if missing
 			const node = railwayNodes.get(nodeId) ?? railwayNodes.get(String(nodeId)) ?? railwayNodes.get(Number(nodeId));
+			const nodeIdStr = nodeIds[i];
             if (node) {
                 coords.push([node.latitude, node.longitude]);
             }
