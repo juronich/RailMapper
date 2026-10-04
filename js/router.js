@@ -46,8 +46,164 @@ export class MinPriorityQueue {
         }
     }
 }
+// router.js
 
+// Computes shortest path tree from physical track stop_positions
+export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
+    const originStation = stationByCRS.get(originCRS);
+    if (!originStation || !originStation.stop_positions || !originStation.stop_positions.length) return null;
 
+    const distances = new Map();
+    const parents = new Map();
+    const pq = new MinPriorityQueue();
+
+    // Start Dijkstra directly from the physical track stop_positions
+    originStation.stop_positions.forEach(stopId => {
+        const nodeStr = String(stopId);
+        distances.set(nodeStr, 0);
+        pq.push(nodeStr, 0);
+    });
+
+    while (!pq.isEmpty()) {
+        const current = pq.pop();
+        if (!current) continue;
+        const { val: u, priority: distU } = current;
+
+        if (distU > distances.get(u)) continue;
+
+        const neighbors = railwayRoutingGraph.get(u) || [];
+        for (const edge of neighbors) {
+            const v = String(edge.node);
+            const newDist = distU + edge.distance;
+            
+            if (!distances.has(v) || newDist < distances.get(v)) {
+                distances.set(v, newDist);
+                parents.set(v, { parent: u, path: edge.path });
+                pq.push(v, newDist);
+            }
+        }
+    }
+
+    return { distances, parents, originStation };
+}
+
+// Reconstructs physical path and snaps the terminal endpoint to target station coords
+export function reconstructPath(targetCRS, stationByCRS, railwayNodes, routingTree) {
+    if (!routingTree) return null;
+    const { distances, parents } = routingTree;
+    const targetStation = stationByCRS.get(targetCRS);
+    if (!targetStation || !targetStation.stop_positions || !targetStation.stop_positions.length) return null;
+
+    // Find closest reached stop_position for target station
+    let bestStop = null;
+    let minDist = Infinity;
+    targetStation.stop_positions.forEach(stopId => {
+        const nodeStr = String(stopId);
+        const d = distances.get(nodeStr);
+        if (d !== undefined && d < minDist) {
+            minDist = d;
+            bestStop = nodeStr;
+        }
+    });
+
+    if (!bestStop || minDist === Infinity) return null;
+
+    // Trace parent tree backwards across physical track nodes
+    const fullPathNodes = [];
+    let curr = bestStop;
+    while (parents.has(curr)) {
+        const edge = parents.get(curr);
+        const segmentNodes = edge.path.map(String);
+
+        if (segmentNodes[segmentNodes.length - 1] === curr) {
+            for (let i = segmentNodes.length - 2; i >= 0; i--) {
+                fullPathNodes.unshift(segmentNodes[i]);
+            }
+        } else {
+            for (let i = 1; i < segmentNodes.length; i++) {
+                fullPathNodes.unshift(segmentNodes[i]);
+            }
+        }
+        curr = String(edge.parent);
+    }
+    fullPathNodes.unshift(String(curr));
+
+    // Map physical track node IDs to [lat, lon] coordinates
+    const coordinates = fullPathNodes.map(nodeId => {
+        const node = railwayNodes.get(nodeId);
+        return node ? [node.latitude, node.longitude] : null;
+    }).filter(Boolean);
+
+    // Append the exact target station pin coordinates as the final polyline point
+    const targetLat = targetStation.latitude || targetStation.lat;
+    const targetLon = targetStation.longitude || targetStation.lon;
+    if (targetLat && targetLon) {
+        coordinates.push([targetLat, targetLon]);
+    }
+
+    return { 
+        pathNodes: fullPathNodes,
+        coordinates,
+        totalDistance: minDist 
+    };
+}
+
+// Aggregates passenger volumes purely across physical track edges
+export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeysMap, stationByCRS) {
+    if (!routingTree || !routingTree.parents) return new Map();
+
+    const { distances, parents } = routingTree;
+    const edgeFlows = new Map();
+
+    stationByCRS.forEach((station, targetCRS) => {
+        if (targetCRS === selectedCRS) return;
+
+        const key = selectedCRS < targetCRS 
+            ? `${selectedCRS}-${targetCRS}` 
+            : `${targetCRS}-${selectedCRS}`;
+            
+        const journeyRecord = journeysMap.get(key);
+        const passengerVolume = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0;
+        if (passengerVolume <= 0) return;
+
+        // Find best stop_position reached for target station
+        let bestStop = null;
+        let minDist = Infinity;
+        if (station.stop_positions) {
+            station.stop_positions.forEach(stopId => {
+                const nodeStr = String(stopId);
+                const d = distances.get(nodeStr);
+                if (d !== undefined && d < minDist) {
+                    minDist = d;
+                    bestStop = nodeStr;
+                }
+            });
+        }
+
+        if (!bestStop || minDist === Infinity) return;
+
+        // Accumulate flow on physical track segments
+        let curr = bestStop;
+        while (parents.has(curr)) {
+            const edge = parents.get(curr);
+            const segmentNodes = edge.path.map(String);
+
+            for (let i = 0; i < segmentNodes.length - 1; i++) {
+                const u = segmentNodes[i];
+                const v = segmentNodes[i + 1];
+                const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+                
+                const currentVol = edgeFlows.get(edgeKey) || 0;
+                edgeFlows.set(edgeKey, currentVol + passengerVolume);
+            }
+
+            curr = String(edge.parent);
+        }
+    });
+
+    return edgeFlows;
+}
+/*
 // Computes shortest path tree directly from originCRS using Dijkstra's algorithm.
 export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
     console.time('Function: computeShortestPathTree');
