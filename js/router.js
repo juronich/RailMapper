@@ -46,9 +46,7 @@ export class MinPriorityQueue {
         }
     }
 }
-// router.js
-
-// Computes shortest path tree from physical track stop_positions
+// 1. Dijkstra seeds strictly from origin physical stop_positions
 export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingGraph) {
     const originStation = stationByCRS.get(originCRS);
     if (!originStation || !originStation.stop_positions || !originStation.stop_positions.length) return null;
@@ -57,7 +55,6 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
     const parents = new Map();
     const pq = new MinPriorityQueue();
 
-    // Start Dijkstra directly from the physical track stop_positions
     originStation.stop_positions.forEach(stopId => {
         const nodeStr = String(stopId);
         distances.set(nodeStr, 0);
@@ -87,14 +84,14 @@ export function computeShortestPathTree(originCRS, stationByCRS, railwayRoutingG
     return { distances, parents, originStation };
 }
 
-// Reconstructs physical path and snaps the terminal endpoint to target station coords
+// 2. Reconstructs physical path and snaps terminal endpoints to station pins
 export function reconstructPath(targetCRS, stationByCRS, railwayNodes, routingTree) {
     if (!routingTree) return null;
-    const { distances, parents } = routingTree;
+    const { distances, parents, originStation } = routingTree;
     const targetStation = stationByCRS.get(targetCRS);
     if (!targetStation || !targetStation.stop_positions || !targetStation.stop_positions.length) return null;
 
-    // Find closest reached stop_position for target station
+    // Find best stop_position reached for target station
     let bestStop = null;
     let minDist = Infinity;
     targetStation.stop_positions.forEach(stopId => {
@@ -128,18 +125,24 @@ export function reconstructPath(targetCRS, stationByCRS, railwayNodes, routingTr
     }
     fullPathNodes.unshift(String(curr));
 
-    // Map physical track node IDs to [lat, lon] coordinates
-    const coordinates = fullPathNodes.map(nodeId => {
+    // Convert node IDs to track coordinates
+    const trackCoordinates = fullPathNodes.map(nodeId => {
         const node = railwayNodes.get(nodeId);
         return node ? [node.latitude, node.longitude] : null;
     }).filter(Boolean);
 
-    // Append the exact target station pin coordinates as the final polyline point
+    // Snap origin and target ends to exact station marker pins
+    const coordinates = [];
+    
+    const origLat = originStation.latitude || originStation.lat;
+    const origLon = originStation.longitude || originStation.lon;
+    if (origLat && origLon) coordinates.push([origLat, origLon]);
+
+    coordinates.push(...trackCoordinates);
+
     const targetLat = targetStation.latitude || targetStation.lat;
     const targetLon = targetStation.longitude || targetStation.lon;
-    if (targetLat && targetLon) {
-        coordinates.push([targetLat, targetLon]);
-    }
+    if (targetLat && targetLon) coordinates.push([targetLat, targetLon]);
 
     return { 
         pathNodes: fullPathNodes,
@@ -148,7 +151,7 @@ export function reconstructPath(targetCRS, stationByCRS, railwayNodes, routingTr
     };
 }
 
-// Aggregates passenger volumes purely across physical track edges
+// 3. Flow calculation operating purely on physical track edges
 export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, journeysMap, stationByCRS) {
     if (!routingTree || !routingTree.parents) return new Map();
 
@@ -166,7 +169,6 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
         const passengerVolume = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0;
         if (passengerVolume <= 0) return;
 
-        // Find best stop_position reached for target station
         let bestStop = null;
         let minDist = Infinity;
         if (station.stop_positions) {
@@ -182,7 +184,6 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
 
         if (!bestStop || minDist === Infinity) return;
 
-        // Accumulate flow on physical track segments
         let curr = bestStop;
         while (parents.has(curr)) {
             const edge = parents.get(curr);
