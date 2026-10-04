@@ -107,10 +107,7 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
 
     const fullPathNodes = [];
     let curr = bestStop;
-    if (bestStop !== String(station.id)) {
-        const key = bestStop < station.id ? `${bestStop}-${station.id}` : `${station.id}-${bestStop}`;
-        edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
-    }
+
     while (parents.has(curr)) {
         const edgeInfo = parents.get(curr);
         const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
@@ -126,11 +123,6 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
             }
         }
         curr = String(edgeInfo.parent);
-    }
-    const originId = String(originStation.id); // looked up outside the forEach via selectedCRS
-    if (curr !== originId) {
-        const key = curr < originId ? `${curr}-${originId}` : `${originId}-${curr}`;
-        edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
     }
     fullPathNodes.unshift(String(curr));
 
@@ -172,24 +164,32 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
         }
 
         if (!bestStop || minDist === Infinity) return null;
-
+        if (bestStop !== String(station.id)) {
+            const key = bestStop < station.id ? `${bestStop}-${station.id}` : `${station.id}-${bestStop}`;
+            edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
+        }
         let curr = bestStop;
         // --- OLD / WORKING VERSION ---
-while (parents.has(curr)) {
-    const edgeInfo = parents.get(curr);
-    const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
+        while (parents.has(curr)) {
+            const edgeInfo = parents.get(curr);
+            const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
 
-    for (let i = 0; i < segmentNodes.length - 1; i++) {
-        const u = segmentNodes[i];
-        const v = segmentNodes[i + 1];
-        const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
+            for (let i = 0; i < segmentNodes.length - 1; i++) {
+                const u = segmentNodes[i];
+                const v = segmentNodes[i + 1];
+                const edgeKey = u < v ? `${u}-${v}` : `${v}-${u}`;
         
-        const currentVol = edgeFlows.get(edgeKey) || 0;
-        edgeFlows.set(edgeKey, currentVol + passengerVolume);
-    }
+                const currentVol = edgeFlows.get(edgeKey) || 0;
+                edgeFlows.set(edgeKey, currentVol + passengerVolume);
+            }
 
-    curr = String(edgeInfo.parent);
-}
+            curr = String(edgeInfo.parent);
+        }
+        const originId = String(originStation.id); // looked up outside the forEach via selectedCRS
+        if (curr !== originId) {
+            const key = curr < originId ? `${curr}-${originId}` : `${originId}-${curr}`;
+            edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
+        }
     });
 
     return edgeFlows;
