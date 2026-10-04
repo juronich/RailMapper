@@ -138,7 +138,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
 
     const { distances, parents } = routingTree;
     const edgeFlows = new Map();
-
+    const originStation = stationByCRS.get(selectedCRS);
     stationByCRS.forEach((station, targetCRS) => {
         if (targetCRS === selectedCRS) return;
 
@@ -185,7 +185,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
 
             curr = String(edgeInfo.parent);
         }
-        const originId = String(originStation.id); // looked up outside the forEach via selectedCRS
+        const originId = originStation ? String(originStation.id) : null;
         if (curr !== originId) {
             const key = curr < originId ? `${curr}-${originId}` : `${originId}-${curr}`;
             edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
