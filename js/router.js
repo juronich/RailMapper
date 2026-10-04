@@ -164,10 +164,10 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
         }
 
         if (!bestStop || minDist === Infinity) return null;
-        /*if (bestStop !== String(station.id)) {
+        if (bestStop !== String(station.id)) {
             const key = bestStop < station.id ? `${bestStop}-${station.id}` : `${station.id}-${bestStop}`;
             edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
-        }*/
+        }
         let curr = bestStop;
         // --- OLD / WORKING VERSION ---
         while (parents.has(curr)) {
