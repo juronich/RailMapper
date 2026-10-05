@@ -1,8 +1,8 @@
 console.time('App Ready Time');
-console.log('v0.201788');
+console.log('v0.201789');
 import { loadInitData, loadRoutingDataAsync } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
-import { drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
+import { drawBaseNetwork, drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
 import { initializeYearSelector, setupStationAutocomplete } from './ui.js';
 
 // MAP
@@ -36,36 +36,6 @@ let selectedYear = null;
 let currentRoutingTree = null;
 let pendingOriginCRS = null;
 let isDataReady = false;
-
-/*const worker = new Worker('worker.js');
-worker.postMessage({ stations, ways });
-worker.onmessage = (e) => {
-    appState.graph = e.data.graph;
-    isDataReady = true;
-    hideLoadingSpinner();
-};
-
-function startBackgroundWorker(stations) {
-    // Instantiate worker inside background routine
-    worker = new Worker('./worker.js', { type: 'module' });
-    // Listen for calculated graph from worker thread
-    worker.onmessage = (e) => {
-        const { graph, journeys } = e.data;
-        appState.graph = graph;
-        appState.journeys = journeys;
-        isDataReady = true;
-        console.log('⚡ Graph & Journey data ready from Web Worker');
-        // Execute queued station selection if user picked one while loading
-        if (pendingOriginCRS) {
-            updateVisualizationForOrigin(pendingOriginCRS);
-            pendingOriginCRS = null;
-        }
-    };
-    // Trigger calculation in background thread
-    worker.postMessage({ stations });
-}
-*/
-
 
 // Core Rendering Orchestration
 function updateVisualization() {
@@ -170,16 +140,6 @@ function handleDestinationClick(destinationCRS) {
     }
 }
 
-/*function handleOriginSelection(crs) {
-    if (!isDataReady) {
-        // Queue user choice while background loading finishes
-        pendingOriginCRS = crs;
-        showLoadingIndicatorOnMap("Building network routing graph...");
-        return;
-    }
-    updateVisualizationForOrigin(crs);
-}*/
-
 async function init() {
     try {
         const data = await loadInitData(map);
@@ -231,7 +191,7 @@ async function init() {
             	appState.isRoutingReady = true;
 				// Render base network polylines using Canvas renderer
 				console.log('routingData:', routingData);
-        		if (routingData.allCoords && routingData.allCoords.length > 0) {
+        		/*if (routingData.allCoords && routingData.allCoords.length > 0) {
             		const canvasRenderer = L.canvas({ padding: 0.5 });
             		L.polyline(routingData.allCoords, {
                 		color: '#4EA72E',
@@ -239,15 +199,14 @@ async function init() {
                 		opacity: 0.9,
                 		renderer: canvasRenderer
             		}).addTo(map);
-        		}
+        		}*/
+				drawBaseNetwork(routingData.allCoords, map);
 				const graphKeys = Array.from(routingData.railwayRoutingGraph.keys());
 				const hasCRS = graphKeys.some(k => isNaN(Number(k)));
-
 				console.log("Are non-numeric/CRS codes in the graph?", hasCRS);
 				console.log("Sample graph keys:", graphKeys.slice(0, 10));
 				const nonNumericKeys = Array.from(routingData.railwayRoutingGraph.keys())
     				.filter(k => isNaN(Number(k)));
-
 				console.log("Total non-numeric keys:", nonNumericKeys.length);
 				console.log("Sample non-numeric keys:", nonNumericKeys.slice(0, 20));
             	console.log('🚀 Routing graph loaded in background via Worker');
@@ -261,97 +220,6 @@ async function init() {
         console.error('Failed to initialize railway application:', error);
     }
 }
-
-
-
-/*
-// NEW App Init
-async function init() {
-    console.time('UI Interactive Time');
-    // 1. PHASE A: Fetch metadata only & unlock UI controls immediately
-    const stations = await fetch('./data/stations.json').then(r => r.json());
-    appState.stations = stations;
-    // Initialize UI elements right away
-    setupMap();
-    createYearSelector('year-selector-container', AVAILABLE_YEARS, DEFAULT_YEAR, onYearChange);
-    initializeStationSearch(stations, (selectedStation) => {
-        handleOriginSelection(selectedStation.crs);
-    });
-    console.timeEnd('UI Interactive Time'); // ~200ms - user can now interact!
-    // 2. PHASE B: Background processing (Non-blocking)
-	startBackgroundWorker(stations);
-    loadBackgroundRoutingData();
-}
-async function loadBackgroundRoutingData() {
-    console.time('Background Data & Graph');
-    // Fetch regional journeys & ways asynchronously
-    const [journeys, ways] = await Promise.all([
-        fetchJourneysByRegion(),
-        fetch('./data/ways.json').then(r => r.json())
-    ]);
-    // Build routing graph
-    appState.graph = buildAdjacencyGraph(appState.stations, ways);
-    appState.journeys = journeys;
-    isDataReady = true;
-    console.timeEnd('Background Data & Graph');
-    // If user selected an origin station while data was loading, execute now
-    if (pendingOriginCRS) {
-        updateVisualizationForOrigin(pendingOriginCRS);
-        pendingOriginCRS = null;
-    }
-}
-*/
-/*
-// Application Initialization
-async function init() {
-    try {
-        // Load datasets and draw base railway polylines
-        const data = await loadData(map);
-        appState.railwayNodes = data.railwayNodes;
-        appState.stations = data.stations;
-        appState.stationByCRS = data.stationByCRS;
-        appState.railwayRoutingGraph = data.railwayRoutingGraph;
-        appState.journeys = data.journeys;
-        appState.availableYears = data.availableYears || [];
-		// Set default active year
-		 if (appState.availableYears.length > 0) {
-            selectedYear = appState.availableYears[0];
-        } else {
-            selectedYear = '2024-25';
-        }
-        // Initialize UI components
-        initializeYearSelector(
-            'year-container', 
-            appState.availableYears, 
-			selectedYear,
-            (newYear) => {
-                selectedYear = newYear;
-                updateVisualization();
-            }
-        );
-        setupStationAutocomplete({
-            inputElement: document.getElementById('origin'),
-            resultsElement: document.getElementById('origin-results'),
-            stations: appState.stations,
-            onSelectStation: (crs) => {
-                selectedOriginCRS = crs;
-                updateVisualization();
-            },
-            onClear: () => {
-                selectedOriginCRS = null;
-                currentRoutingTree = null;
-                clearAllMapLayers(routeLayer, destinationLayer, flowLayer, originLayer);
-            }
-        });
-		console.log('RailMapper initialized successfully.');
-		console.timeEnd('App Ready Time')
-		const loadTimeS = (performance.now()/1000).toFixed(2);
-    	console.log(`🚀 Application fully initialized in ${loadTimeS} s`);
-    } catch (error) {
-        console.error('Failed to initialize railway application:', error);
-    }
-}
-*/
 
 // Start application after DOM is ready
 document.addEventListener('DOMContentLoaded', init);
