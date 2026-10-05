@@ -1,5 +1,5 @@
 console.time('App Ready Time');
-console.log('v0.201789');
+console.log('v0.2017895');
 import { loadInitData, loadRoutingDataAsync } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawBaseNetwork, drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
@@ -190,7 +190,7 @@ async function init() {
             	//Object.assign(appState, routingData);
             	appState.isRoutingReady = true;
 				// Render base network polylines using Canvas renderer
-        		if (routingData.allCoords && routingData.allCoords.length > 0) {
+        		/*if (routingData.allCoords && routingData.allCoords.length > 0) {
             		const canvasRenderer = L.canvas({ padding: 0.5 });
             		L.polyline(routingData.allCoords, {
                 		color: '#4EA72E',
@@ -198,8 +198,8 @@ async function init() {
                 		opacity: 0.9,
                 		renderer: canvasRenderer
             		}).addTo(map);
-        		}
-				//drawBaseNetwork(routingData.allCoords, map);
+        		}*/
+				drawBaseNetwork(routingData.allCoords, map);
 				const graphKeys = Array.from(routingData.railwayRoutingGraph.keys());
 				const hasCRS = graphKeys.some(k => isNaN(Number(k)));
 				const nonNumericKeys = Array.from(routingData.railwayRoutingGraph.keys())
