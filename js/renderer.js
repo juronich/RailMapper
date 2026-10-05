@@ -32,7 +32,7 @@ export function drawBaseNetwork(allCoords, map) {
     baseNetworkLayer = L.polyline(allCoords, {
         color: '#4EA72E',
         weight: 3,
-        
+        opacity: 0.9,
         renderer: canvasRenderer
     }).addTo(map);
 }
