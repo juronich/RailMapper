@@ -181,7 +181,7 @@ export async function loadRoutingData(stations, railwayNodes) {
         t2.push(crs1);
     }
     console.timeEnd('6. Transfers');
-	/*
+	
 	// 7. Inject Hub-to-Hub Transfer Edges into Railway Routing Graph
     console.time('7. Inject Transfer Edges');
 
@@ -219,7 +219,7 @@ export async function loadRoutingData(stations, railwayNodes) {
     });
 
     // 7b. Inject single transfer edges between origin and target station centroids
-    const TRANSFER_PENALTY = 0; // Distance/weight penalty for the foot transfer
+    const TRANSFER_PENALTY = 350; // Distance/weight penalty for the foot transfer
 
     transfersByCRS.forEach((targetCRSList, originCRS) => {
         const originStation = stationByCRS.get(originCRS);
@@ -266,7 +266,7 @@ export async function loadRoutingData(stations, railwayNodes) {
     });
 
     console.timeEnd('7. Inject Transfer Edges');
-	*/
+
 	// 7. Inject Transfer Edges into Railway Routing Graph
    /* console.time('7. Inject Transfer Edges');
     const stationByCRS = new Map();
