@@ -1,6 +1,3 @@
-
-
-
 /**
  * Phase A: Load base map geometry, stations, and regional journey files.
  * Extracts availableYears immediately.
@@ -110,15 +107,10 @@ export async function loadInitData(map) {
     };
 }
 
-/**
- * Phase B: Load heavy routing and transfer data needed for graph building
- */
 export async function loadRoutingData(stations, railwayNodes) {
-    console.time('Fetch Routing Data');
-																			  
+    console.time('Fetch Routing Data');															  
     const routingUrl = new URL('../data/railway-routing.json', import.meta.url);
     const transfersUrl = new URL('../data/station-transfers.json', import.meta.url);
-
     const [routingData, transfersData, connectorsData] = await Promise.all([
         fetch(routingUrl).then(res => {
             if (!res.ok) throw new Error(`HTTP ${res.status} loading routing data`);
@@ -130,13 +122,11 @@ export async function loadRoutingData(stations, railwayNodes) {
         })
     ]);
     console.timeEnd('Fetch Routing Data');
-
     console.time('5. Routing Graph');
     const railwayRoutingGraph = new Map();
     const stationConnections = new Map();
     const edges = routingData.edges;
     const len = edges.length;
-
     // 1. Build Standard Track Routing Graph
     for (let i = 0; i < len; i++) {
         const [from, to, distance, path] = edges[i];
@@ -151,7 +141,6 @@ export async function loadRoutingData(stations, railwayNodes) {
             railwayRoutingGraph.set(from, fromList);
         }
         fromList.push({ node: to, distance: distNum, path: fwdPath });
-
         // Reverse lookup
         let toList = railwayRoutingGraph.get(to);
         if (!toList) {
@@ -160,44 +149,15 @@ export async function loadRoutingData(stations, railwayNodes) {
         }
         toList.push({ node: from, distance: distNum, path: revPath });
     }
-	/*
-    // 2. Inject Station Connector Virtual Edges (Zero Distance)
-    // Connects stop_position node ID <-> station CRS code
-    const connLen = connectorsData.length;
-    for (let i = 0; i < connLen; i++) {
-        const [stopNode, crs, weight] = connectorsData[i];
-        const stopStr = String(stopNode);
-        const crsStr = String(crs);
-        const distNum = Number(weight); // 0
-
-        // Link stopNode -> CRS
-        let stopList = railwayRoutingGraph.get(stopStr);
-        if (!stopList) {
-            stopList = [];
-            railwayRoutingGraph.set(stopStr, stopList);
-        }
-        stopList.push({ node: crsStr, distance: distNum, path: [stopStr, crsStr] });
-
-        // Link CRS -> stopNode
-        let crsList = railwayRoutingGraph.get(crsStr);
-        if (!crsList) {
-            crsList = [];
-            railwayRoutingGraph.set(crsStr, crsList);
-        }
-        crsList.push({ node: stopStr, distance: distNum, path: [crsStr, stopStr] });
-    }
-	*/
-    // Station Connections
+	// Station Connections
     for (let i = 0; i < stations.length; i++) {
         const station = stations[i];
         const stops = station.stop_positions || [];
         for (let j = 0; j < stops.length; j++) {
             const node = String(stops[j]);
             if (!railwayRoutingGraph.has(node)) continue;
-
             const nodeData = railwayNodes.get(node);
             if (!nodeData) continue;
-
             stationConnections.set(node, {
                 stationCRS: station.crs,
                 fromCoordinates: [station.latitude, station.longitude],
@@ -221,6 +181,40 @@ export async function loadRoutingData(stations, railwayNodes) {
         t2.push(crs1);
     }
     console.timeEnd('6. Transfers');
+	// 7. Inject Transfer Edges into Railway Routing Graph
+    console.time('7. Inject Transfer Edges');
+    const stationByCRS = new Map();
+    for (let i = 0; i < stations.length; i++) {
+        if (stations[i].crs) stationByCRS.set(stations[i].crs, stations[i]);
+    }
+    const TRANSFER_PENALTY = 0.0; // Adjust distance/weight penalty as appropriate
+    transfersByCRS.forEach((connectedCRSs, fromCRS) => {
+        const fromStation = stationByCRS.get(fromCRS);
+        if (!fromStation || !fromStation.stop_positions) return;
+        for (let i = 0; i < connectedCRSs.length; i++) {
+            const toCRS = connectedCRSs[i];
+            const toStation = stationByCRS.get(toCRS);
+            if (!toStation || !toStation.stop_positions) continue;
+            // Connect every stop position of station A to station B
+            fromStation.stop_positions.forEach(fromStop => {
+                const fromNode = String(fromStop);
+                let fromList = railwayRoutingGraph.get(fromNode);
+                if (!fromList) {
+                    fromList = [];
+                    railwayRoutingGraph.set(fromNode, fromList);
+                }
+                toStation.stop_positions.forEach(toStop => {
+                    const toNode = String(toStop);
+                    fromList.push({
+                        node: toNode,
+                        distance: TRANSFER_PENALTY,
+                        path: [fromNode, toNode]
+                    });
+                });
+            });
+        }
+    });
+    console.timeEnd('7. Inject Transfer Edges');
 	// END OF TRANSFERS
     return { 
         railwayRoutingGraph,
@@ -241,7 +235,7 @@ export function loadRoutingDataAsync(stations, railwayNodes) {
             action: 'BUILD_ROUTING_GRAPH',
             payload: { 
                 stations, 
-                railwayNodes: serializedNodes
+                railwayNodes: serializedNodes,
             }
         });
         worker.onmessage = (event) => {
@@ -316,169 +310,3 @@ export async function loadWaysAndGraph(railwayNodes) {
         railwayGraph
     };
 }
-
-
-/*export async function loadData(map) {
-    console.time('1. Fetch JSONs');
-    const [[nodesData, waysData, waysMetaData, stationsData, routingData, transfersData], journeyDataFiles] = 
-        await Promise.all([
-            Promise.all(networkFiles),
-            Promise.all(journeyFetches)
-        ]);
-    // Data structures to populate
-    const railwayNodes = new Map();
-    const railwayGraph = new Map();
-    const railwayRoutingGraph = new Map();
-    const stationByStopPosition = new Map();
-    const stationConnections = new Map();
-    console.timeEnd('1. Fetch JSONs');
-    // POPULATE NODES
-    console.time('2. Populate Nodes');
-    nodesData.nodes.forEach(node => {
-        railwayNodes.set(String(node[0]), {
-            latitude: node[1],
-            longitude: node[2]
-        });
-    }); 
-    // END OF POPULATE NODES
-    console.timeEnd('2. Populate Nodes');
-    // BUILD WAYS & GRAPH
-    console.time('3. Build Ways & Graph');
-    const basePolylines = [];
-    waysData.ways.forEach(way => {
-        const nodeIds = way[1];
-        if (!nodeIds || nodeIds.length < 2) return;
-        const coords = [];
-        for (let i = 0; i < nodeIds.length; i++) {
-            const nodeIdStr = String(nodeIds[i]);
-            const node = railwayNodes.get(nodeIdStr);
-            if (node) coords.push([node.latitude, node.longitude]);
-            if (i < nodeIds.length - 1) {
-                const nextNodeStr = String(nodeIds[i + 1]);
-                if (!railwayGraph.has(nodeIdStr)) railwayGraph.set(nodeIdStr, []);
-                if (!railwayGraph.has(nextNodeStr)) railwayGraph.set(nextNodeStr, []);
-                railwayGraph.get(nodeIdStr).push(nextNodeStr);
-                railwayGraph.get(nextNodeStr).push(nodeIdStr);
-            }
-        }
-        if (coords.length >= 2) {
-            basePolylines.push(L.polyline(coords, {
-                color: '#4EA72E',
-                weight: 1,
-                opacity: 0.7
-            }));
-        }
-    });
-    // Batch draw base railway network on map
-    L.featureGroup(basePolylines).addTo(map);
-    console.timeEnd('3. Build Ways & Graph');
-    // END OF BUILD WAYS & GRAPH
-    
-    // STATIONS & LOOKUP MAPS
-    console.time('4. Stations & Lookup Maps');
-    const stations = Object.entries(stationsData).map(([crs, record]) => ({
-        crs: crs,
-        name: record.station?.name,
-        latitude: parseFloat(record.station?.latitude),
-        longitude: parseFloat(record.station?.longitude),
-        stop_positions: record.stop_positions || []
-    })).filter(s => s.name && !isNaN(s.latitude) && !isNaN(s.longitude));
-    const stationByCRS = new Map(stations.map(s => [s.crs, s]));
-    stations.forEach(station => {
-        station.stop_positions.forEach(id => {
-            stationByStopPosition.set(String(id), station);
-        });
-        L.circleMarker([station.latitude, station.longitude], { radius: 2, weight: 1 })
-            .bindPopup(`<strong>${station.name}</strong> (${station.crs})`)
-            .addTo(map);
-    });
-    console.timeEnd('4. Stations & Lookup Maps');
-    // END OF STATIONS & LOOKUP MAPS
-    
-    // ROUTING GRAPH
-    console.time('5. Routing Graph');
-    routingData.edges.forEach(([from, to, distance, path]) => {
-        const fromNode = String(from);
-        const toNode = String(to);
-        const pathStrings = path.map(String);
-        if (!railwayRoutingGraph.has(fromNode)) railwayRoutingGraph.set(fromNode, []);
-        if (!railwayRoutingGraph.has(toNode)) railwayRoutingGraph.set(toNode, []);
-        // Forward edge
-        railwayRoutingGraph.get(fromNode).push({ 
-            node: toNode, 
-            distance: Number(distance), 
-            path: pathStrings 
-        });
-        // Reverse edge (store reversed node path array)
-        railwayRoutingGraph.get(toNode).push({ 
-            node: fromNode, 
-            distance: Number(distance), 
-            path: [...pathStrings].reverse() 
-        });
-    });
-    stations.forEach(station => {
-        station.stop_positions.forEach(id => {
-            const node = String(id);
-            if (!railwayRoutingGraph.has(node)) return;
-            stationConnections.set(node, {
-                stationCRS: station.crs,
-                fromCoordinates: [station.latitude, station.longitude],
-                toCoordinates: [railwayNodes.get(node).latitude, railwayNodes.get(node).longitude]
-            });
-        });
-    });
-    console.timeEnd('5. Routing Graph');
-    // END OF ROUTING GRAPH
-    
-    // TRANSFERS
-    console.time('6. Transfers');
-    const stationTransfers = transfersData.transfers || [];
-    const transfersByCRS = new Map();
-    stationTransfers.forEach(([crs1, crs2]) => {
-        if (!transfersByCRS.has(crs1)) transfersByCRS.set(crs1, []);
-        if (!transfersByCRS.has(crs2)) transfersByCRS.set(crs2, []);
-        transfersByCRS.get(crs1).push(crs2);
-        transfersByCRS.get(crs2).push(crs1);
-    });
-    console.timeEnd('6. Transfers');
-    // END OF TRANSFERS
-    
-    // JOURNEY DATA
-    console.time('7. Journey Data');
-    const journeys = [];
-    let availableYears = []; 
-    journeyDataFiles.forEach(data => {
-        const years = data.years;
-        // Extract years if available
-        if (years && availableYears.length === 0) {
-            availableYears = years;
-        }
-        Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
-            Object.entries(destinations).forEach(([secondCRS, values]) => {
-                const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
-                years.forEach((year, idx) => {
-                    journey[year] = values[idx] || 0;
-                });
-                journeys.push(journey);
-            });
-        });
-    });
-    console.timeEnd('7. Journey Data');
-    availableYears.sort((a, b) => b.localeCompare(a));
-    // END OF JOURNEY DATA
-    
-    return {
-        railwayNodes,
-        railwayGraph,
-        railwayRoutingGraph,
-        stations,
-        stationByCRS,
-        stationByStopPosition,
-        stationConnections,
-        stationTransfers,
-        transfersByCRS,
-        journeys,
-        availableYears
-    };
-}
-*/
