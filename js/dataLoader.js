@@ -47,6 +47,7 @@ export async function loadInitData(map) {
     console.time('4. Stations & Lookup Maps');
     const stations = Object.entries(stationsData).map(([crs, record]) => ({
         crs: crs,
+		id: record.station?.id,
         name: record.station?.name,
         latitude: parseFloat(record.station?.latitude),
         longitude: parseFloat(record.station?.longitude),
