@@ -31,8 +31,8 @@ export function drawBaseNetwork(allCoords, map) {
     const canvasRenderer = L.canvas({ padding: 0.5 });
     baseNetworkLayer = L.polyline(allCoords, {
         color: '#4EA72E',
-        weight: 1,
-        opacity: 0.9,
+        weight: 3,
+        //opacity: 0.9,
         renderer: canvasRenderer
     }).addTo(map);
 }
