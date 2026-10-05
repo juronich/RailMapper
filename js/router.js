@@ -164,9 +164,9 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
         }
 
         if (!bestStop || minDist === Infinity) return null;
-        if (bestStop !== String(station.station.id)) {
-            console.log(station.station.id)
-            const key = bestStop < station.station.id ? `${bestStop}-${station.station.id}` : `${station.station.id}-${bestStop}`;
+        if (bestStop !== String(station.id)) {
+            console.log(station.id)
+            const key = bestStop < station.id ? `${bestStop}-${station.id}` : `${station.id}-${bestStop}`;
             edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
         }
         let curr = bestStop;
@@ -186,7 +186,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
 
             curr = String(edgeInfo.parent);
         }
-        const originId = originStation ? String(originStation.station.id) : null;
+        const originId = originStation ? String(originStation.id) : null;
         if (curr !== originId) {
             const key = curr < originId ? `${curr}-${originId}` : `${originId}-${curr}`;
             edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
