@@ -302,11 +302,11 @@ export async function loadRoutingData(stations, railwayNodes) {
     });
     console.timeEnd('7. Inject Transfer Edges');*/
 	// END OF TRANSFERS
-	console.log("Graph sample keys:", Array.from(railwayRoutingGraph.keys()).slice(0, 10));
+//	console.log("Graph sample keys:", Array.from(railwayRoutingGraph.keys()).slice(0, 10));
 
 	// Check 2: How is a station object structured?
-	console.log("Sample station object (STP):", stationByCRS.get('STP'));
-	console.log("Sample station entry:", stations ? Array.from(stations.values())[0] : "Check variable name");
+//	console.log("Sample station object (STP):", stationByCRS.get('STP'));
+//	console.log("Sample station entry:", stations ? Array.from(stations.values())[0] : "Check variable name");
     return { 
         railwayRoutingGraph,
         stationConnections,
