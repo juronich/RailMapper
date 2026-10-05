@@ -216,10 +216,7 @@ async function init() {
     }
 }
 window.appState = appState;
-console.log("Graph sample keys:", Array.from(railwayRoutingGraph.keys()).slice(0, 10));
 
-// Check 2: How is a station object structured?
-console.log("Sample station object (STP):", stationByCRS.get('STP'));
 // Start application after DOM is ready
 document.addEventListener('DOMContentLoaded', init);
 
