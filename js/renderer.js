@@ -32,11 +32,11 @@ export function drawBaseNetwork(allCoords, map) {
     baseNetworkLayer = L.polyline(allCoords, {
         color: '#4EA72E',
         weight: 3,
-        //opacity: 0.9,
+        
         renderer: canvasRenderer
     }).addTo(map);
 }
-
+//opacity: 1,
 // Converts an array of node IDs into Leaflet lat/lng coordinate pairs.
 export function getCoordinatesForPath(pathNodes, railwayNodes) {
     const coords = [];
