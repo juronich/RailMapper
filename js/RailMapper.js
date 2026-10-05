@@ -190,7 +190,6 @@ async function init() {
             	//Object.assign(appState, routingData);
             	appState.isRoutingReady = true;
 				// Render base network polylines using Canvas renderer
-				console.log('routingData:', routingData);
         		/*if (routingData.allCoords && routingData.allCoords.length > 0) {
             		const canvasRenderer = L.canvas({ padding: 0.5 });
             		L.polyline(routingData.allCoords, {
