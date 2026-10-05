@@ -215,7 +215,7 @@ async function init() {
         console.error('Failed to initialize railway application:', error);
     }
 }
-
+window.appState = appState;
 // Start application after DOM is ready
 document.addEventListener('DOMContentLoaded', init);
 
