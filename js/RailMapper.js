@@ -203,12 +203,8 @@ async function init() {
 				drawBaseNetwork(routingData.allCoords, map);
 				const graphKeys = Array.from(routingData.railwayRoutingGraph.keys());
 				const hasCRS = graphKeys.some(k => isNaN(Number(k)));
-				console.log("Are non-numeric/CRS codes in the graph?", hasCRS);
-				console.log("Sample graph keys:", graphKeys.slice(0, 10));
 				const nonNumericKeys = Array.from(routingData.railwayRoutingGraph.keys())
     				.filter(k => isNaN(Number(k)));
-				console.log("Total non-numeric keys:", nonNumericKeys.length);
-				console.log("Sample non-numeric keys:", nonNumericKeys.slice(0, 20));
             	console.log('🚀 Routing graph loaded in background via Worker');
 				// If user selected a station while worker was processing, trigger visualization now
                 if (selectedOriginCRS) {
