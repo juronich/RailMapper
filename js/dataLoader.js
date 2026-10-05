@@ -181,6 +181,90 @@ export async function loadRoutingData(stations, railwayNodes) {
         t2.push(crs1);
     }
     console.timeEnd('6. Transfers');
+	// 7. Inject Hub-to-Hub Transfer Edges into Railway Routing Graph
+    console.time('7. Inject Transfer Edges');
+
+    // CRS lookup map built directly from the stations array
+    const stationByCRS = new Map(stations.map(s => [s.crs, s]));
+
+    // 7a. Link each station centroid (station.id) to its own stop_positions (0 cost)
+    stations.forEach(station => {
+        if (!station.id || !station.stop_positions) return;
+        const centroidId = String(station.id);
+
+        station.stop_positions.forEach(stop => {
+            const stopId = String(stop);
+
+            // Forward: Centroid -> Platform Stop
+            let centroidEdges = railwayRoutingGraph.get(centroidId);
+            if (!centroidEdges) {
+                centroidEdges = [];
+                railwayRoutingGraph.set(centroidId, centroidEdges);
+            }
+            if (!centroidEdges.some(e => e.node === stopId)) {
+                centroidEdges.push({ node: stopId, distance: 0, path: [centroidId, stopId] });
+            }
+
+            // Reverse: Platform Stop -> Centroid
+            let stopEdges = railwayRoutingGraph.get(stopId);
+            if (!stopEdges) {
+                stopEdges = [];
+                railwayRoutingGraph.set(stopId, stopEdges);
+            }
+            if (!stopEdges.some(e => e.node === centroidId)) {
+                stopEdges.push({ node: centroidId, distance: 0, path: [stopId, centroidId] });
+            }
+        });
+    });
+
+    // 7b. Inject single transfer edges between origin and target station centroids
+    const TRANSFER_PENALTY = 0; // Distance/weight penalty for the foot transfer
+
+    transfersByCRS.forEach((targetCRSList, originCRS) => {
+        const originStation = stationByCRS.get(originCRS);
+        if (!originStation || !originStation.id) return;
+        const originCentroid = String(originStation.id);
+
+        targetCRSList.forEach(targetCRS => {
+            const targetStation = stationByCRS.get(targetCRS);
+            if (!targetStation || !targetStation.id) return;
+            const targetCentroid = String(targetStation.id);
+
+            if (originCentroid === targetCentroid) return;
+
+            // Forward Transfer: Origin Centroid -> Target Centroid
+            let originEdges = railwayRoutingGraph.get(originCentroid);
+            if (!originEdges) {
+                originEdges = [];
+                railwayRoutingGraph.set(originCentroid, originEdges);
+            }
+            if (!originEdges.some(e => e.node === targetCentroid)) {
+                originEdges.push({
+                    node: targetCentroid,
+                    distance: TRANSFER_PENALTY,
+                    path: [originCentroid, targetCentroid],
+                    isTransfer: true
+                });
+            }
+
+            // Reverse Transfer: Target Centroid -> Origin Centroid
+            let targetEdges = railwayRoutingGraph.get(targetCentroid);
+            if (!targetEdges) {
+                targetEdges = [];
+                railwayRoutingGraph.set(targetCentroid, targetEdges);
+            }
+            if (!targetEdges.some(e => e.node === originCentroid)) {
+                targetEdges.push({
+                    node: originCentroid,
+                    distance: TRANSFER_PENALTY,
+                    path: [targetCentroid, originCentroid],
+                    isTransfer: true
+                });
+            }
+        });
+    });
+
+    console.timeEnd('7. Inject Transfer Edges');
 	// 7. Inject Transfer Edges into Railway Routing Graph
    /* console.time('7. Inject Transfer Edges');
     const stationByCRS = new Map();
