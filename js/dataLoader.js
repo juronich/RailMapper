@@ -182,7 +182,7 @@ export async function loadRoutingData(stations, railwayNodes) {
     }
     console.timeEnd('6. Transfers');
 	// 7. Inject Transfer Edges into Railway Routing Graph
-    console.time('7. Inject Transfer Edges');
+   /* console.time('7. Inject Transfer Edges');
     const stationByCRS = new Map();
     for (let i = 0; i < stations.length; i++) {
         if (stations[i].crs) stationByCRS.set(stations[i].crs, stations[i]);
@@ -214,7 +214,7 @@ export async function loadRoutingData(stations, railwayNodes) {
             });
         }
     });
-    console.timeEnd('7. Inject Transfer Edges');
+    console.timeEnd('7. Inject Transfer Edges');*/
 	// END OF TRANSFERS
     return { 
         railwayRoutingGraph,
