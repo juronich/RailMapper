@@ -220,6 +220,7 @@ export async function loadRoutingData(stations, railwayNodes) {
 
 	// Check 2: How is a station object structured?
 	console.log("Sample station object (STP):", stationByCRS.get('STP'));
+	console.log("Sample station entry:", stations ? Array.from(stations.values())[0] : "Check variable name");
     return { 
         railwayRoutingGraph,
         stationConnections,
