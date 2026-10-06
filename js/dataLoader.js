@@ -183,10 +183,10 @@ export async function loadRoutingData(stations, railwayNodes) {
     console.timeEnd('6. Transfers');
 	
 	// 7. Inject Hub-to-Hub Transfer Edges into Railway Routing Graph
-    console.time('7. Inject Transfer Edges');
+  //  console.time('7. Inject Transfer Edges');
 
     // CRS lookup map built directly from the stations array
-    const stationByCRS = new Map(stations.map(s => [s.crs, s]));
+  //  const stationByCRS = new Map(stations.map(s => [s.crs, s]));
 
     // =========================================================================
 // 7. Inject Inter-Station Transfer Edges into Railway Routing Graph
