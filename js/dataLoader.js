@@ -182,16 +182,10 @@ export async function loadRoutingData(stations, railwayNodes) {
     }
     console.timeEnd('6. Transfers');
 	
-	// 7. Inject Hub-to-Hub Transfer Edges into Railway Routing Graph
-  //  console.time('7. Inject Transfer Edges');
-
-    // CRS lookup map built directly from the stations array
-  //  const stationByCRS = new Map(stations.map(s => [s.crs, s]));
-
-    // =========================================================================
-// 7. Inject Inter-Station Transfer Edges into Railway Routing Graph
 // =========================================================================
-/*console.time('7. Inject Transfer Edges');
+// 7. Inject Inter-Station & In-Station Transfer Edges into Routing Graph
+// =========================================================================
+console.time('7. Inject Transfer Edges');
 
 const stationByCRS = new Map(stations.map(s => [s.crs, s]));
 
@@ -207,22 +201,16 @@ function getHaversineDistance(s1, s2) {
     return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// 1. Collect ONLY CRS codes explicitly defined in transfersByCRS
-const transferHubCRSs = new Set();
-transfersByCRS.forEach((targetCRSList, originCRS) => {
-    transferHubCRSs.add(originCRS);
-    targetCRSList.forEach(crs => transferHubCRSs.add(crs));
-});
-
-// 2. Section 7a: Link centroids to platforms ONLY for transfer hub stations
-transferHubCRSs.forEach(crs => {
-    const station = stationByCRS.get(crs);
-    if (!station || !station.id || !station.stop_positions) return;
+// -------------------------------------------------------------------------
+// 7a. In-Station Line Interchanges (ALL Stations with Stop Positions)
+// -------------------------------------------------------------------------
+stations.forEach(station => {
+    if (!station.id || !station.stop_positions || station.stop_positions.length === 0) return;
 
     const centroidId = String(station.id);
     const stopsSet = new Set(station.stop_positions.map(String));
 
-    // Find the maximum physical track distance (D_max) between any platforms at this station
+    // Find the maximum physical track distance (D_max) between any platform nodes at this station
     let maxPlatformDistance = 0;
     stopsSet.forEach(stopId => {
         const edges = railwayRoutingGraph.get(stopId) || [];
@@ -233,7 +221,7 @@ transferHubCRSs.forEach(crs => {
         });
     });
 
-    // Fallback if no direct internal track edges exist between platforms
+    // Fallback distance if platforms have no direct local track interconnects
     if (maxPlatformDistance === 0) maxPlatformDistance = 200;
 
     // Bounding Rule: Set w so that 2 * w = D_max + 1m (strictly greater than D_max)
@@ -274,7 +262,9 @@ transferHubCRSs.forEach(crs => {
     });
 });
 
-// 3. Section 7b: Inject inter-station hub-to-hub transfer edges (e.g. EUS <-> QXR)
+// -------------------------------------------------------------------------
+// 7b. Inter-Station Hub-to-Hub Walking Transfers (e.g., EUS <-> QXR)
+// -------------------------------------------------------------------------
 transfersByCRS.forEach((targetCRSList, originCRS) => {
     const originStation = stationByCRS.get(originCRS);
     if (!originStation || !originStation.id) return;
@@ -287,7 +277,7 @@ transfersByCRS.forEach((targetCRSList, originCRS) => {
 
         if (originCentroid === targetCentroid) return;
 
-        // Spatial walking distance between the two station hubs
+        // Spatial walking distance between the two station centroids
         const interHubDistance = getHaversineDistance(originStation, targetStation);
 
         // Forward Transfer: Origin Centroid -> Target Centroid
@@ -323,41 +313,6 @@ transfersByCRS.forEach((targetCRSList, originCRS) => {
 });
 
 console.timeEnd('7. Inject Transfer Edges');
-*/
-	// 7. Inject Transfer Edges into Railway Routing Graph
-   /* console.time('7. Inject Transfer Edges');
-    const stationByCRS = new Map();
-    for (let i = 0; i < stations.length; i++) {
-        if (stations[i].crs) stationByCRS.set(stations[i].crs, stations[i]);
-    }
-    const TRANSFER_PENALTY = 0.0; // Adjust distance/weight penalty as appropriate
-    transfersByCRS.forEach((connectedCRSs, fromCRS) => {
-        const fromStation = stationByCRS.get(fromCRS);
-        if (!fromStation || !fromStation.stop_positions) return;
-        for (let i = 0; i < connectedCRSs.length; i++) {
-            const toCRS = connectedCRSs[i];
-            const toStation = stationByCRS.get(toCRS);
-            if (!toStation || !toStation.stop_positions) continue;
-            // Connect every stop position of station A to station B
-            fromStation.stop_positions.forEach(fromStop => {
-                const fromNode = String(fromStop);
-                let fromList = railwayRoutingGraph.get(fromNode);
-                if (!fromList) {
-                    fromList = [];
-                    railwayRoutingGraph.set(fromNode, fromList);
-                }
-                toStation.stop_positions.forEach(toStop => {
-                    const toNode = String(toStop);
-                    fromList.push({
-                        node: toNode,
-                        distance: TRANSFER_PENALTY,
-                        path: [fromNode, toNode]
-                    });
-                });
-            });
-        }
-    });
-    console.timeEnd('7. Inject Transfer Edges');*/
 	// END OF TRANSFERS
 //	console.log("Graph sample keys:", Array.from(railwayRoutingGraph.keys()).slice(0, 10));
 
