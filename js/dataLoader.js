@@ -191,7 +191,7 @@ export async function loadRoutingData(stations, railwayNodes) {
     // =========================================================================
 // 7. Inject Inter-Station Transfer Edges into Railway Routing Graph
 // =========================================================================
-console.time('7. Inject Transfer Edges');
+/*console.time('7. Inject Transfer Edges');
 
 const stationByCRS = new Map(stations.map(s => [s.crs, s]));
 
@@ -323,7 +323,7 @@ transfersByCRS.forEach((targetCRSList, originCRS) => {
 });
 
 console.timeEnd('7. Inject Transfer Edges');
-
+*/
 	// 7. Inject Transfer Edges into Railway Routing Graph
    /* console.time('7. Inject Transfer Edges');
     const stationByCRS = new Map();
