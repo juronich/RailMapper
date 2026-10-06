@@ -1,5 +1,5 @@
 console.time('App Ready Time');
-console.log('v0.2017896');
+console.log('v0.2017897');
 import { loadInitData, loadRoutingDataAsync } from './dataLoader.js';
 import { computeShortestPathTree, reconstructPath, calculatePassengerFlows } from './router.js';
 import { drawBaseNetwork, drawRailwayRoute, drawDestinationMarkers, drawPassengerFlows, drawOriginMarker, clearAllMapLayers } from './renderer.js';
