@@ -127,6 +127,8 @@ function handleDestinationClick(destinationCRS) {
         appState.stationByCRS, 
         currentRoutingTree
     );
+	// EXPOSE TO CONSOLE:
+    window.lastRoute = route?.pathNodes;
     if (route && route.pathNodes) {
 		const targetStation = appState.stationByCRS.get(destinationCRS);
         const targetCoords = targetStation ? [targetStation.latitude, targetStation.longitude] : null;
