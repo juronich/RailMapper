@@ -175,7 +175,7 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
         const passengerVolume = journeyRecord ? (journeyRecord[selectedYear] || 0) : 0;
         if (passengerVolume <= 0) return;
 
-        let bestStop = null;
+        /*let bestStop = null;
         let minDist = Infinity;
         if (station.stop_positions) {
             station.stop_positions.forEach(stopId => {
@@ -193,12 +193,31 @@ export function calculatePassengerFlows(routingTree, selectedCRS, selectedYear, 
             const key = bestStop < station.id ? `${bestStop}-${station.id}` : `${station.id}-${bestStop}`;
             edgeFlows.set(key, (edgeFlows.get(key) || 0) + passengerVolume);
         }
-        let curr = bestStop;
-        // --- OLD / WORKING VERSION ---
+        let curr = bestStop;*/
+        // NEW
+        const candidates = [];
+        const stopPositions = station.stop_positions || station.station?.stop_positions || [];
+        stopPositions.forEach(s => candidates.push(String(s.id ?? s)));
+
+        const centroidId = station.station?.id || station.id;
+        if (centroidId) candidates.push(String(centroidId));
+
+        let bestNode = null;
+        let minDist = Infinity;
+        candidates.forEach(nodeStr => {
+            const d = distances.get(nodeStr);
+            if (d !== undefined && d < minDist) {
+                minDist = d;
+                bestNode = nodeStr;
+            }
+        });
+
+        if (!bestNode || minDist === Infinity) return;
+
+        let curr = bestNode;
         while (parents.has(curr)) {
             const edgeInfo = parents.get(curr);
             const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
-
             for (let i = 0; i < segmentNodes.length - 1; i++) {
                 const u = segmentNodes[i];
                 const v = segmentNodes[i + 1];
