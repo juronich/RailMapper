@@ -90,7 +90,7 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     if (!routingTree) return null;
     const { distances, parents } = routingTree;
     const targetStation = stationByCRS.get(targetCRS);
-    if (!targetStation || !targetStation.stop_positions || !targetStation.stop_positions.length) return null;
+    /*if (!targetStation || !targetStation.stop_positions || !targetStation.stop_positions.length) return null;
 
     let bestStop = null;
     let minDist = Infinity;
@@ -104,10 +104,35 @@ export function reconstructPath(targetCRS, stationByCRS, routingTree) {
     });
 
     if (!bestStop || minDist === Infinity) return null;
+    */
+    // NEW
+    if (!targetStation) return null;
 
+    // Collect platform stops AND station centroid as candidate endpoints
+    const candidates = [];
+    const stopPositions = targetStation.stop_positions || targetStation.station?.stop_positions || [];
+    stopPositions.forEach(stopId => candidates.push(String(stopId.id ?? stopId)));
+
+    const centroidId = targetStation.station?.id || targetStation.id;
+    if (centroidId) candidates.push(String(centroidId));
+
+    if (!candidates.length) return null;
+
+// Find candidate with lowest cumulative distance
+    let bestNode = null;
+    let minDist = Infinity;
+    candidates.forEach(nodeStr => {
+        const d = distances.get(nodeStr);
+        if (d !== undefined && d < minDist) {
+            minDist = d;
+            bestNode = nodeStr;
+        }
+    });
+
+    if (!bestNode || minDist === Infinity) return null;
     const fullPathNodes = [];
-    let curr = bestStop;
-
+    //let curr = bestStop;
+    let curr = bestNode;
     while (parents.has(curr)) {
         const edgeInfo = parents.get(curr);
         const segmentNodes = (edgeInfo.path || [edgeInfo.parent, curr]).map(String);
