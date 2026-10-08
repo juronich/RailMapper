@@ -6,6 +6,7 @@ export async function loadInitData(map) {
     console.time('1. Fetch Initial JSONs');
     const initFiles = [
         fetch('data/stations.json').then(res => res.json()),
+		fetch('data/crs_aliases.json').then(res => res.json())
         fetch('data/railway-nodes.json').then(res => res.json()),
         fetch('data/railway-ways.json').then(res => res.json()),
         fetch('data/railway-ways-data.json').then(res => res.json()),
@@ -22,8 +23,11 @@ export async function loadInitData(map) {
         Promise.all(initFiles),
         Promise.all(journeyFiles)
     ]);
-    const [stationsData, nodesData, waysData, waysMetaData] = initResults;
+    const [stationsData, aliasesData, nodesData, waysData, waysMetaData] = initResults;
     // Data structures to populate
+	const aliasMap = new Map(
+    	(aliasesData || []).map(item => [item.aliasCRS, item.primaryCRS])
+	);
     const railwayNodes = new Map();
     const railwayGraph = new Map();
     const stationByStopPosition = new Map();
@@ -79,7 +83,23 @@ export async function loadInitData(map) {
         }
         Object.entries(data.journeys).forEach(([firstCRS, destinations]) => {
             Object.entries(destinations).forEach(([secondCRS, values]) => {
-                const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
+				const orig = aliasMap.get(firstCRS) || firstCRS;
+            	const dest = aliasMap.get(secondCRS) || secondCRS;
+				if (orig === dest) return; 
+				const key = orig < dest ? `${orig}-${dest}` : `${dest}-${orig}`;
+				if (!journeysMap.has(key)) {
+                	const journey = { OriginCRS: orig, DestinationCRS: dest };
+                	years.forEach((year, idx) => {
+                    	journey[year] = values[idx] || 0;
+                	});
+                	journeysMap.set(key, journey);
+            	} else {
+                	const existing = journeysMap.get(key);
+                	years.forEach((year, idx) => {
+                    	existing[year] = (existing[year] || 0) + (values[idx] || 0);
+                	});
+            	}
+                /*const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
                 years.forEach((year, idx) => {
                     journey[year] = values[idx] || 0;
                 });
@@ -88,10 +108,11 @@ export async function loadInitData(map) {
                 const key = firstCRS < secondCRS 
                     ? `${firstCRS}-${secondCRS}` 
                     : `${secondCRS}-${firstCRS}`;
-                journeysMap.set(key, journey);
+                journeysMap.set(key, journey);*/
             });
         });
     });
+	const journeys = Array.from(journeysMap.values());
     console.timeEnd('7. Journey Data');
     availableYears.sort((a, b) => b.localeCompare(a));
     // END OF JOURNEY DATA
