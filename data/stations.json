@@ -4893,7 +4893,7 @@
     "TGS": {
         "station": {
             "id": 256696262,
-            "name": "Tŷ Glas",
+            "name": "T\u0177 Glas",
             "latitude": 51.5217357,
             "longitude": -3.1971025,
             "Network": [
@@ -9710,7 +9710,7 @@
             "6703264960"
         ]
     },
-    "ZHJ": {
+    "HXX": {
         "station": {
             "id": 5182384971,
             "name": "Heathrow Terminals 2 & 3",
@@ -9724,27 +9724,6 @@
             ],
             "TOC": [
                 "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "248576852",
-            "1508864507",
-            "1645567975",
-            "1676851993"
-        ]
-    },
-    "HXX": {
-        "station": {
-            "id": 6652280936,
-            "name": "Heathrow Terminals 2 & 3",
-            "latitude": 51.4719282,
-            "longitude": -0.4543118,
-            "Network": [
-                "National Rail",
-                "Elizabeth line"
-            ],
-            "TOC": [
-                "Heathrow Express"
             ]
         },
         "stop_positions": [
@@ -12196,35 +12175,12 @@
             "11772623206"
         ]
     },
-    "ZHZ": {
+    "ZHA": {
         "station": {
             "id": 5474926328,
             "name": "Hammersmith",
             "latitude": 51.494109,
             "longitude": -0.2250607,
-            "Network": [
-                "London Underground"
-            ],
-            "TOC": [
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "1508498210",
-            "1508498224",
-            "1508498227",
-            "1508498232",
-            "1704515263",
-            "1704515266",
-            "12782513095"
-        ]
-    },
-    "ZHA": {
-        "station": {
-            "id": 6195731433,
-            "name": "Hammersmith",
-            "latitude": 51.4921603,
-            "longitude": -0.223247,
             "Network": [
                 "London Underground"
             ],
@@ -15281,32 +15237,6 @@
             "5455868949"
         ]
     },
-    "ZEL": {
-        "station": {
-            "id": 3660623413,
-            "name": "Elephant & Castle",
-            "latitude": 51.4948884,
-            "longitude": -0.1005731,
-            "Network": [
-                "National Rail",
-                "London Underground"
-            ],
-            "TOC": [
-                "Greater Thameslink Railway",
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "1691713664",
-            "1760727250",
-            "4336644546",
-            "4336716583",
-            "4336716584",
-            "1691713663",
-            "2356332643",
-            "5455868949"
-        ]
-    },
     "ZBU": {
         "station": {
             "id": 6797794418,
@@ -15512,25 +15442,7 @@
             "20694409",
             "1753101129",
             "1754196606",
-            "13854685"
-        ]
-    },
-    "ZDM": {
-        "station": {
-            "id": 6516411104,
-            "name": "Lewisham",
-            "latitude": 51.4656437,
-            "longitude": -0.0139562,
-            "Network": [
-                "National Rail",
-                "Southeastern",
-                "Docklands Light Railway"
-            ],
-            "TOC": [
-                "Docklands Light Railway"
-            ]
-        },
-        "stop_positions": [
+            "13854685",
             "2931492422",
             "21095219"
         ]
@@ -16022,84 +15934,6 @@
             "8251774893"
         ]
     },
-    "PDX": {
-        "station": {
-            "id": 12248739533,
-            "name": "London Paddington",
-            "latitude": 51.5163695,
-            "longitude": -0.1780083,
-            "Network": [
-                "National Rail",
-                "London Underground",
-                "Elizabeth line"
-            ],
-            "TOC": [
-                "Network Rail",
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "11776731",
-            "464784549",
-            "1255833484",
-            "1264646142",
-            "1264660043",
-            "1264660045",
-            "1264660046",
-            "1264660047",
-            "1264660048",
-            "1264660049",
-            "1264660051",
-            "1264660055",
-            "1264660057",
-            "1264660058",
-            "1264660060",
-            "1591399583",
-            "1655787181",
-            "2156650848",
-            "6434125017",
-            "8251774893"
-        ]
-    },
-    "ZPA": {
-        "station": {
-            "id": 1264482797,
-            "name": "London Paddington",
-            "latitude": 51.5154795,
-            "longitude": -0.175365,
-            "Network": [
-                "National Rail",
-                "London Underground",
-                "Elizabeth line"
-            ],
-            "TOC": [
-                "Network Rail",
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "11776731",
-            "464784549",
-            "1255833484",
-            "1264646142",
-            "1264660043",
-            "1264660045",
-            "1264660046",
-            "1264660047",
-            "1264660048",
-            "1264660049",
-            "1264660051",
-            "1264660055",
-            "1264660057",
-            "1264660058",
-            "1264660060",
-            "1591399583",
-            "1655787181",
-            "2156650848",
-            "6434125017",
-            "8251774893"
-        ]
-    },
     "ZWV": {
         "station": {
             "id": 5457046602,
@@ -16124,28 +15958,6 @@
             "name": "Edgware Road",
             "latitude": 51.5201935,
             "longitude": -0.1667636,
-            "Network": [
-                "London Underground"
-            ],
-            "TOC": [
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "32351072",
-            "1264705751",
-            "1658039437",
-            "1658039458",
-            "1658039483",
-            "5481955743"
-        ]
-    },
-    "ZEB": {
-        "station": {
-            "id": 5206774617,
-            "name": "Edgware Road",
-            "latitude": 51.5204575,
-            "longitude": -0.1702993,
             "Network": [
                 "London Underground"
             ],
@@ -16472,35 +16284,12 @@
             "5475560741"
         ]
     },
-    "ZBD": {
+    "BDS": {
         "station": {
             "id": 3076573913,
             "name": "Bond Street",
             "latitude": 51.5139808,
             "longitude": -0.1494231,
-            "Network": [
-                "Elizabeth line",
-                "London Underground"
-            ],
-            "TOC": [
-                "Transport for London",
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "1637478193",
-            "2156683125",
-            "2156683126",
-            "3076573912",
-            "10259337550"
-        ]
-    },
-    "BDS": {
-        "station": {
-            "id": 9754536755,
-            "name": "Bond Street",
-            "latitude": 51.5135348,
-            "longitude": -0.1470905,
             "Network": [
                 "Elizabeth line",
                 "London Underground"
@@ -16822,58 +16611,14 @@
         "stop_positions": [
             "178805960",
             "492095642",
+            "492098125",
+            "492098466",
+            "492098585",
+            "495741652",
+            "495742107",
             "1802706032",
             "1802760139",
             "1802760151",
-            "8894920322",
-            "13440675022",
-            "5882562377",
-            "6010790018",
-            "6010790019",
-            "6010790020",
-            "6010790021",
-            "6010790022",
-            "6010790023",
-            "6010790024",
-            "6010790025",
-            "6010790026",
-            "6010790027",
-            "6010790028",
-            "6010790029",
-            "6010790030",
-            "6010790031",
-            "6010790032",
-            "6010790033",
-            "6022637125",
-            "6022637126",
-            "6022637127",
-            "6022637128",
-            "6022637129",
-            "6022637130",
-            "6022637131"
-        ]
-    },
-    "ZWA": {
-        "station": {
-            "id": 3638795618,
-            "name": "London Waterloo",
-            "latitude": 51.5030015,
-            "longitude": -0.1139812,
-            "Network": [
-                "London Underground"
-            ],
-            "TOC": [
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "178805960",
-            "492095642",
-            "1802706032",
-            "1802760139",
-            "1802760151",
-            "8894920322",
-            "13440675022",
             "5882562377",
             "6010790018",
             "6010790019",
@@ -16898,11 +16643,8 @@
             "6022637129",
             "6022637130",
             "6022637131",
-            "492098125",
-            "492098466",
-            "492098585",
-            "495741652",
-            "495742107"
+            "8894920322",
+            "13440675022"
         ]
     },
     "ZSW": {
@@ -16959,28 +16701,6 @@
         "stop_positions": [
             "3076574239",
             "3076574240"
-        ]
-    },
-    "ZTC": {
-        "station": {
-            "id": 5462552522,
-            "name": "Tottenham Court Road",
-            "latitude": 51.5159715,
-            "longitude": -0.1305125,
-            "Network": [
-                "London Underground"
-            ],
-            "TOC": [
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "2156700180",
-            "4277734060",
-            "9760704353",
-            "21508069",
-            "70833764",
-            "1785339687"
         ]
     },
     "ZHO": {
@@ -17201,37 +16921,6 @@
             "name": "London St Pancras International",
             "latitude": 51.5327196,
             "longitude": -0.1270027,
-            "Network": [
-                "National Rail"
-            ],
-            "TOC": [
-                "Network Rail"
-            ]
-        },
-        "stop_positions": [
-            "87463681",
-            "1270779458",
-            "3101677938",
-            "3101677939",
-            "3101677940",
-            "3101677941",
-            "3101677942",
-            "3101677943",
-            "4292119302",
-            "4292119303",
-            "4292119304",
-            "6465173957",
-            "6465173958",
-            "6465173959",
-            "6465173960"
-        ]
-    },
-    "SPL": {
-        "station": {
-            "id": 12254780537,
-            "name": "London St Pancras International",
-            "latitude": 51.5322106,
-            "longitude": -0.1276185,
             "Network": [
                 "National Rail"
             ],
@@ -17965,53 +17654,12 @@
             "12288848442"
         ]
     },
-    "LSX": {
+    "LST": {
         "station": {
             "id": 12286269903,
             "name": "London Liverpool Street",
             "latitude": 51.5176474,
             "longitude": -0.0864414,
-            "Network": [
-                "National Rail",
-                "London Overground",
-                "Elizabeth line"
-            ],
-            "TOC": [
-                "Network Rail"
-            ]
-        },
-        "stop_positions": [
-            "2156956840",
-            "2157123321",
-            "3076573932",
-            "3076574233",
-            "4850392632",
-            "4850392633",
-            "1271716489",
-            "1271716490",
-            "1271716491",
-            "1271716492",
-            "1271716493",
-            "1271716494",
-            "1271716495",
-            "1271716496",
-            "1271716497",
-            "1271716498",
-            "1271716499",
-            "1271716500",
-            "1271716501",
-            "6137852416",
-            "6137852417",
-            "6137852418",
-            "6137852419"
-        ]
-    },
-    "LST": {
-        "station": {
-            "id": 3637436408,
-            "name": "London Liverpool Street",
-            "latitude": 51.5182105,
-            "longitude": -0.0814269,
             "Network": [
                 "National Rail",
                 "London Overground",
@@ -18589,7 +18237,7 @@
             "6143744012"
         ]
     },
-    "ZCZ": {
+    "CWX": {
         "station": {
             "id": 6402222390,
             "name": "Canary Wharf",
@@ -18633,29 +18281,6 @@
             "458876780",
             "5257532208",
             "5257532209"
-        ]
-    },
-    "CWX": {
-        "station": {
-            "id": 9097410038,
-            "name": "Canary Wharf",
-            "latitude": 51.5061102,
-            "longitude": -0.0176241,
-            "Network": [
-                "Elizabeth line",
-                "London Underground"
-            ],
-            "TOC": [
-                "Elizabeth line",
-                "London Underground"
-            ]
-        },
-        "stop_positions": [
-            "6577624219",
-            "5183466923",
-            "5183466924",
-            "6140748770",
-            "9742158593"
         ]
     },
     "ZBH": {
@@ -47450,7 +47075,7 @@
             "6143889601"
         ]
     },
-    "ZCE": {
+    "CUS": {
         "station": {
             "id": 6143889603,
             "name": "Custom House",
@@ -47468,6 +47093,7 @@
         "stop_positions": [
             "9760735057",
             "9760735058",
+            "1752300218",
             "18038183"
         ]
     },
@@ -47505,27 +47131,6 @@
         "stop_positions": [
             "33104077",
             "1752319802"
-        ]
-    },
-    "CUS": {
-        "station": {
-            "id": 9754369244,
-            "name": "Custom House",
-            "latitude": 51.5098025,
-            "longitude": 0.0272279,
-            "Network": [
-                "Elizabeth line",
-                "Docklands Light Railway"
-            ],
-            "TOC": [
-                "Elizabeth line",
-                "Docklands Light Railway"
-            ]
-        },
-        "stop_positions": [
-            "9760735057",
-            "9760735058",
-            "1752300218"
         ]
     },
     "ZPD": {
