@@ -6,10 +6,10 @@ export async function loadInitData(map) {
     console.time('1. Fetch Initial JSONs');
     const initFiles = [
         fetch('data/stations.json').then(res => res.json()),
-		fetch('data/crs_aliases.json').then(res => res.json())
+		fetch('data/crs_aliases.json').then(res => res.json()),
         fetch('data/railway-nodes.json').then(res => res.json()),
         fetch('data/railway-ways.json').then(res => res.json()),
-        fetch('data/railway-ways-data.json').then(res => res.json()),
+        fetch('data/railway-ways-data.json').then(res => res.json())
     ];
     const journeyFiles = [
         'data/journeys/ODM_Scotland.json',
