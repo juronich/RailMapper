@@ -9712,7 +9712,7 @@
     },
     "HXX": {
         "station": {
-            "id": 5182384971,
+            "id": 6652280936,
             "name": "Heathrow Terminals 2 & 3",
             "latitude": 51.4713416,
             "longitude": -0.452483,
@@ -12177,7 +12177,7 @@
     },
     "ZHA": {
         "station": {
-            "id": 5474926328,
+            "id": 6195731433,
             "name": "Hammersmith",
             "latitude": 51.494109,
             "longitude": -0.2250607,
@@ -16286,7 +16286,7 @@
     },
     "BDS": {
         "station": {
-            "id": 3076573913,
+            "id": 9754536755,
             "name": "Bond Street",
             "latitude": 51.5139808,
             "longitude": -0.1494231,
@@ -17656,7 +17656,7 @@
     },
     "LST": {
         "station": {
-            "id": 12286269903,
+            "id": 3637436408,
             "name": "London Liverpool Street",
             "latitude": 51.5176474,
             "longitude": -0.0864414,
@@ -18239,7 +18239,7 @@
     },
     "CWX": {
         "station": {
-            "id": 6402222390,
+            "id": 9097410038,
             "name": "Canary Wharf",
             "latitude": 51.5035036,
             "longitude": -0.0186272,
@@ -47077,7 +47077,7 @@
     },
     "CUS": {
         "station": {
-            "id": 6143889603,
+            "id": 9754369244,
             "name": "Custom House",
             "latitude": 51.5096341,
             "longitude": 0.0259614,
