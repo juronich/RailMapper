@@ -1,0 +1,72 @@
+[
+    {
+        "aliasCRS": "ZHJ",
+        "stationId": "5182384971",
+        "primaryCRS": "HXX"
+    },
+    {
+        "aliasCRS": "ZHZ",
+        "stationId": "5474926328",
+        "primaryCRS": "ZHA"
+    },
+    {
+        "aliasCRS": "ZEL",
+        "stationId": "3660623413",
+        "primaryCRS": "EPH"
+    },
+    {
+        "aliasCRS": "ZDM",
+        "stationId": "6516411104",
+        "primaryCRS": "LEW"
+    },
+    {
+        "aliasCRS": "PDX",
+        "stationId": "12248739533",
+        "primaryCRS": "PAD"
+    },
+    {
+        "aliasCRS": "ZPA",
+        "stationId": "1264482797",
+        "primaryCRS": "PAD"
+    },
+    {
+        "aliasCRS": "ZEB",
+        "stationId": "5206774617",
+        "primaryCRS": "ZEM"
+    },
+    {
+        "aliasCRS": "ZBD",
+        "stationId": "3076573913",
+        "primaryCRS": "BDS"
+    },
+    {
+        "aliasCRS": "ZTC",
+        "stationId": "5462552522",
+        "primaryCRS": "TCR"
+    },
+    {
+        "aliasCRS": "ZWA",
+        "stationId": "3638795618",
+        "primaryCRS": "WAT"
+    },
+    {
+        "aliasCRS": "SPL",
+        "stationId": "12254780537",
+        "primaryCRS": "STP"
+    },
+    {
+        "aliasCRS": "LSX",
+        "stationId": "12286269903",
+        "primaryCRS": "LST"
+    },
+    {
+        "aliasCRS": "ZCZ",
+        "stationId": "6402222390",
+        "primaryCRS": "CWX"
+    },
+    {
+        "aliasCRS": "ZCE",
+        "stationId": "6143889603",
+        "primaryCRS": "CUS"
+    }
+]
