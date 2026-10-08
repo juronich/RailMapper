@@ -72,7 +72,7 @@ export async function loadInitData(map) {
 
     // JOURNEY DATA
     console.time('7. Journey Data');
-    const journeys = [];
+    //const journeys = [];
     const journeysMap = new Map(); // Fast O(1) lookup Map
     let availableYears = []; 
     journeyDataFiles.forEach(data => {
