@@ -7,10 +7,8 @@ export async function loadInitData(map) {
     const initFiles = [
         fetch('data/stations.json').then(res => res.json()),
 		fetch('data/crs_aliases.json').then(res => res.json()),
-        fetch('data/railway-nodes.json').then(res => res.json()),
-        fetch('data/railway-ways.json').then(res => res.json()),
-        fetch('data/railway-ways-data.json').then(res => res.json())
-    ];
+        fetch('data/railway-nodes.json').then(res => res.json())
+    ]; // fetch('data/railway-ways-data.json').then(res => res.json())
     const journeyFiles = [
         'data/journeys/ODM_Scotland.json',
         'data/journeys/ODM_North.json',
@@ -23,7 +21,7 @@ export async function loadInitData(map) {
         Promise.all(initFiles),
         Promise.all(journeyFiles)
     ]);
-    const [stationsData, aliasesData, nodesData, waysData, waysMetaData] = initResults;
+    const [stationsData, aliasesData, nodesData] = initResults;
     // Data structures to populate
 	const aliasMap = new Map(
     	(aliasesData || []).map(item => [item.aliasCRS, item.primaryCRS])
@@ -99,16 +97,6 @@ export async function loadInitData(map) {
                     	existing[year] = (existing[year] || 0) + (values[idx] || 0);
                 	});
             	}
-                /*const journey = { OriginCRS: firstCRS, DestinationCRS: secondCRS };
-                years.forEach((year, idx) => {
-                    journey[year] = values[idx] || 0;
-                });
-                journeys.push(journey);
-                // Build consistent bi-directional key (alphabetical)
-                const key = firstCRS < secondCRS 
-                    ? `${firstCRS}-${secondCRS}` 
-                    : `${secondCRS}-${firstCRS}`;
-                journeysMap.set(key, journey);*/
             });
         });
     });
@@ -154,7 +142,6 @@ export async function loadRoutingData(stations, railwayNodes) {
         const distNum = Number(distance);
         const fwdPath = path.map(String);
         const revPath = fwdPath.slice().reverse();
-
         // Forward lookup
         let fromList = railwayRoutingGraph.get(from);
         if (!fromList) {
@@ -187,7 +174,6 @@ export async function loadRoutingData(stations, railwayNodes) {
         }
     }
     console.timeEnd('5. Routing Graph');
-
     // TRANSFERS
     console.time('6. Transfers');
     const stationTransfers = transfersData.transfers || [];
@@ -202,281 +188,128 @@ export async function loadRoutingData(stations, railwayNodes) {
         t2.push(crs1);
     }
     console.timeEnd('6. Transfers');
-// =========================================================================
-// 7. Inject Inter-Station & In-Station Transfer Edges into Routing Graph
-// =========================================================================
-console.time('7. Inject Transfer Edges');
+	// =========================================================================
+	// 7. Inject Inter-Station & In-Station Transfer Edges into Routing Graph
+	// =========================================================================
+	console.time('7. Inject Transfer Edges');
+	const stationByCRS = new Map(stations.map(s => [s.crs, s]));
+	// Helper: Spatial Haversine distance in meters
+	function getHaversineDistance(s1, s2) {
+	    if (s1.lat == null || s1.lon == null || s2.lat == null || s2.lon == null) return 300;
+	    const R = 6371000;
+	    const rad = Math.PI / 180;
+	    const dLat = (s2.lat - s1.lat) * rad;
+	    const dLon = (s2.lon - s1.lon) * rad;
+	    const a = Math.sin(dLat / 2) ** 2 +
+	              Math.cos(s1.lat * rad) * Math.cos(s2.lat * rad) * Math.sin(dLon / 2) ** 2;
+	    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+	}
+	// -------------------------------------------------------------------------
+	// 7a. In-Station Line Interchanges (ALL Stations with Stop Positions)
+	// -------------------------------------------------------------------------
+	stations.forEach(station => {
+    	if (!station.id || !station.stop_positions || station.stop_positions.length === 0) return;
+    	const centroidId = String(station.id);
+    	const stops = station.stop_positions;
+    	// 1. Calculate maximum spatial distance between any two platforms at this station
+    	let maxSpatialDistance = 0;
+    	// Look up stop coordinates if available, or fall back to station lat/lon
+    	for (let i = 0; i < stops.length; i++) {
+        	for (let j = i + 1; j < stops.length; j++) {
+            	const posA = stops[i];
+            	const posB = stops[j];
+            	const dist = getHaversineDistance(
+                	{ lat: posA.lat ?? station.lat, lon: posA.lon ?? station.lon },
+                	{ lat: posB.lat ?? station.lat, lon: posB.lon ?? station.lon }
+            	);
+            	if (dist > maxSpatialDistance) {
+                	maxSpatialDistance = dist;
+            	}
+        	}
+    	}
+    	// Ensure a baseline threshold for large stations
+    	const baselineDistance = Math.max(maxSpatialDistance * 1.5, 400);
+    	// Bounding Rule: Set w so that 2 * w is strictly greater than platform track span
+    	const centroidWeight = (baselineDistance / 2) + 5;
+    	stops.forEach(stop => {
+        	const stopId = String(stop.id ?? stop);
+        	// Centroid -> Platform Stop
+        	let centroidEdges = railwayRoutingGraph.get(centroidId);
+        	if (!centroidEdges) {
+            	centroidEdges = [];
+            	railwayRoutingGraph.set(centroidId, centroidEdges);
+        	}
+        	if (!centroidEdges.some(e => e.node === stopId)) {
+            	centroidEdges.push({ 
+                	node: stopId, 
+                	distance: centroidWeight, 
+                	path: [centroidId, stopId],
+                	isTransfer: true 
+            	});
+        	}
+        	// Platform Stop -> Centroid
+        	let stopEdges = railwayRoutingGraph.get(stopId);
+        	if (!stopEdges) {
+            	stopEdges = [];
+            	railwayRoutingGraph.set(stopId, stopEdges);
+        	}
+        	if (!stopEdges.some(e => e.node === centroidId)) {
+            	stopEdges.push({ 
+                	node: centroidId, 
+                	distance: centroidWeight, 
+                	path: [stopId, centroidId],
+                	isTransfer: true 
+            	});
+        	}
+    	});
+	});
 
-const stationByCRS = new Map(stations.map(s => [s.crs, s]));
-
-// Helper: Spatial Haversine distance in meters
-function getHaversineDistance(s1, s2) {
-    if (s1.lat == null || s1.lon == null || s2.lat == null || s2.lon == null) return 300;
-    const R = 6371000;
-    const rad = Math.PI / 180;
-    const dLat = (s2.lat - s1.lat) * rad;
-    const dLon = (s2.lon - s1.lon) * rad;
-    const a = Math.sin(dLat / 2) ** 2 +
-              Math.cos(s1.lat * rad) * Math.cos(s2.lat * rad) * Math.sin(dLon / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-// -------------------------------------------------------------------------
-// 7a. In-Station Line Interchanges (ALL Stations with Stop Positions)
-// -------------------------------------------------------------------------
-stations.forEach(station => {
-    if (!station.id || !station.stop_positions || station.stop_positions.length === 0) return;
-
-    const centroidId = String(station.id);
-    const stops = station.stop_positions;
-
-    // 1. Calculate maximum spatial distance between any two platforms at this station
-    let maxSpatialDistance = 0;
-
-    // Look up stop coordinates if available, or fall back to station lat/lon
-    for (let i = 0; i < stops.length; i++) {
-        for (let j = i + 1; j < stops.length; j++) {
-            const posA = stops[i];
-            const posB = stops[j];
-            const dist = getHaversineDistance(
-                { lat: posA.lat ?? station.lat, lon: posA.lon ?? station.lon },
-                { lat: posB.lat ?? station.lat, lon: posB.lon ?? station.lon }
-            );
-            if (dist > maxSpatialDistance) {
-                maxSpatialDistance = dist;
-            }
-        }
-    }
-
-    // Ensure a baseline threshold for large stations
-    const baselineDistance = Math.max(maxSpatialDistance * 1.5, 400);
-
-    // Bounding Rule: Set w so that 2 * w is strictly greater than platform track span
-    const centroidWeight = (baselineDistance / 2) + 5;
-
-    stops.forEach(stop => {
-        const stopId = String(stop.id ?? stop);
-
-        // Centroid -> Platform Stop
-        let centroidEdges = railwayRoutingGraph.get(centroidId);
-        if (!centroidEdges) {
-            centroidEdges = [];
-            railwayRoutingGraph.set(centroidId, centroidEdges);
-        }
-        if (!centroidEdges.some(e => e.node === stopId)) {
-            centroidEdges.push({ 
-                node: stopId, 
-                distance: centroidWeight, 
-                path: [centroidId, stopId],
-                isTransfer: true 
-            });
-        }
-
-        // Platform Stop -> Centroid
-        let stopEdges = railwayRoutingGraph.get(stopId);
-        if (!stopEdges) {
-            stopEdges = [];
-            railwayRoutingGraph.set(stopId, stopEdges);
-        }
-        if (!stopEdges.some(e => e.node === centroidId)) {
-            stopEdges.push({ 
-                node: centroidId, 
-                distance: centroidWeight, 
-                path: [stopId, centroidId],
-                isTransfer: true 
-            });
-        }
-    });
-});
-
-// -------------------------------------------------------------------------
-// 7b. Inter-Station Hub-to-Hub Walking Transfers (e.g., EUS <-> QXR)
-// -------------------------------------------------------------------------
-transfersByCRS.forEach((targetCRSList, originCRS) => {
-    const originStation = stationByCRS.get(originCRS);
-    if (!originStation || !originStation.id) return;
-    const originCentroid = String(originStation.id);
-
-    targetCRSList.forEach(targetCRS => {
-        const targetStation = stationByCRS.get(targetCRS);
-        if (!targetStation || !targetStation.id) return;
-        const targetCentroid = String(targetStation.id);
-
-        if (originCentroid === targetCentroid) return;
-
-        const interHubDistance = getHaversineDistance(originStation, targetStation);
-
-        // Forward Transfer: Origin Centroid -> Target Centroid
-        let originEdges = railwayRoutingGraph.get(originCentroid);
-        if (!originEdges) {
-            originEdges = [];
-            railwayRoutingGraph.set(originCentroid, originEdges);
-        }
-        if (!originEdges.some(e => e.node === targetCentroid)) {
-            originEdges.push({
-                node: targetCentroid,
-                distance: interHubDistance,
-                path: [originCentroid, targetCentroid],
-                isTransfer: true
-            });
-        }
-
-        // Reverse Transfer: Target Centroid -> Origin Centroid
-        let targetEdges = railwayRoutingGraph.get(targetCentroid);
-        if (!targetEdges) {
-            targetEdges = [];
-            railwayRoutingGraph.set(targetCentroid, targetEdges);
-        }
-        if (!targetEdges.some(e => e.node === originCentroid)) {
-            targetEdges.push({
-                node: originCentroid,
-                distance: interHubDistance,
-                path: [targetCentroid, originCentroid],
-                isTransfer: true
-            });
-        }
-    });
-});
-
-console.timeEnd('7. Inject Transfer Edges');
-	/*
-// =========================================================================
-// 7. Inject Inter-Station & In-Station Transfer Edges into Routing Graph
-// =========================================================================
-console.time('7. Inject Transfer Edges');
-
-const stationByCRS = new Map(stations.map(s => [s.crs, s]));
-
-// Helper: Calculate physical spatial distance between two station coordinates in meters
-function getHaversineDistance(s1, s2) {
-    if (s1.lat == null || s1.lon == null || s2.lat == null || s2.lon == null) return 300;
-    const R = 6371000; // Earth radius in meters
-    const rad = Math.PI / 180;
-    const dLat = (s2.lat - s1.lat) * rad;
-    const dLon = (s2.lon - s1.lon) * rad;
-    const a = Math.sin(dLat / 2) ** 2 +
-              Math.cos(s1.lat * rad) * Math.cos(s2.lat * rad) * Math.sin(dLon / 2) ** 2;
-    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-// -------------------------------------------------------------------------
-// 7a. In-Station Line Interchanges (ALL Stations with Stop Positions)
-// -------------------------------------------------------------------------
-stations.forEach(station => {
-    if (!station.id || !station.stop_positions || station.stop_positions.length === 0) return;
-
-    const centroidId = String(station.id);
-    const stopsSet = new Set(station.stop_positions.map(String));
-
-    // Find the maximum physical track distance (D_max) between any platform nodes at this station
-    let maxPlatformDistance = 0;
-    stopsSet.forEach(stopId => {
-        const edges = railwayRoutingGraph.get(stopId) || [];
-        edges.forEach(edge => {
-            if (stopsSet.has(edge.node) && edge.distance > maxPlatformDistance) {
-                maxPlatformDistance = edge.distance;
-            }
-        });
-    });
-
-    // Fallback distance if platforms have no direct local track interconnects
-    if (maxPlatformDistance === 0) maxPlatformDistance = 200;
-
-    // Bounding Rule: Set w so that 2 * w = D_max + 1m (strictly greater than D_max)
-    const centroidWeight = (maxPlatformDistance / 2) + 0.5;
-
-    station.stop_positions.forEach(stop => {
-        const stopId = String(stop);
-
-        // Centroid -> Platform Stop
-        let centroidEdges = railwayRoutingGraph.get(centroidId);
-        if (!centroidEdges) {
-            centroidEdges = [];
-            railwayRoutingGraph.set(centroidId, centroidEdges);
-        }
-        if (!centroidEdges.some(e => e.node === stopId)) {
-            centroidEdges.push({ 
-                node: stopId, 
-                distance: centroidWeight, 
-                path: [centroidId, stopId],
-                isTransfer: true 
-            });
-        }
-
-        // Platform Stop -> Centroid
-        let stopEdges = railwayRoutingGraph.get(stopId);
-        if (!stopEdges) {
-            stopEdges = [];
-            railwayRoutingGraph.set(stopId, stopEdges);
-        }
-        if (!stopEdges.some(e => e.node === centroidId)) {
-            stopEdges.push({ 
-                node: centroidId, 
-                distance: centroidWeight, 
-                path: [stopId, centroidId],
-                isTransfer: true 
-            });
-        }
-    });
-});
-
-// -------------------------------------------------------------------------
-// 7b. Inter-Station Hub-to-Hub Walking Transfers (e.g., EUS <-> QXR)
-// -------------------------------------------------------------------------
-transfersByCRS.forEach((targetCRSList, originCRS) => {
-    const originStation = stationByCRS.get(originCRS);
-    if (!originStation || !originStation.id) return;
-    const originCentroid = String(originStation.id);
-
-    targetCRSList.forEach(targetCRS => {
-        const targetStation = stationByCRS.get(targetCRS);
-        if (!targetStation || !targetStation.id) return;
-        const targetCentroid = String(targetStation.id);
-
-        if (originCentroid === targetCentroid) return;
-
-        // Spatial walking distance between the two station centroids
-        const interHubDistance = getHaversineDistance(originStation, targetStation);
-
-        // Forward Transfer: Origin Centroid -> Target Centroid
-        let originEdges = railwayRoutingGraph.get(originCentroid);
-        if (!originEdges) {
-            originEdges = [];
-            railwayRoutingGraph.set(originCentroid, originEdges);
-        }
-        if (!originEdges.some(e => e.node === targetCentroid)) {
-            originEdges.push({
-                node: targetCentroid,
-                distance: interHubDistance,
-                path: [originCentroid, targetCentroid],
-                isTransfer: true
-            });
-        }
-
-        // Reverse Transfer: Target Centroid -> Origin Centroid
-        let targetEdges = railwayRoutingGraph.get(targetCentroid);
-        if (!targetEdges) {
-            targetEdges = [];
-            railwayRoutingGraph.set(targetCentroid, targetEdges);
-        }
-        if (!targetEdges.some(e => e.node === originCentroid)) {
-            targetEdges.push({
-                node: originCentroid,
-                distance: interHubDistance,
-                path: [targetCentroid, originCentroid],
-                isTransfer: true
-            });
-        }
-    });
-});
-
-console.timeEnd('7. Inject Transfer Edges');*/
+	// -------------------------------------------------------------------------
+	// 7b. Inter-Station Hub-to-Hub Walking Transfers (e.g., EUS <-> QXR)
+	// -------------------------------------------------------------------------
+	transfersByCRS.forEach((targetCRSList, originCRS) => {
+    	const originStation = stationByCRS.get(originCRS);
+    	if (!originStation || !originStation.id) return;
+    	const originCentroid = String(originStation.id);
+    	targetCRSList.forEach(targetCRS => {
+        	const targetStation = stationByCRS.get(targetCRS);
+        	if (!targetStation || !targetStation.id) return;
+        	const targetCentroid = String(targetStation.id);
+        	if (originCentroid === targetCentroid) return;
+        	const interHubDistance = getHaversineDistance(originStation, targetStation);
+        	// Forward Transfer: Origin Centroid -> Target Centroid
+        	let originEdges = railwayRoutingGraph.get(originCentroid);
+        	if (!originEdges) {
+            	originEdges = [];
+            	railwayRoutingGraph.set(originCentroid, originEdges);
+        	}
+        	if (!originEdges.some(e => e.node === targetCentroid)) {
+            	originEdges.push({
+                	node: targetCentroid,
+                	distance: interHubDistance,
+                	path: [originCentroid, targetCentroid],
+                	isTransfer: true
+            	});
+        	}
+        	// Reverse Transfer: Target Centroid -> Origin Centroid
+        	let targetEdges = railwayRoutingGraph.get(targetCentroid);
+        	if (!targetEdges) {
+            	targetEdges = [];
+            	railwayRoutingGraph.set(targetCentroid, targetEdges);
+        	}
+        	if (!targetEdges.some(e => e.node === originCentroid)) {
+            	targetEdges.push({
+                	node: originCentroid,
+                	distance: interHubDistance,
+                	path: [targetCentroid, originCentroid],
+                	isTransfer: true
+            	});
+        	}
+    	});
+	});
+	console.timeEnd('7. Inject Transfer Edges');
 	// END OF TRANSFERS
-//	console.log("Graph sample keys:", Array.from(railwayRoutingGraph.keys()).slice(0, 10));
-
 	// Check 2: How is a station object structured?
-//	console.log("Sample station object (STP):", stationByCRS.get('STP'));
-//	console.log("Sample station entry:", stations ? Array.from(stations.values())[0] : "Check variable name");
     return { 
         railwayRoutingGraph,
         stationConnections,
@@ -521,18 +354,34 @@ export function loadRoutingDataAsync(stations, railwayNodes) {
 export async function loadWaysAndGraph(railwayNodes) {
     console.time('Worker: Build Ways & Graph');
     const waysUrl = new URL('../data/railway-ways.json', import.meta.url);
-    const waysData = await fetch(waysUrl).then(res => {
-        if (!res.ok) throw new Error(`HTTP ${res.status} fetching ways data`);
-        return res.json();
-    });
+	const waysMetaUrl = new URL('../data/railway-ways-data.json', import.meta.url);
+	const [waysFile, waysMetaFile] = await Promise.all([
+    	fetch(waysUrl).then(res => res.json()),
+    	fetch(waysMetaUrl).then(res => res.json())
+	]);
+    const ways = waysFile.ways || waysFile;
+	const waysMeta = waysMetaFile.ways || waysMetaFile;
     const allCoords = [];
     const railwayGraph = new Map();
-    const ways = waysData.ways;
     const waysLen = ways.length;
-	console.log('Sample node lookup:', railwayNodes.keys().next().value, typeof railwayNodes.keys().next().value);
+	//console.log('Sample node lookup:', railwayNodes.keys().next().value, typeof railwayNodes.keys().next().value);
+	const getWayTags = (wayId) => {
+    	const meta = waysMeta[wayId] || {};
+    	return {
+	        railway:  meta["0"] ?? "rail",
+	        operator: meta["1"] ?? null,
+	        name:     meta["2"] ?? null,
+	        usage:    meta["3"] ?? null,
+	        speed:    meta["4"] ?? null,
+	        oneway:   meta["5"] ?? 0,
+	        layer:    meta["6"] ?? 0
+    	};
+	};
     for (let w = 0; w < waysLen; w++) {
+		const wayId = ways[w][0];
         const nodeIds = ways[w][1];
         if (!nodeIds || nodeIds.length < 2) continue;
+		const tags = getWayTags(wayId);
       	const coords = [];
         const nodeCount = nodeIds.length;
 		
@@ -552,13 +401,13 @@ export async function loadWaysAndGraph(railwayNodes) {
                     graphList = [];
                     railwayGraph.set(nodeIdStr, graphList);
                 }
-                graphList.push(nextNodeStr);
+                graphList.push({ node: nextNodeStr, wayId, tags });
                 let nextGraphList = railwayGraph.get(nextNodeStr);
                 if (!nextGraphList) {
                     nextGraphList = [];
                     railwayGraph.set(nextNodeStr, nextGraphList);
                 }
-                nextGraphList.push(nodeIdStr);
+                nextGraphList.push({ node: String(nodeIdStr), wayId, tags });
             }
         }
         if (coords.length >= 2) {
