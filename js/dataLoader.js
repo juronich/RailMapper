@@ -394,7 +394,7 @@ export async function loadWaysAndGraph(railwayNodes) {
             if (node) {
                 coords.push([node.latitude, node.longitude]);
             }
-            if (i < nodeCount - 1) {
+           /* if (i < nodeCount - 1) {
                 const nextNodeStr = nodeIds[i + 1];
                 let graphList = railwayGraph.get(nodeIdStr);
                 if (!graphList) {
@@ -408,7 +408,30 @@ export async function loadWaysAndGraph(railwayNodes) {
                     railwayGraph.set(nextNodeStr, nextGraphList);
                 }
                 nextGraphList.push({ node: String(nodeIdStr), wayId, tags });
-            }
+            }*/
+			if (i < nodeCount - 1) {
+    		const nextNodeStr = String(nodeIds[i + 1]);
+
+		    // Forward edge (u -> v): allowed when oneway is 0 (bidirectional) or 1 (forward)
+		    if (tags.oneway === 0 || tags.oneway === 1) {
+		        let graphList = railwayGraph.get(String(nodeIdStr));
+		        if (!graphList) {
+		            graphList = [];
+		            railwayGraph.set(String(nodeIdStr), graphList);
+		        }
+		        graphList.push({ node: nextNodeStr, wayId, tags });
+		    }
+		
+		    // Reverse edge (v -> u): allowed when oneway is 0 (bidirectional) or -1 (reverse)
+		    if (tags.oneway === 0 || tags.oneway === -1) {
+		        let nextGraphList = railwayGraph.get(nextNodeStr);
+		        if (!nextGraphList) {
+		            nextGraphList = [];
+		            railwayGraph.set(nextNodeStr, nextGraphList);
+		        }
+		        nextGraphList.push({ node: String(nodeIdStr), wayId, tags });
+    		}
+		}
         }
         if (coords.length >= 2) {
             allCoords.push(coords);
